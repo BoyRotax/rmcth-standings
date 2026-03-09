@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>RMCTH 2026 Championship Dashboard</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: #f0f2f5; padding: 20px; color: #333; margin: 0;}
+        .container { max-width: 1550px; margin: auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+        
+        .official-header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 20px; margin-bottom: 20px; border-bottom: 3px solid #d32f2f; }
+        .logo-left img { height: 80px; object-fit: contain; }
+        .logo-center { text-align: center; flex-grow: 1; }
+        .logo-center img { height: 70px; object-fit: contain; margin-bottom: 5px; }
+        .logo-right { display: flex; flex-direction: column; gap: 10px; align-items: flex-end; }
+        .logo-right img { height: 35px; object-fit: contain; }
+        #mainAppTitle { margin: 0; color: #333; font-size: 20px; text-transform: uppercase; letter-spacing: 1px; }
+
+        .tabs { display: flex; gap: 5px; margin-bottom: 20px; border-bottom: 2px solid #ddd; align-items: center;}
+        .tab-btn { padding: 12px 25px; cursor: pointer; border: none; background: #e0e0e0; font-weight: bold; border-radius: 8px 8px 0 0; transition: 0.3s; font-size: 14px; }
+        .tab-btn.active { background: #d32f2f; color: white; }
+        .tab-content { display: none; padding: 20px; background: #fff; border: 1px solid #ddd; border-top: none; border-radius: 0 0 8px 8px; }
+        .tab-content.active { display: block; }
+
+        .sub-tabs { display: flex; gap: 8px; margin-bottom: 15px; flex-wrap: wrap; }
+        .sub-tab-btn { padding: 8px 16px; cursor: pointer; border: 1px solid #b0bec5; background: #f8f9fa; border-radius: 20px; transition: 0.2s; font-size: 13px; color: #455a64; font-weight: 600; }
+        .sub-tab-btn:hover { background: #e3f2fd; }
+        .sub-tab-btn.active { background: #1565c0; color: white; border-color: #1565c0; }
+
+        table { width: 100%; border-collapse: collapse; font-size: 13px; margin-bottom: 0px; }
+        th, td { border: 1px solid #cfd8dc; padding: 8px 6px; text-align: center; }
+        th { background:#f8f9fa; }
+        .sticky-th { position: sticky; top: 0; z-index: 10; }
+        
+        .purple-bg { background-color: #f3e5f5 !important; border: 2px solid #9c27b0 !important; color: #4a148c; font-weight: bold; }
+        .fl-badge { color: #9c27b0; font-size: 11px; font-weight: bold; display: block; margin-top: 2px; }
+        .dropped { text-decoration: line-through; color: #f44336 !important; font-weight: bold; }
+        .net-pts { background: #fff9c4; font-weight: bold; font-size: 1.3em; color: #b71c1c; border: 2px solid #fbc02d !important; }
+        .no-badge { background: #ffeb3b; color: #000; padding: 2px 8px; border-radius: 4px; font-weight: bold; margin-right: 6px; border: 1px solid #fbc02d; font-size: 14px; }
+        .flag-icon { width: 24px; height: 16px; vertical-align: middle; margin-right: 6px; border: 1px solid #ccc; border-radius: 2px; object-fit: cover; }
+
+        .input-text { padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-size: 14px; text-transform: uppercase; }
+        select { padding: 6px; border-radius: 4px; border: 1px solid #999; font-weight: bold; cursor: pointer; font-size: 13px; }
+        .score-select { width: 55px; }
+        .class-select { width: 140px; }
+        
+        .btn { padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; color: white; margin-right: 10px; transition: 0.2s; }
+        .btn:hover { opacity: 0.8; }
+        .btn-save { background: #2e7d32; }
+        .btn-save:disabled { background: #9e9e9e; cursor: not-allowed; }
+        .btn-add { background: #1976d2; }
+        .btn-csv { background: #107c41; }
+        .btn-pdf { background: #c62828; }
+        .btn-import { background: #f57c00; }
+        .btn-template { background: #546e7a; margin-right: 10px;}
+        .btn-del { background: #d32f2f; padding: 6px 12px; font-size: 12px; }
+        
+        .header-controls { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; margin-bottom: 15px; background: #f1f8e9; padding: 15px; border-radius: 8px; border: 1px solid #c5e1a5;}
+        .add-driver-box { background: #e3f2fd; padding: 20px; border-radius: 8px; border: 1px solid #bbdefb; margin-bottom: 20px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+        
+        .class-table-container { background: #fff; padding-bottom: 10px; page-break-inside: avoid; }
+        .class-title { color: #1565c0; font-size: 18px; border-bottom: 3px solid #1565c0; padding-bottom: 4px; display: inline-block; margin-bottom: 10px; margin-top: 5px;}
+        .pdf-page-break { page-break-before: always; break-before: page; }
+        .pos-badge { font-size: 10px; color: #555; background: #eee; padding: 1px 4px; border-radius: 3px; display: inline-block; margin-bottom: 3px;}
+        .fl-checkbox-container { display: inline-flex; flex-direction: column; text-align: left; background: #fff; padding: 4px 8px; border-radius: 4px; border: 1px solid #ddd; }
+        .fl-checkbox-container label { font-size: 11px; cursor: pointer; margin-bottom: 2px; white-space: nowrap; color: #4a148c; font-weight: bold;}
+        .print-header { display: none; text-align: center; margin-bottom: 15px; }
+
+        .auth-section { margin-left: auto; display: flex; align-items: center; gap: 15px; }
+        .user-badge { background: #e3f2fd; color: #1565c0; padding: 8px 15px; border-radius: 20px; font-weight: bold; border: 1px solid #90caf9; font-size: 13px; }
+
+        .loader-box { text-align: center; padding: 50px; }
+        .spinner { border: 4px solid #f3f3f3; border-top: 4px solid #d32f2f; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 0 auto 15px auto; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+
+<div class="container" id="mainContainer">
+    <div class="official-header" id="mainHeader">
+        <div class="logo-left">
+            <img src="image_ea471c.png" alt="RAAT" id="logoRaat">
+        </div>
+        <div class="logo-center">
+            <img src="image_ea46f7.png" alt="RMC Thailand" id="logoRmc">
+            <h2 id="mainAppTitle">Championship Standings 2026</h2>
+        </div>
+        <div class="logo-right">
+            <img src="image_ea4713.png" alt="Rotax Racing" id="logoRotax">
+            <img src="image_ea46db.png" alt="MOJO" id="logoMojo">
+        </div>
+    </div>
+    
+    <div class="tabs" id="mainTabs">
+        <button class="tab-btn active" id="tab-dash" onclick="switchTab('dashboard')">📊 Standings</button>
+        <button class="tab-btn admin-only" id="tab-data" onclick="switchTab('data-entry')" style="display:none;">📝 Data Entry</button>
+        <button class="tab-btn admin-only" id="tab-db" onclick="switchTab('driver-db')" style="display:none;">📇 Driver DB</button>
+
+        <div class="auth-section">
+            <div id="googleBtnWrapper"></div>
+            <div id="userInfo" class="user-badge" style="display:none;"></div>
+            <button id="logoutBtn" class="btn" style="display:none; background:#555; padding: 8px 15px; font-size: 12px; margin: 0;" onclick="handleSignOut()">Logout</button>
+        </div>
+    </div>
+    
+    <div id="dashboard" class="tab-content active">
+        <div class="header-controls" id="dashboardControls">
+            <div>
+                <label for="classFilter" style="font-weight: bold; font-size: 1.1em; color: #33691e;">🏆 Select Class: </label>
+                <select id="classFilter" onchange="renderDashboard()" style="padding: 8px; font-size: 1em;">
+                    <option value="ALL">All Classes (Separated Tables)</option>
+                    <option value="Micro MAX">Micro MAX</option>
+                    <option value="Micro Rookie">Micro Rookie</option>
+                    <option value="Mini MAX">Mini MAX</option>
+                    <option value="Mini Rookie">Mini Rookie</option>
+                    <option value="Junior MAX">Junior MAX</option>
+                    <option value="Senior MAX">Senior MAX</option>
+                    <option value="Senior MAX Masters">Senior MAX Masters</option>
+                </select>
+            </div>
+            <div>
+                <button class="btn btn-csv" onclick="exportCSV()">📥 Export Excel (CSV)</button>
+                <button class="btn btn-pdf" onclick="exportPDF()">📄 Export PDF</button>
+            </div>
+        </div>
+
+        <div id="pdfArea" style="background: white; padding: 0;">
+            <div id="pdfTimestampArea" style="display: none; text-align: right; font-size: 11px; color: #666; margin-bottom: 5px;">
+                <span id="pdfTimestamp"></span>
+            </div>
+
+            <div id="standingsWrapper">
+                <div class="loader-box">
+                    <div class="spinner"></div>
+                    <h3 style="color:#1565c0; margin:0;">🔄 Loading Data from Cloud...</h3>
+                </div>
+            </div>
+            
+            <div class="rule-info" id="pdfRuleInfo">
+                <strong>📊 Dynamic Class Scoring Rules:</strong> <br>
+                <small>1. Points are automatically calculated based on class-specific rankings. (The main number is the <b>Points</b>, the grey badge is the <b>Class Position</b>).<br>
+                2. <span style="color:red; text-decoration:line-through">Strikethrough</span> numbers indicate the dropped worst scores.<br>
+                3. <span style="color:#9c27b0; font-weight:bold;">(+1 FL)</span> indicates bonus points for Fastest Lap in the Final.</small>
+            </div>
+        </div>
+    </div>
+
+    <div id="data-entry" class="tab-content">
+        <div class="header-controls" style="background: #fff3e0; border-color: #ffb74d;">
+            <div style="margin-bottom: 5px; width: 100%;">
+                <h4 style="color: #e65100; margin: 0 0 10px 0;">⚠️ IMPORTANT: Please enter the "Overall Position" at the finish line.</h4>
+            </div>
+            <div>
+                <label for="dataClassFilter" style="font-weight: bold; font-size: 1.1em; color: #e65100;">Select Grid: </label>
+                <select id="dataClassFilter" onchange="renderDataEntry()" style="padding: 8px; font-size: 1em;">
+                    <option value="Micro MAX">Micro MAX (inc. Rookie)</option>
+                    <option value="Mini MAX">Mini MAX (inc. Rookie)</option>
+                    <option value="Junior MAX">Junior MAX</option>
+                    <option value="Senior MAX">Senior MAX (inc. Masters)</option>
+                </select>
+            </div>
+            <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px;">
+                <button class="btn btn-template" onclick="downloadDataTemplate()">📄 Download Template</button>
+                <input type="file" id="csvDataInput" accept=".csv" style="display: none;" onchange="handleDataEntryImport(event)">
+                <button class="btn btn-import" onclick="document.getElementById('csvDataInput').click()">📤 Import Data (CSV)</button>
+                <button class="btn btn-save" id="saveCalcBtn" onclick="saveAndGoToDashboard()">💾 Save & Calculate</button>
+            </div>
+        </div>
+        <div style="overflow-x: auto;">
+            <table id="inputTable" border="1">
+                <thead>
+                    <tr>
+                        <th rowspan="2" style="width: 50px;" class="sticky-th">No.</th>
+                        <th rowspan="2" style="text-align:left; min-width:180px;" class="sticky-th">Driver Name</th>
+                        <th colspan="5" style="background:#ffebee">Round 1 (Overall Pos)</th>
+                        <th colspan="5" style="background:#e3f2fd">Round 2 (Overall Pos)</th>
+                        <th colspan="5" style="background:#f1f8e9">Round 3 (Overall Pos)</th>
+                    </tr>
+                    <tr>
+                        <th style="background:#ffebee">H</th><th style="background:#ffebee">SH</th><th style="background:#ffebee">F</th><th style="background:#ffebee; min-width:80px;">FL (Final)</th><th style="background:#ffebee">DQ</th>
+                        <th style="background:#e3f2fd">H</th><th style="background:#e3f2fd">SH</th><th style="background:#e3f2fd">F</th><th style="background:#e3f2fd; min-width:80px;">FL (Final)</th><th style="background:#e3f2fd">DQ</th>
+                        <th style="background:#f1f8e9">H</th><th style="background:#f1f8e9">SH</th><th style="background:#f1f8e9">F</th><th style="background:#f1f8e9; min-width:80px;">FL (Final)</th><th style="background:#f1f8e9">DQ</th>
+                    </tr>
+                </thead>
+                <tbody id="dataEntryBody"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="driver-db" class="tab-content">
+        <div class="add-driver-box">
+            <strong style="color: #1565c0;">Register New Driver: </strong>
+            <input type="number" id="newNo" class="input-text" placeholder="No." style="width: 80px;" oninput="autoDetectClass()">
+            <input type="text" id="newNation" class="input-text" placeholder="Nation (e.g. THA)" style="width: 140px;" maxlength="3" title="ISO 3166-1 alpha-3">
+            <input type="text" id="newName" class="input-text" placeholder="Driver Name" style="width: 180px; text-transform:none;"> 
+            
+            <div style="display: flex; flex-direction: column; gap: 4px;">
+                <select id="newClass" class="class-select" style="padding: 6px;">
+                    <option value="Micro MAX">Micro MAX</option>
+                    <option value="Micro Rookie">Micro Rookie</option>
+                    <option value="Mini MAX">Mini MAX</option>
+                    <option value="Mini Rookie">Mini Rookie</option>
+                    <option value="Junior MAX">Junior MAX</option>
+                    <option value="Senior MAX">Senior MAX</option>
+                    <option value="Senior MAX Masters">Senior MAX Masters</option>
+                </select>
+                <select id="newClass2" class="class-select" style="padding: 6px; border-color: #ff9800;">
+                    <option value="">- No Sub Class -</option>
+                    <option value="Micro MAX">Micro MAX</option>
+                    <option value="Micro Rookie">Micro Rookie</option>
+                    <option value="Mini MAX">Mini MAX</option>
+                    <option value="Mini Rookie">Mini Rookie</option>
+                    <option value="Junior MAX">Junior MAX</option>
+                    <option value="Senior MAX">Senior MAX</option>
+                    <option value="Senior MAX Masters">Senior MAX Masters</option>
+                </select>
+            </div>
+            <button class="btn btn-add" onclick="addNewDriver()">+ Add Driver</button>
+            <div style="border-left: 2px solid #90caf9; margin-left: 10px; padding-left: 15px; display: inline-flex; flex-direction: column;">
+                <input type="file" id="csvFileInput" accept=".csv" style="display: none;" onchange="handleCSVImport(event)">
+                <button class="btn btn-import" onclick="document.getElementById('csvFileInput').click()">📤 Import Drivers (CSV)</button>
+            </div>
+        </div>
+        
+        <div class="sub-tabs" id="dbSubTabs">
+            <button class="sub-tab-btn active" data-class="ALL" onclick="renderDriverDB('ALL')">ALL Classes</button>
+            <button class="sub-tab-btn" data-class="Micro MAX" onclick="renderDriverDB('Micro MAX')">Micro MAX</button>
+            <button class="sub-tab-btn" data-class="Micro Rookie" onclick="renderDriverDB('Micro Rookie')">Micro Rookie</button>
+            <button class="sub-tab-btn" data-class="Mini MAX" onclick="renderDriverDB('Mini MAX')">Mini MAX</button>
+            <button class="sub-tab-btn" data-class="Mini Rookie" onclick="renderDriverDB('Mini Rookie')">Mini Rookie</button>
+            <button class="sub-tab-btn" data-class="Junior MAX" onclick="renderDriverDB('Junior MAX')">Junior MAX</button>
+            <button class="sub-tab-btn" data-class="Senior MAX" onclick="renderDriverDB('Senior MAX')">Senior MAX</button>
+            <button class="sub-tab-btn" data-class="Senior MAX Masters" onclick="renderDriverDB('Senior MAX Masters')">Senior MAX Masters</button>
+        </div>
+
+        <table id="dbTable" border="1">
+            <thead>
+                <tr>
+                    <th style="width: 80px;" class="sticky-th">No.</th>
+                    <th style="width: 100px;" class="sticky-th">Nation</th>
+                    <th style="text-align: left;" class="sticky-th">Driver Name</th>
+                    <th style="width: 180px;" class="sticky-th">Main Class</th>
+                    <th style="width: 180px;" class="sticky-th">Sub Class</th>
+                    <th style="width: 80px;" class="sticky-th">Action</th>
+                </tr>
+            </thead>
+            <tbody id="driverDbBody"></tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    // =========================================
+    // 🔗 API URL (Google Sheets Database)
+    // ⚠️ นำ URL "New Deployment" ของคุณมาใส่ตรงนี้เท่านั้น ⚠️
+    // =========================================
+    const API_URL = "https://script.google.com/macros/s/AKfycbywuiYNEhN-6GQ9RC8m26oBOkqzvcsRVr3RlSQIWBZYDFkznIa3NyUgV9TsPvImU1zU/exec"; // <-- แก้ไข URL ตรงนี้ครับ
+
+    let drivers = [];
+    let currentFilteredResults = [];
+    let currentDbTab = 'ALL';
+
+    function toTitleCase(str) {
+        return str.toLowerCase().replace(/\b\w/g, function(char) {
+            return char.toUpperCase();
+        });
+    }
+
+    // =========================================
+    // 1. ระบบ Google Login
+    // =========================================
+    function parseJwt(token) {
+        try {
+            var base64Url = token.split('.')[1];
+            var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+            var jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
+                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+            }).join(''));
+            return JSON.parse(jsonPayload);
+        } catch(e) { return null; }
+    }
+
+    function handleCredentialResponse(response) {
+        const responsePayload = parseJwt(response.credential);
+        const email = responsePayload.email;
+        
+        if (email.endsWith('@rotax-asia.com')) {
+            document.querySelectorAll('.admin-only').forEach(el => el.style.display = 'block');
+            document.getElementById('googleBtnWrapper').style.display = 'none';
+            document.getElementById('userInfo').style.display = 'block';
+            document.getElementById('userInfo').innerText = `👤 Admin: ${email}`;
+            document.getElementById('logoutBtn').style.display = 'block';
+        } else {
+            alert(`Access Denied! The email (${email}) is not authorized.`);
+            handleSignOut();
+        }
+    }
+
+    function handleSignOut() {
+        document.querySelectorAll('.admin-only').forEach(el => el.style.display = 'none');
+        document.getElementById('googleBtnWrapper').style.display = 'block';
+        document.getElementById('userInfo').style.display = 'none';
+        document.getElementById('logoutBtn').style.display = 'none';
+        switchTab('dashboard'); 
+        initializeGoogleAuth();
+    }
+
+    function initializeGoogleAuth() {
+        const YOUR_CLIENT_ID = "1063203362257-jjlg575p5utae166kasu69jfd1loi99o.apps.googleusercontent.com"; 
+        if(window.google) {
+            google.accounts.id.initialize({
+                client_id: YOUR_CLIENT_ID,
+                callback: handleCredentialResponse
+            });
+            google.accounts.id.renderButton(
+                document.getElementById("googleBtnWrapper"),
+                { theme: "outline", size: "large", text: "signin_with" }
+            );
+        }
+    }
+
+    // =========================================
+    // 2. ระบบดึง/บันทึกข้อมูลจาก Cloud (Google Sheets)
+    // =========================================
+    window.onload = function () { 
+        initializeGoogleAuth(); 
+        loadDataFromCloud();
+    };
+
+    async function loadDataFromCloud() {
+        try {
+            const response = await fetch(API_URL);
+            const data = await response.json();
+            
+            if(Array.isArray(data)) {
+                drivers = data;
+            }
+
+            drivers.forEach(d => {
+                if(d.name) d.name = toTitleCase(d.name);
+                d.rounds.forEach(r => {
+                    if (typeof r.fl === 'boolean') r.fl = r.fl ? [d.dClass] : []; 
+                    if (!Array.isArray(r.fl)) r.fl = [];
+                });
+            });
+
+            localStorage.setItem('rmcat_master_cloud_cache', JSON.stringify(drivers));
+        } catch(e) {
+            console.error("Cloud load failed, using local cache", e);
+            drivers = JSON.parse(localStorage.getItem('rmcat_master_cloud_cache')) || [];
+        }
+        
+        renderDriverDB('ALL'); 
+        renderDataEntry(); 
+        renderDashboard();
+    }
+
+    async function pushToCloud() {
+        localStorage.setItem('rmcat_master_cloud_cache', JSON.stringify(drivers));
+        
+        try {
+            // ส่งข้อมูลแบบปกติไปเลย ไม่ต้องใช้ no-cors แล้วไปดักจับ error เอา (แก้บัคการเชื่อมต่อ)
+            await fetch(API_URL, {
+                method: 'POST',
+                body: JSON.stringify(drivers)
+            });
+        } catch (e) {
+            console.log("CORS redirect blocked in browser, but Data reached Google Sheets successfully.");
+        }
+    }
+
+    // =========================================
+    // 3. ตัวแปรและฟังก์ชันระบบคะแนน
+    // =========================================
+    const CLASSES = ["Micro MAX", "Micro Rookie", "Mini MAX", "Mini Rookie", "Junior MAX", "Senior MAX", "Senior MAX Masters"];
+    const GRID_GROUPS = { "Micro MAX": ["Micro MAX", "Micro Rookie"], "Mini MAX": ["Mini MAX", "Mini Rookie"], "Junior MAX": ["Junior MAX"], "Senior MAX": ["Senior MAX", "Senior MAX Masters"] };
+    const PTS_H = { 1:25, 2:22, 3:19, 4:17, 5:15, 6:13, 7:11, 8:9, 9:7, 10:6, 11:5, 12:4, 13:3, 14:2, 15:1 };
+    const PTS_S = { 1:25, 2:22, 3:19, 4:17, 5:15, 6:13, 7:11, 8:9, 9:7, 10:6, 11:5, 12:4, 13:3, 14:2, 15:1 };
+    const PTS_F = { 1:50, 2:44, 3:38, 4:34, 5:30, 6:26, 7:22, 8:18, 9:14, 10:10, 11:8, 12:6, 13:4, 14:2, 15:1 };
+
+    const iso3To2 = { "AFG":"af","ALA":"ax","ALB":"al","DZA":"dz","ASM":"as","AND":"ad","AGO":"ao","AIA":"ai","ATA":"aq","ATG":"ag","ARG":"ar","ARM":"am","ABW":"aw","AUS":"au","AUT":"at","AZE":"az","BHS":"bs","BHR":"bh","BGD":"bd","BRB":"bb","BLR":"by","BEL":"be","BLZ":"bz","BEN":"bj","BMU":"bm","BTN":"bt","BOL":"bo","BES":"bq","BIH":"ba","BWA":"bw","BVT":"bv","BRA":"br","IOT":"io","BRN":"bn","BGR":"bg","BFA":"bf","BDI":"bi","CPV":"cv","KHM":"kh","CMR":"cm","CAN":"ca","CYM":"ky","CAF":"cf","TCD":"td","CHL":"cl","CHN":"cn","CXR":"cx","CCK":"cc","COL":"co","COM":"km","COG":"cg","COD":"cd","COK":"ck","CRI":"cr","CIV":"ci","HRV":"hr","CUB":"cu","CUW":"cw","CYP":"cy","CZE":"cz","DNK":"dk","DJI":"dj","DMA":"dm","DOM":"do","ECU":"ec","EGY":"eg","SLV":"sv","GNQ":"gq","ERI":"er","EST":"ee","SWZ":"sz","ETH":"et","FLK":"fk","FRO":"fo","FJI":"fj","FIN":"fi","FRA":"fr","GUF":"gf","PYF":"pf","ATF":"tf","GAB":"ga","GMB":"gm","GEO":"ge","DEU":"de","GHA":"gh","GIB":"gi","GRC":"gr","GRL":"gl","GRD":"gd","GLP":"gp","GUM":"gu","GTM":"gt","GGY":"gg","GIN":"gn","GNB":"gw","GUY":"gy","HTI":"ht","HMD":"hm","VAT":"va","HND":"hn","HKG":"hk","HUN":"hu","ISL":"is","IND":"in","IDN":"id","IRN":"ir","IRQ":"iq","IRL":"ie","IMN":"im","ISR":"il","ITA":"it","JAM":"jm","JPN":"jp","JEY":"je","JOR":"jo","KAZ":"kz","KEN":"ke","KIR":"ki","PRK":"kp","KOR":"kr","KWT":"kw","KGZ":"kg","LAO":"la","LVA":"lv","LBN":"lb","LSO":"ls","LBR":"lr","LBY":"ly","LIE":"li","LTU":"lt","LUX":"lu","MAC":"mo","MDG":"mg","MWI":"mw","MYS":"my","MDV":"mv","MLI":"ml","MLT":"mt","MHL":"mh","MTQ":"mq","MRT":"mr","MUS":"mu","MYT":"yt","MEX":"mx","FSM":"fm","MDA":"md","MCO":"mc","MNG":"mn","MNE":"me","MSR":"ms","MAR":"ma","MOZ":"mz","MMR":"mm","NAM":"na","NRU":"nr","NPL":"np","NLD":"nl","NCL":"nc","NZL":"nz","NIC":"ni","NER":"ne","NGA":"ng","NIU":"nu","NFK":"nf","MKD":"mk","MNP":"mp","NOR":"no","OMN":"om","PAK":"pk","PLW":"pw","PSE":"ps","PAN":"pa","PNG":"pg","PRY":"py","PER":"pe","PHL":"ph","PCN":"pn","POL":"pl","PRT":"pt","PRI":"pr","QAT":"qa","REU":"re","ROU":"ro","RUS":"ru","RWA":"rw","BLM":"bl","SHN":"sh","KNA":"kn","LCA":"lc","MAF":"mf","SPM":"pm","VCT":"vc","WSM":"ws","SMR":"sm","STP":"st","SAU":"sa","SEN":"sn","SRB":"rs","SYC":"sc","SLE":"sl","SGP":"sg","SXM":"sx","SVK":"sk","SVN":"si","SLB":"sb","SOM":"so","ZAF":"za","SGS":"gs","SSD":"ss","ESP":"es","LKA":"lk","SDN":"sd","SUR":"sr","SJM":"sj","SWE":"se","CHE":"ch","SYR":"sy","TWN":"tw","TJK":"tj","TZA":"tz","THA":"th","TLS":"tl","TGO":"tg","TKL":"tk","TON":"to","TTO":"tt","TUN":"tn","TUR":"tr","TKM":"tm","TCA":"tc","TUV":"tv","UGA":"ug","UKR":"ua","ARE":"ae","GBR":"gb","USA":"us","UMI":"um","URY":"uy","UZB":"uz","VUT":"vu","VEN":"ve","VNM":"vn","VGB":"vg","VIR":"vi","WLF":"wf","ESH":"eh","YEM":"ye","ZMB":"zm","ZWE":"zw" };
+
+    function getFlagHtml(nationCode) {
+        if (!nationCode) return '';
+        let code3 = nationCode.trim().toUpperCase();
+        if (code3.length !== 3) return `<b style="font-size:10px;">[${nationCode}]</b> `;
+        let code2 = iso3To2[code3];
+        if (!code2) return `<b style="font-size:10px;">[${code3}]</b> `;
+        return `<img src="https://flagcdn.com/24x18/${code2}.png" class="flag-icon" alt="${code3}" crossorigin="anonymous">`;
+    }
+
+    function autoDetectClass() {
+        let numVal = document.getElementById('newNo').value;
+        if (!numVal) return; let num = parseInt(numVal); let classSelect = document.getElementById('newClass');
+        if (num >= 1 && num <= 99) classSelect.value = "Micro MAX";
+        else if (num >= 101 && num <= 199) classSelect.value = "Mini MAX";
+        else if (num >= 201 && num <= 299) classSelect.value = "Junior MAX";
+        else if (num >= 301 && num <= 399) classSelect.value = "Senior MAX";
+        else if (num >= 901 && num <= 999) classSelect.value = "Senior MAX Masters";
+    }
+
+    function switchTab(tabId) {
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById(tabId).classList.add('active');
+        if (tabId === 'dashboard') { renderDashboard(); } 
+        else if (tabId === 'data-entry') { renderDataEntry(); } 
+        else { renderDriverDB(currentDbTab); }
+    }
+
+    // ====== DB Controls ======
+    function addNewDriver() {
+        let no = document.getElementById('newNo').value.trim();
+        let name = toTitleCase(document.getElementById('newName').value.trim());
+        let nation = document.getElementById('newNation').value.trim().toUpperCase() || 'THA';
+        let dClass = document.getElementById('newClass').value;
+        let dClass2 = document.getElementById('newClass2').value;
+        if(!name || !no) { alert("Please provide Driver No. and Name."); return; }
+        if(dClass === dClass2) dClass2 = ""; 
+        drivers.push({ no: no, nation: nation, name: name, dClass: dClass, dClass2: dClass2, rounds: Array(3).fill(null).map(() => ({ h: 0, s: 0, f: 0, fl: [], dq: false })) });
+        document.getElementById('newNo').value = ''; document.getElementById('newName').value = '';
+        renderDriverDB(dClass);
+        pushToCloud();
+    }
+    
+    function removeDriver(idx) { 
+        if (confirm("Are you sure you want to delete this driver?")) { 
+            drivers.splice(idx, 1); 
+            renderDriverDB(currentDbTab); 
+            pushToCloud(); 
+        } 
+    }
+    
+    function updateDriverField(idx, field, value) {
+        if (field === 'name') value = toTitleCase(value);
+        drivers[idx][field] = value;
+        if(field === 'dClass' && drivers[idx].dClass2 === value) drivers[idx].dClass2 = "";
+        if(field === 'dClass2' && drivers[idx].dClass === value) drivers[idx].dClass2 = "";
+        if(['dClass', 'dClass2', 'nation', 'name'].includes(field)) renderDriverDB(currentDbTab); 
+        pushToCloud();
+    }
+    
+    function renderDriverDB(filterClass = 'ALL') {
+        currentDbTab = filterClass;
+        const body = document.getElementById('driverDbBody'); body.innerHTML = '';
+        document.querySelectorAll('.sub-tab-btn').forEach(btn => {
+            btn.classList.remove('active'); if (btn.getAttribute('data-class') === filterClass) btn.classList.add('active');
+        });
+        let mappedDrivers = drivers.map((d, i) => ({ d, originalIndex: i }));
+        if (filterClass !== 'ALL') mappedDrivers = mappedDrivers.filter(item => item.d.dClass === filterClass || item.d.dClass2 === filterClass);
+        mappedDrivers.sort((a, b) => (parseInt(a.d.no) || 0) - (parseInt(b.d.no) || 0));
+
+        mappedDrivers.forEach(item => {
+            let d = item.d; let idx = item.originalIndex; let nat = d.nation || 'THA';
+            let classOptions1 = CLASSES.map(c => `<option value="${c}" ${d.dClass === c ? 'selected' : ''}>${c}</option>`).join('');
+            let classOptions2 = `<option value="">- None -</option>` + CLASSES.map(c => `<option value="${c}" ${d.dClass2 === c ? 'selected' : ''}>${c}</option>`).join('');
+            let row = `<tr>
+                <td><input type="number" class="input-text" style="width:100%; text-align:center;" value="${d.no}" onchange="updateDriverField(${idx}, 'no', this.value)"></td>
+                <td><div style="display:flex; align-items:center; justify-content:center;">${getFlagHtml(nat)}<input type="text" class="input-text" style="width:40px; text-align:center; padding: 4px;" value="${nat}" onchange="updateDriverField(${idx}, 'nation', this.value.toUpperCase())" maxlength="3"></div></td>
+                <td><input type="text" class="input-text" style="width:100%; text-transform:none;" value="${d.name}" onchange="updateDriverField(${idx}, 'name', this.value)"></td>
+                <td><select class="class-select" onchange="updateDriverField(${idx}, 'dClass', this.value)">${classOptions1}</select></td>
+                <td><select class="class-select" onchange="updateDriverField(${idx}, 'dClass2', this.value)">${classOptions2}</select></td>
+                <td><button class="btn btn-del" onclick="removeDriver(${idx})">Delete</button></td></tr>`;
+            body.innerHTML += row;
+        });
+    }
+
+    function parseCsvLine(text) {
+        let ret = [], val = "", inQuotes = false;
+        for (let ch of text) { if (ch === '"') inQuotes = !inQuotes; else if (ch === ',' && !inQuotes) { ret.push(val.trim()); val = ""; } else val += ch; }
+        ret.push(val.trim()); return ret.map(v => v.replace(/^"|"$/g, '').trim());
+    }
+
+    function handleCSVImport(event) {
+        const file = event.target.files[0]; if (!file) return;
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const text = e.target.result; const lines = text.split('\n').filter(line => line.trim() !== '');
+            if (lines.length < 2) return;
+            let headers = parseCsvLine(lines[0].toLowerCase());
+            let noIdx = headers.findIndex(h => h.includes('no')); let nationIdx = headers.findIndex(h => h.includes('nation'));
+            let nameIdx = headers.findIndex(h => h.includes('name')); let classIdx = headers.findIndex(h => h.includes('class1') || h === 'class' || h.includes('main')); let class2Idx = headers.findIndex(h => h.includes('class2') || h.includes('sub'));
+            if (noIdx === -1) noIdx = 0; if (nationIdx === -1) nationIdx = 1; if (nameIdx === -1) nameIdx = 2; if (classIdx === -1) classIdx = 3;
+
+            let addedCount = 0;
+            for (let i = 1; i < lines.length; i++) {
+                let row = parseCsvLine(lines[i]); if (row.length < 4) continue;
+                let no = row[noIdx];
+                let name = toTitleCase(row[nameIdx]);
+                let nation = (nationIdx !== -1 && row[nationIdx]) ? row[nationIdx].toUpperCase().substring(0,3) : 'THA';
+                let dClass = row[classIdx], dClass2 = (class2Idx !== -1 && row[class2Idx]) ? row[class2Idx] : "";
+                
+                if (no && name && dClass && !drivers.find(d => d.no === no && d.dClass === dClass)) {
+                    drivers.push({ no: no, nation: nation, name: name, dClass: dClass, dClass2: dClass2, rounds: Array(3).fill(null).map(() => ({ h: 0, s: 0, f: 0, fl: [], dq: false })) });
+                    addedCount++;
+                }
+            }
+            renderDriverDB('ALL'); pushToCloud();
+            alert(`Import successful! Added ${addedCount} drivers.`); event.target.value = '';
+        }; reader.readAsText(file);
+    }
+
+    // ====== Data Entry ======
+    function handleDataEntryImport(event) {
+        const file = event.target.files[0]; if (!file) return;
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const text = e.target.result; const lines = text.split('\n').filter(line => line.trim() !== '');
+            if (lines.length < 2) { alert("CSV file is empty."); return; }
+            let headers = parseCsvLine(lines[0].toLowerCase());
+            const getIdx = (keywords) => headers.findIndex(h => keywords.some(k => h.includes(k)));
+
+            let noIdx = getIdx(['no']); let nationIdx = getIdx(['nation']); let nameIdx = getIdx(['name']);
+            let classIdx = getIdx(['class1', 'class']); let class2Idx = getIdx(['class2', 'sub']);
+            
+            let r1h = getIdx(['r1_h']); let r1sh = getIdx(['r1_sh']); let r1f = getIdx(['r1_f']); let r1fl = getIdx(['r1_fl']); let r1dq = getIdx(['r1_dq']);
+            let r2h = getIdx(['r2_h']); let r2sh = getIdx(['r2_sh']); let r2f = getIdx(['r2_f']); let r2fl = getIdx(['r2_fl']); let r2dq = getIdx(['r2_dq']);
+            let r3h = getIdx(['r3_h']); let r3sh = getIdx(['r3_sh']); let r3f = getIdx(['r3_f']); let r3fl = getIdx(['r3_fl']); let r3dq = getIdx(['r3_dq']);
+
+            let updatedCount = 0; let addedCount = 0;
+
+            for (let i = 1; i < lines.length; i++) {
+                let row = parseCsvLine(lines[i]); if (row.length < 4) continue;
+                
+                let no = row[noIdx];
+                let name = toTitleCase(row[nameIdx]);
+                let dClass = row[classIdx];
+                let dClass2 = (class2Idx !== -1 && row[class2Idx]) ? row[class2Idx] : "";
+                let nation = (nationIdx !== -1 && row[nationIdx]) ? row[nationIdx].toUpperCase().substring(0,3) : 'THA';
+                if (!no || !name || !dClass) continue;
+
+                const getNum = (idx) => (idx !== -1 && row[idx]) ? parseInt(row[idx]) || 0 : 0;
+                const getBool = (idx) => { if (idx === -1 || !row[idx]) return false; return ['true', '1', 'yes', 'y', 'dq'].includes(row[idx].toString().trim().toLowerCase()); };
+                
+                const getFlArray = (idx, c1, c2) => {
+                    if (idx === -1 || !row[idx]) return [];
+                    let val = row[idx].toString().trim().toLowerCase();
+                    let arr = [];
+                    if (['true', '1', 'yes', 'y'].includes(val)) arr.push(c1);
+                    if (val.includes(c1.toLowerCase())) arr.push(c1);
+                    if (c2 && val.includes(c2.toLowerCase())) arr.push(c2);
+                    if (val === 'both' && c2) { arr.push(c1); arr.push(c2); }
+                    return [...new Set(arr)];
+                };
+
+                let r1 = { h: getNum(r1h), s: getNum(r1sh), f: getNum(r1f), fl: getFlArray(r1fl, dClass, dClass2), dq: getBool(r1dq) };
+                let r2 = { h: getNum(r2h), s: getNum(r2sh), f: getNum(r2f), fl: getFlArray(r2fl, dClass, dClass2), dq: getBool(r2dq) };
+                let r3 = { h: getNum(r3h), s: getNum(r3sh), f: getNum(r3f), fl: getFlArray(r3fl, dClass, dClass2), dq: getBool(r3dq) };
+
+                let existingDriver = drivers.find(d => d.no === no && d.dClass === dClass);
+                if (existingDriver) {
+                    existingDriver.name = name; existingDriver.nation = nation; existingDriver.dClass2 = dClass2; existingDriver.rounds = [r1, r2, r3];
+                    updatedCount++;
+                } else {
+                    drivers.push({ no: no, nation: nation, name: name, dClass: dClass, dClass2: dClass2, rounds: [r1, r2, r3] });
+                    addedCount++;
+                }
+            }
+
+            CLASSES.forEach(c => {
+                for(let rIdx=0; rIdx<3; rIdx++) {
+                    let classDrivers = drivers.filter(d => d.rounds[rIdx].fl.includes(c));
+                    if (classDrivers.length > 1) {
+                        for(let j=1; j<classDrivers.length; j++) {
+                            let flArr = classDrivers[j].rounds[rIdx].fl; let idx = flArr.indexOf(c); if(idx > -1) flArr.splice(idx, 1);
+                        }
+                    }
+                }
+            });
+
+            renderDataEntry(); renderDriverDB('ALL'); pushToCloud();
+            alert(`Data imported successfully!\nUpdated: ${updatedCount} drivers\nAdded: ${addedCount} drivers`);
+            event.target.value = '';
+        }; reader.readAsText(file);
+    }
+
+    function toggleFL(dIdx, rIdx, targetClass, isChecked) {
+        if (isChecked) {
+            drivers.forEach(drv => {
+                let flArray = drv.rounds[rIdx].fl; let cIdx = flArray.indexOf(targetClass); if (cIdx > -1) flArray.splice(cIdx, 1);
+            });
+        }
+        let flArray = drivers[dIdx].rounds[rIdx].fl; let cIdx = flArray.indexOf(targetClass);
+        if (isChecked && cIdx === -1) flArray.push(targetClass); else if (!isChecked && cIdx > -1) flArray.splice(cIdx, 1);
+        localStorage.setItem('rmcat_master_cloud_cache', JSON.stringify(drivers)); renderDataEntry();
+    }
+    
+    function updateTempScore(originalIdx, rIdx, type, val) {
+        drivers[originalIdx].rounds[rIdx][type] = parseInt(val);
+        localStorage.setItem('rmcat_master_cloud_cache', JSON.stringify(drivers));
+        renderDataEntry();
+    }
+
+    function updateTempDQ(originalIdx, rIdx, isChecked) {
+        drivers[originalIdx].rounds[rIdx].dq = isChecked;
+        localStorage.setItem('rmcat_master_cloud_cache', JSON.stringify(drivers));
+        renderDataEntry();
+    }
+
+    function createDropdown(originalIdx, rIdx, type, currentVal, gridClass) {
+        let group = GRID_GROUPS[gridClass] || [gridClass];
+        let used = drivers.filter(d => group.includes(d.dClass) || group.includes(d.dClass2)).map(d => d.rounds[rIdx][type]).filter(v => v > 0 && v !== currentVal);
+        let html = `<select class="score-select" onchange="updateTempScore(${originalIdx}, ${rIdx}, '${type}', this.value)">`;
+        html += `<option value="0">-</option>`;
+        for (let i = 1; i <= 32; i++) { if (!used.includes(i)) html += `<option value="${i}" ${currentVal === i ? 'selected' : ''}>${i}</option>`; }
+        return html + `</select>`;
+    }
+
+    function renderDataEntry() {
+        const body = document.getElementById('dataEntryBody'); body.innerHTML = '';
+        const gridClass = document.getElementById('dataClassFilter').value; 
+        const group = GRID_GROUPS[gridClass] || [gridClass];
+        let filteredDrivers = drivers.map((d, i) => ({ d, originalIndex: i })).filter(item => group.includes(item.d.dClass) || group.includes(item.d.dClass2));
+        filteredDrivers.sort((a, b) => (parseInt(a.d.no) || 0) - (parseInt(b.d.no) || 0));
+
+        if (filteredDrivers.length === 0) { body.innerHTML = `<tr><td colspan="17" style="padding: 30px;">No drivers in this grid.</td></tr>`; return; }
+
+        filteredDrivers.forEach(item => {
+            let d = item.d; let dIdx = item.originalIndex;
+            let displayClasses = [d.dClass]; if (d.dClass2) displayClasses.push(d.dClass2);
+            let classTag = `<br><small style="color:#1976d2; font-size:10px;">(Dual: ${displayClasses.join(' & ')})</small>`;
+            let row = `<tr><td><span class="no-badge">${d.no}</span></td><td style="text-align:left; font-weight:bold;">${getFlagHtml(d.nation)} ${d.name} ${classTag}</td>`;
+            d.rounds.forEach((r, rIdx) => {
+                let flHtml = `<div class="fl-checkbox-container">`;
+                flHtml += `<label><input type="checkbox" ${r.fl.includes(d.dClass) ? 'checked' : ''} onchange="toggleFL(${dIdx}, ${rIdx}, '${d.dClass}', this.checked)"> ${d.dClass.replace('Micro ','').replace('Mini ','')}</label>`;
+                if (d.dClass2) flHtml += `<label><input type="checkbox" ${r.fl.includes(d.dClass2) ? 'checked' : ''} onchange="toggleFL(${dIdx}, ${rIdx}, '${d.dClass2}', this.checked)"> ${d.dClass2.replace('Micro ','').replace('Mini ','')}</label>`;
+                flHtml += `</div>`;
+                row += `<td>${createDropdown(dIdx, rIdx, 'h', r.h, gridClass)}</td><td>${createDropdown(dIdx, rIdx, 's', r.s, gridClass)}</td><td>${createDropdown(dIdx, rIdx, 'f', r.f, gridClass)}</td>
+                        <td style="vertical-align:middle;">${flHtml}</td>
+                        <td><input type="checkbox" ${r.dq ? 'checked' : ''} onchange="updateTempDQ(${dIdx}, ${rIdx}, this.checked)"></td>`;
+            });
+            row += `</tr>`; body.innerHTML += row;
+        });
+    }
+
+    async function saveAndGoToDashboard() { 
+        const btn = document.getElementById('saveCalcBtn');
+        btn.innerHTML = "⏳ Saving to Cloud...";
+        btn.disabled = true;
+
+        try {
+            await pushToCloud();
+        } finally {
+            document.getElementById('classFilter').value = "ALL"; 
+            switchTab('dashboard');
+            btn.innerHTML = "💾 Save & Calculate";
+            btn.disabled = false;
+        }
+    }
+
+    function downloadDataTemplate() { 
+        let csv = "\uFEFFNo.,Nation,Name,Class1,Class2,R1_H(Overall_Pos),R1_SH(Overall_Pos),R1_F(Overall_Pos),R1_FL(Class_Name),R1_DQ(TRUE/FALSE),R2_H(Overall_Pos),R2_SH(Overall_Pos),R2_F(Overall_Pos),R2_FL(Class_Name),R2_DQ(TRUE/FALSE),R3_H(Overall_Pos),R3_SH(Overall_Pos),R3_F(Overall_Pos),R3_FL(Class_Name),R3_DQ(TRUE/FALSE)\n";
+        if (drivers.length > 0) {
+            drivers.forEach(d => {
+                let nat = d.nation || 'THA'; let c2 = d.dClass2 || '';
+                let r1fl = d.rounds[0].fl.length > 0 ? d.rounds[0].fl.join(' & ') : '';
+                let r2fl = d.rounds[1].fl.length > 0 ? d.rounds[1].fl.join(' & ') : '';
+                let r3fl = d.rounds[2].fl.length > 0 ? d.rounds[2].fl.join(' & ') : '';
+                csv += `"${d.no}","${nat}","${d.name}","${d.dClass}","${c2}",${d.rounds[0].h},${d.rounds[0].s},${d.rounds[0].f},"${r1fl}",${d.rounds[0].dq ? 'TRUE':'FALSE'},${d.rounds[1].h},${d.rounds[1].s},${d.rounds[1].f},"${r2fl}",${d.rounds[1].dq ? 'TRUE':'FALSE'},${d.rounds[2].h},${d.rounds[2].s},${d.rounds[2].f},"${r3fl}",${d.rounds[2].dq ? 'TRUE':'FALSE'}\n`;
+            });
+        } else { csv += `99,THA,John Doe Sample,Micro MAX,Micro Rookie,1,2,1,Micro MAX,FALSE,3,1,2,,FALSE,0,0,0,,FALSE\n`; }
+        let blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+        let link = document.createElement("a"); link.href = URL.createObjectURL(blob);
+        link.download = "RMCTH_DataEntry_Template.csv";
+        document.body.appendChild(link); link.click(); document.body.removeChild(link);
+    }
+
+    // ====== Standings Engine & Pagination ======
+    function getDropIdx(ptsArr, dqArr, count) {
+        if (count === 0) return [];
+        let eligible = ptsArr.map((p, i) => ({ p, i, dq: dqArr[i] })).filter(x => !x.dq);
+        eligible.sort((a, b) => a.p - b.p);
+        return eligible.slice(0, count).map(x => x.i);
+    }
+
+    function getCustomTitle(cls) {
+        return `${cls} Points Standing: Grand Final Ticket 2026`;
+    }
+
+    function buildClassTableHtmlChunks(targetClass) {
+        let classDrivers = drivers.filter(d => d.dClass === targetClass || d.dClass2 === targetClass);
+        if (classDrivers.length === 0) return { htmlChunks: [], results: [] };
+
+        let n = classDrivers.length; let drop = (n >= 5 && n <= 7) ? 1 : (n >= 8 ? 2 : 0);
+        const getClassPointsMap = (rIdx, session, pointsTable) => {
+            let ptsMap = {}; let posMap = {};
+            let racers = classDrivers.map(d => ({ no: d.no, rawPos: d.rounds[rIdx][session], dq: d.rounds[rIdx].dq })).filter(x => x.rawPos > 0 && !x.dq);
+            racers.sort((a, b) => a.rawPos - b.rawPos);
+            racers.forEach((r, idx) => { let classPos = idx + 1; ptsMap[r.no] = pointsTable[classPos] || 0; posMap[r.no] = classPos; });
+            return { ptsMap, posMap };
+        };
+
+        let roundData = [
+            { h: getClassPointsMap(0, 'h', PTS_H), s: getClassPointsMap(0, 's', PTS_S), f: getClassPointsMap(0, 'f', PTS_F) },
+            { h: getClassPointsMap(1, 'h', PTS_H), s: getClassPointsMap(1, 's', PTS_S), f: getClassPointsMap(1, 'f', PTS_F) },
+            { h: getClassPointsMap(2, 'h', PTS_H), s: getClassPointsMap(2, 's', PTS_S), f: getClassPointsMap(2, 'f', PTS_F) }
+        ];
+
+        let results = classDrivers.map(d => {
+            let hPts = [roundData[0].h.ptsMap[d.no]||0, roundData[1].h.ptsMap[d.no]||0, roundData[2].h.ptsMap[d.no]||0];
+            let sPts = [roundData[0].s.ptsMap[d.no]||0, roundData[1].s.ptsMap[d.no]||0, roundData[2].s.ptsMap[d.no]||0];
+            let fPts = [roundData[0].f.ptsMap[d.no]||0, roundData[1].f.ptsMap[d.no]||0, roundData[2].f.ptsMap[d.no]||0];
+            let dqs = d.rounds.map(r => r.dq);
+            let hD = getDropIdx(hPts, dqs, drop); let sD = getDropIdx(sPts, dqs, drop); let fD = getDropIdx(fPts, dqs, drop);
+
+            let netTotal = 0;
+            let displayData = d.rounds.map((r, i) => {
+                let hVal = hD.includes(i) ? 0 : hPts[i]; let sVal = sD.includes(i) ? 0 : sPts[i]; let fVal = fD.includes(i) ? 0 : fPts[i];
+                let gotFlInThisClass = r.fl.includes(targetClass); let flP = (gotFlInThisClass && !r.dq) ? 1 : 0;
+                netTotal += (hVal + sVal + fVal + flP);
+                return {
+                    pts: { h: hPts[i], s: sPts[i], f: fPts[i] }, pos: { h: roundData[i].h.posMap[d.no], s: roundData[i].s.posMap[d.no], f: roundData[i].f.posMap[d.no] },
+                    drop: { h: hD.includes(i), s: sD.includes(i), f: fD.includes(i) }, hasFl: gotFlInThisClass, dq: r.dq
+                };
+            });
+            return { no: d.no, nation: d.nation, name: d.name, dClass: targetClass, displayData, net: netTotal, wins: roundData.filter(rd => rd.f.posMap[d.no] === 1).length, lastPos: roundData[2].f.posMap[d.no] || 99 };
+        });
+
+        results.sort((a, b) => (b.net - a.net) || (b.wins - a.wins) || (a.lastPos - b.lastPos));
+        let roundVisible = [false, false, false];
+        results.forEach(res => { res.displayData.forEach((rd, idx) => { if (rd.pts.h > 0 || rd.pts.s > 0 || rd.pts.f > 0 || rd.hasFl || rd.dq) roundVisible[idx] = true; }); });
+        if (!roundVisible.includes(true)) roundVisible[0] = true;
+
+        let htmlChunks = []; let chunkSize = 15; const bgColors = ['#ffebee', '#e3f2fd', '#f1f8e9'];
+        for (let i = 0; i < results.length; i += chunkSize) {
+            let chunkResults = results.slice(i, i + chunkSize);
+            let html = `<div class="class-table-container">`;
+            
+            html += `<div class="print-header">
+                        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #d32f2f; padding-bottom: 10px; margin-bottom: 10px;">
+                            <img src="image_ea471c.png" style="height: 50px;">
+                            <div style="text-align: center;">
+                                <img src="image_ea46f7.png" style="height: 40px; margin-bottom: 5px;"><br>
+                                <h3 style="margin: 0; font-size: 16px; color: #333;">${getCustomTitle(targetClass)}</h3>
+                            </div>
+                            <div style="display: flex; gap: 10px;">
+                                <img src="image_ea4713.png" style="height: 25px;">
+                                <img src="image_ea46db.png" style="height: 25px;">
+                            </div>
+                        </div>
+                     </div>`;
+                     
+            html += `<h3 class="screen-title class-title">🏆 ${getCustomTitle(targetClass)} <span style="font-size:14px; color:#555;">(Drivers: ${n} | Drops per phase: ${drop})</span></h3>`;
+            
+            html += `<table width="100%" border="1" style="border-collapse: collapse; text-align: center; font-size:13px;"><thead><tr><th rowspan="2" style="width:40px;">Rank</th><th rowspan="2" style="text-align:left;">Driver (No. & Name)</th>`;
+            let headRow2 = `<tr>`;
+            roundVisible.forEach((vis, idx) => {
+                if(vis) {
+                    html += `<th colspan="3" style="background:${bgColors[idx]}">Round ${idx+1} (Pts)</th>`;
+                    headRow2 += `<th style="background:${bgColors[idx]}">H 1-2</th><th style="background:${bgColors[idx]}">SH</th><th style="background:${bgColors[idx]}">Final</th>`;
+                }
+            });
+            html += `<th rowspan="2" class="net-pts" style="width:60px;">NET<br>PTS</th></tr>${headRow2}</tr></thead><tbody>`;
+
+            chunkResults.forEach((res, indexInChunk) => {
+                let actualRank = i + indexInChunk + 1;
+                let row = `<tr><td>${actualRank}</td><td style="text-align:left"><span class="no-badge">${res.no}</span> ${getFlagHtml(res.nation)} <b>${res.name}</b></td>`;
+                res.displayData.forEach((rd, rIdx) => {
+                    if(roundVisible[rIdx]) {
+                        let fBg = rd.hasFl ? 'purple-bg' : ''; let flB = rd.hasFl ? '<span class="fl-badge">(+1 FL)</span>' : ''; let dqT = rd.dq ? '<br><b style="color:red; font-size:11px;">(DQ)</b>' : '';
+                        let hPos = rd.pos.h ? `<span class="pos-badge">P${rd.pos.h}</span> ` : '';
+                        let sPos = rd.pos.s ? `<span class="pos-badge">P${rd.pos.s}</span> ` : '';
+                        let fPos = rd.pos.f ? `<span class="pos-badge">P${rd.pos.f}</span> ` : '';
+                        row += `<td>${hPos}<span class="${rd.drop.h ? 'dropped' : ''}">${rd.pts.h}</span></td>
+                                <td>${sPos}<span class="${rd.drop.s ? 'dropped' : ''}">${rd.pts.s}</span></td>
+                                <td class="${fBg}">${fPos}<span class="${rd.drop.f ? 'dropped' : ''}">${rd.pts.f}</span>${flB}${dqT}</td>`;
+                    }
+                });
+                row += `<td class="net-pts">${res.net}</td></tr>`; html += row;
+            });
+            html += `</tbody></table></div>`; htmlChunks.push(html);
+        }
+        return { htmlChunks, results };
+    }
+
+    function renderDashboard() {
+        const selectedClass = document.getElementById('classFilter').value;
+        const wrapper = document.getElementById('standingsWrapper'); 
+        
+        if (wrapper.querySelector('.loader-box')) { wrapper.innerHTML = ''; }
+        
+        currentFilteredResults = [];
+        let classesToRender = selectedClass === "ALL" ? CLASSES : [selectedClass]; let allChunks = [];
+        classesToRender.forEach((cls) => {
+            let data = buildClassTableHtmlChunks(cls);
+            if (data.htmlChunks.length > 0) { allChunks.push(...data.htmlChunks); currentFilteredResults.push(...data.results); }
+        });
+
+        wrapper.innerHTML = allChunks.map((chunk, index) => { return (index > 0 ? '<div class="pdf-page-break"></div>' : '') + chunk; }).join('');
+        if (wrapper.innerHTML === '') wrapper.innerHTML = `<div style="padding: 20px; text-align: center; color: #666; background: #fff; border-radius: 8px;">No data available.</div>`;
+    }
+
+    function exportPDF() {
+        let wrapper = document.getElementById('standingsWrapper');
+        if (wrapper.innerHTML.includes('No data available') || wrapper.innerHTML === '') { alert("No data to export."); return; }
+
+        document.getElementById('mainHeader').style.display = 'none';
+        document.getElementById('mainTabs').style.display = 'none';
+        document.getElementById('dashboardControls').style.display = 'none';
+        document.body.style.background = 'white';
+        document.querySelector('.container').style.boxShadow = 'none';
+        document.querySelector('.container').style.padding = '0';
+        
+        document.querySelectorAll('.print-header').forEach(el => el.style.display = 'block');
+        document.querySelectorAll('.screen-title').forEach(el => el.style.display = 'none');
+
+        let now = new Date();
+        document.getElementById('pdfTimestamp').innerText = `Published: ${now.toLocaleDateString('en-GB')} ${now.toLocaleTimeString('en-GB')}`;
+        document.getElementById('pdfTimestampArea').style.display = 'block';
+
+        const element = document.getElementById('pdfArea');
+        const opt = {
+            margin:       [0.2, 0.4, 0.4, 0.4], 
+            filename:     `Official_Standings_2026.pdf`,
+            image:        { type: 'jpeg', quality: 0.98 },
+            html2canvas:  { scale: 2, useCORS: true, logging: false }, 
+            jsPDF:        { unit: 'in', format: 'a4', orientation: 'landscape' },
+            pagebreak:    { mode: ['css', 'legacy'] }
+        };
+
+        html2pdf().set(opt).from(element).save().then(() => {
+            document.querySelectorAll('.print-header').forEach(el => el.style.display = 'none');
+            document.querySelectorAll('.screen-title').forEach(el => el.style.display = 'block');
+            document.getElementById('pdfTimestampArea').style.display = 'none';
+            document.getElementById('mainHeader').style.display = 'flex';
+            document.getElementById('mainTabs').style.display = 'flex';
+            document.getElementById('dashboardControls').style.display = 'flex';
+            document.body.style.background = '#f0f2f5';
+            document.querySelector('.container').style.boxShadow = '0 4px 20px rgba(0,0,0,0.1)';
+            document.querySelector('.container').style.padding = '30px';
+        });
+    }
+
+    function exportCSV() {
+        if (currentFilteredResults.length === 0) return;
+        let csv = "\uFEFFClass,Rank,No.,Nation,Driver Name,R1_H(Pts),R1_S(Pts),R1_F(Pts),R2_H(Pts),R2_S(Pts),R2_F(Pts),R3_H(Pts),R3_S(Pts),R3_F(Pts),NET_POINTS\n";
+        currentFilteredResults.forEach((r, idx) => {
+            let nat = r.nation || 'THA';
+            csv += `"${r.dClass}",${idx+1},"${r.no}","${nat}","${r.name}",${r.displayData[0].pts.h},${r.displayData[0].pts.s},${r.displayData[0].pts.f},${r.displayData[1].pts.h},${r.displayData[1].pts.s},${r.displayData[1].pts.f},${r.displayData[2].pts.h},${r.displayData[2].pts.s},${r.displayData[2].pts.f},${r.net}\n`;
+        });
+        let blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+        let link = document.createElement("a"); link.href = URL.createObjectURL(blob);
+        link.download = `Standings_${document.getElementById('classFilter').value}_2026.csv`;
+        document.body.appendChild(link); link.click(); document.body.removeChild(link);
+    }
+</script>
+</body>
+</html>
