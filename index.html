@@ -10,13 +10,13 @@
         body { font-family: 'Segoe UI', Tahoma, sans-serif; background: #f0f2f5; padding: 20px; color: #333; margin: 0;}
         .container { max-width: 1550px; margin: auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
         
-        /* Official Header Styles */
+        /* Official Header Styles - Adjusted Logo Sizes */
         .official-header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 20px; margin-bottom: 20px; border-bottom: 3px solid #d32f2f; }
-        .logo-left img { height: 80px; object-fit: contain; }
+        .logo-left img { height: 65px; object-fit: contain; } /* ปรับขนาด RAAT ลง */
         .logo-center { text-align: center; flex-grow: 1; }
-        .logo-center img { height: 70px; object-fit: contain; margin-bottom: 5px; }
-        .logo-right { display: flex; flex-direction: column; gap: 10px; align-items: flex-end; }
-        .logo-right img { height: 35px; object-fit: contain; }
+        .logo-center img { height: 60px; object-fit: contain; margin-bottom: 5px; } /* ปรับ RMC ลงให้สมดุล */
+        .logo-right { display: flex; flex-direction: column; gap: 8px; align-items: flex-end; }
+        .logo-right img { height: 40px; object-fit: contain; } /* ปรับ Rotax/Mojo ขึ้นเล็กน้อย */
         #mainAppTitle { margin: 0; color: #333; font-size: 20px; text-transform: uppercase; letter-spacing: 1px; }
 
         /* Main Tabs */
@@ -32,23 +32,24 @@
         .sub-tab-btn:hover { background: #e3f2fd; }
         .sub-tab-btn.active { background: #1565c0; color: white; border-color: #1565c0; }
 
-        table { width: 100%; border-collapse: collapse; font-size: 13px; margin-bottom: 0px; }
-        th, td { border: 1px solid #cfd8dc; padding: 8px 6px; text-align: center; }
-        th { background:#f8f9fa; }
+        /* Table Optimization for PDF */
+        table { width: 100%; border-collapse: collapse; font-size: 12px; margin-bottom: 0px; table-layout: auto; }
+        th, td { border: 1px solid #cfd8dc; padding: 5px 4px; text-align: center; } /* ลด Padding ลงเพื่อลดความกว้าง */
+        th { background:#f8f9fa; line-height: 1.2; }
         .sticky-th { position: sticky; top: 0; z-index: 10; }
         
         /* Dashboard Styles */
         .purple-bg { background-color: #f3e5f5 !important; border: 2px solid #9c27b0 !important; color: #4a148c; font-weight: bold; }
-        .fl-badge { color: #9c27b0; font-size: 11px; font-weight: bold; display: block; margin-top: 2px; }
+        .fl-badge { color: #9c27b0; font-size: 10px; font-weight: bold; display: block; margin-top: 2px; }
         .dropped { text-decoration: line-through; color: #f44336 !important; font-weight: bold; }
         .net-pts { background: #fff9c4; font-weight: bold; font-size: 1.3em; color: #b71c1c; border: 2px solid #fbc02d !important; }
-        .no-badge { background: #ffeb3b; color: #000; padding: 2px 8px; border-radius: 4px; font-weight: bold; margin-right: 6px; border: 1px solid #fbc02d; font-size: 14px; }
-        .flag-icon { width: 24px; height: 16px; vertical-align: middle; margin-right: 6px; border: 1px solid #ccc; border-radius: 2px; object-fit: cover; }
+        .no-badge { background: #ffeb3b; color: #000; padding: 2px 6px; border-radius: 4px; font-weight: bold; margin-right: 4px; border: 1px solid #fbc02d; font-size: 12px; }
+        .flag-icon { width: 22px; height: 15px; vertical-align: middle; margin-right: 4px; border: 1px solid #ccc; border-radius: 2px; object-fit: cover; }
 
         /* Form & Inputs */
         .input-text { padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-size: 14px; text-transform: uppercase; }
-        select { padding: 6px; border-radius: 4px; border: 1px solid #999; font-weight: bold; cursor: pointer; font-size: 13px; }
-        .score-select { width: 55px; }
+        select { padding: 6px; border-radius: 4px; border: 1px solid #999; font-weight: bold; cursor: pointer; font-size: 12px; }
+        .score-select { width: 50px; }
         .class-select { width: 140px; }
         
         /* Buttons */
@@ -70,9 +71,9 @@
         .class-table-container { background: #fff; padding-bottom: 10px; page-break-inside: avoid; }
         .class-title { color: #1565c0; font-size: 18px; border-bottom: 3px solid #1565c0; padding-bottom: 4px; display: inline-block; margin-bottom: 10px; margin-top: 5px;}
         .pdf-page-break { page-break-before: always; break-before: page; }
-        .pos-badge { font-size: 10px; color: #555; background: #eee; padding: 1px 4px; border-radius: 3px; display: inline-block; margin-bottom: 3px;}
-        .fl-checkbox-container { display: inline-flex; flex-direction: column; text-align: left; background: #fff; padding: 4px 8px; border-radius: 4px; border: 1px solid #ddd; }
-        .fl-checkbox-container label { font-size: 11px; cursor: pointer; margin-bottom: 2px; white-space: nowrap; color: #4a148c; font-weight: bold;}
+        .pos-badge { font-size: 9px; color: #555; background: #eee; padding: 1px 3px; border-radius: 3px; display: inline-block; margin-bottom: 2px;}
+        .fl-checkbox-container { display: inline-flex; flex-direction: column; text-align: left; background: #fff; padding: 4px 6px; border-radius: 4px; border: 1px solid #ddd; }
+        .fl-checkbox-container label { font-size: 10px; cursor: pointer; margin-bottom: 2px; white-space: nowrap; color: #4a148c; font-weight: bold;}
         .print-header { display: none; text-align: center; margin-bottom: 15px; }
 
         .auth-section { margin-left: auto; display: flex; align-items: center; gap: 15px; }
@@ -194,9 +195,9 @@
                         <th colspan="6" style="background:#f1f8e9">Round 3 (Overall Pos)</th>
                     </tr>
                     <tr>
-                        <th style="background:#ffebee">H</th><th style="background:#ffebee">SH</th><th style="background:#ffebee">F</th><th style="background:#ffebee; min-width:80px;">FL (Final)</th><th style="background:#ffebee">DNS (F)</th><th style="background:#ffebee">DQ</th>
-                        <th style="background:#e3f2fd">H</th><th style="background:#e3f2fd">SH</th><th style="background:#e3f2fd">F</th><th style="background:#e3f2fd; min-width:80px;">FL (Final)</th><th style="background:#e3f2fd">DNS (F)</th><th style="background:#e3f2fd">DQ</th>
-                        <th style="background:#f1f8e9">H</th><th style="background:#f1f8e9">SH</th><th style="background:#f1f8e9">F</th><th style="background:#f1f8e9; min-width:80px;">FL (Final)</th><th style="background:#f1f8e9">DNS (F)</th><th style="background:#f1f8e9">DQ</th>
+                        <th style="background:#ffebee; font-size:11px;">After<br>H 1-2</th><th style="background:#ffebee; font-size:11px;">After<br>H1-2 & SH</th><th style="background:#ffebee; font-size:11px;">Final</th><th style="background:#ffebee; min-width:80px; font-size:11px;">FL (Final)</th><th style="background:#ffebee; font-size:11px;">DNS (F)</th><th style="background:#ffebee; font-size:11px;">DQ</th>
+                        <th style="background:#e3f2fd; font-size:11px;">After<br>H 1-2</th><th style="background:#e3f2fd; font-size:11px;">After<br>H1-2 & SH</th><th style="background:#e3f2fd; font-size:11px;">Final</th><th style="background:#e3f2fd; min-width:80px; font-size:11px;">FL (Final)</th><th style="background:#e3f2fd; font-size:11px;">DNS (F)</th><th style="background:#e3f2fd; font-size:11px;">DQ</th>
+                        <th style="background:#f1f8e9; font-size:11px;">After<br>H 1-2</th><th style="background:#f1f8e9; font-size:11px;">After<br>H1-2 & SH</th><th style="background:#f1f8e9; font-size:11px;">Final</th><th style="background:#f1f8e9; min-width:80px; font-size:11px;">FL (Final)</th><th style="background:#f1f8e9; font-size:11px;">DNS (F)</th><th style="background:#f1f8e9; font-size:11px;">DQ</th>
                     </tr>
                 </thead>
                 <tbody id="dataEntryBody"></tbody>
@@ -271,7 +272,7 @@
     // 🔗 API URL (Google Sheets Database)
     // ⚠️ นำ URL ของคุณมาใส่ตรงนี้ครับ ⚠️
     // =========================================
-    const API_URL = "https://script.google.com/macros/s/AKfycbz52f331FvvikzfiQ3gieJ12-IjBovVaOl_T-i55WIM-JEQ8fGIZylJ3MgtqQB2yhB9/exec";
+    const API_URL = "https://script.google.com/macros/s/AKfycbzpgduN5h7afu1eeolF2nNjnca-eeTF-cpMYH_zLRF7EL15txMwjsIJLZqHOxwj6RCm/exec; // <-- แก้ไขตรงนี้
 
     let drivers = [];
     let currentFilteredResults = [];
@@ -358,7 +359,7 @@
                 d.rounds.forEach(r => {
                     if (typeof r.fl === 'boolean') r.fl = r.fl ? [d.dClass] : []; 
                     if (!Array.isArray(r.fl)) r.fl = [];
-                    if (typeof r.dns === 'undefined') r.dns = false; // Initialize DNS value
+                    if (typeof r.dns === 'undefined') r.dns = false; 
                 });
             });
 
@@ -646,7 +647,7 @@
         let filteredDrivers = drivers.map((d, i) => ({ d, originalIndex: i })).filter(item => group.includes(item.d.dClass) || group.includes(item.d.dClass2));
         filteredDrivers.sort((a, b) => (parseInt(a.d.no) || 0) - (parseInt(b.d.no) || 0));
 
-        if (filteredDrivers.length === 0) { body.innerHTML = `<tr><td colspan="19" style="padding: 30px;">No drivers in this grid.</td></tr>`; return; }
+        if (filteredDrivers.length === 0) { body.innerHTML = `<tr><td colspan="20" style="padding: 30px;">No drivers in this grid.</td></tr>`; return; }
 
         filteredDrivers.forEach(item => {
             let d = item.d; let dIdx = item.originalIndex;
@@ -724,10 +725,11 @@
         let n = classDrivers.length; let drop = (n >= 5 && n <= 7) ? 1 : (n >= 8 ? 2 : 0);
         const getClassPointsMap = (rIdx, session, pointsTable) => {
             let ptsMap = {}; let posMap = {};
-            // ถ้าเป็นรอบ Final และคนนั้นโดนติ๊ก DNS จะถูกดีดออกจากระบบให้คะแนนอัตโนมัติ (คะแนนจะเป็น 0)
+            // กรองคนที่มีตำแหน่งและไม่โดน DQ ออกมาเรียงอันดับ
             let racers = classDrivers.map(d => ({ no: d.no, rawPos: d.rounds[rIdx][session], dq: d.rounds[rIdx].dq, dns: d.rounds[rIdx].dns }))
                 .filter(x => x.rawPos > 0 && !x.dq);
             
+            // ถ้าเป็นรอบชิง และคนนั้นโดน DNS จะไม่มีอันดับให้ และไม่ได้แต้ม
             if (session === 'f') {
                 racers = racers.filter(x => !x.dns);
             }
@@ -753,7 +755,7 @@
             let netTotal = 0;
             let displayData = d.rounds.map((r, i) => {
                 let hVal = hD.includes(i) ? 0 : hPts[i]; let sVal = sD.includes(i) ? 0 : sPts[i]; let fVal = fD.includes(i) ? 0 : fPts[i];
-                let gotFlInThisClass = r.fl.includes(targetClass); let flP = (gotFlInThisClass && !r.dq) ? 1 : 0;
+                let gotFlInThisClass = r.fl.includes(targetClass); let flP = (gotFlInThisClass && !r.dq && !r.dns) ? 1 : 0;
                 netTotal += (hVal + sVal + fVal + flP);
                 return {
                     pts: { h: hPts[i], s: sPts[i], f: fPts[i] }, pos: { h: roundData[i].h.posMap[d.no], s: roundData[i].s.posMap[d.no], f: roundData[i].f.posMap[d.no] },
@@ -773,43 +775,45 @@
             let chunkResults = results.slice(i, i + chunkSize);
             let html = `<div class="class-table-container">`;
             
+            // PDF Header - Adjusted sizes
             html += `<div class="print-header">
                         <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #d32f2f; padding-bottom: 10px; margin-bottom: 10px;">
-                            <img src="image_ea471c.png" style="height: 50px;">
+                            <img src="image_ea471c.png" style="height: 45px;">
                             <div style="text-align: center;">
-                                <img src="image_ea46f7.png" style="height: 40px; margin-bottom: 5px;"><br>
+                                <img src="image_ea46f7.png" style="height: 45px; margin-bottom: 5px;"><br>
                                 <h3 style="margin: 0; font-size: 16px; color: #333;">${getCustomTitle(targetClass)}</h3>
                             </div>
-                            <div style="display: flex; gap: 10px;">
-                                <img src="image_ea4713.png" style="height: 25px;">
-                                <img src="image_ea46db.png" style="height: 25px;">
+                            <div style="display: flex; gap: 15px; align-items: center;">
+                                <img src="image_ea4713.png" style="height: 35px;">
+                                <img src="image_ea46db.png" style="height: 35px;">
                             </div>
                         </div>
                      </div>`;
                      
             html += `<h3 class="screen-title class-title">🏆 ${getCustomTitle(targetClass)} <span style="font-size:14px; color:#555;">(Drivers: ${n} | Drops per phase: ${drop})</span></h3>`;
             
-            html += `<table width="100%" border="1" style="border-collapse: collapse; text-align: center; font-size:13px;"><thead><tr><th rowspan="2" style="width:40px;">Rank</th><th rowspan="2" style="text-align:left;">Driver (No. & Name)</th>`;
+            // Reduced Driver column width to max 180px and font-size to 12px for better PDF fit
+            html += `<table width="100%" border="1" style="border-collapse: collapse; text-align: center; font-size:12px;"><thead><tr><th rowspan="2" style="width:30px;">Rank</th><th rowspan="2" style="text-align:left; max-width: 160px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Driver (No. & Name)</th>`;
             let headRow2 = `<tr>`;
             roundVisible.forEach((vis, idx) => {
                 if(vis) {
                     html += `<th colspan="3" style="background:${bgColors[idx]}">Round ${idx+1} (Pts)</th>`;
-                    headRow2 += `<th style="background:${bgColors[idx]}">H 1-2</th><th style="background:${bgColors[idx]}">SH</th><th style="background:${bgColors[idx]}">Final</th>`;
+                    headRow2 += `<th style="background:${bgColors[idx]}; line-height: 1.2; padding: 4px;">After<br>H 1-2</th><th style="background:${bgColors[idx]}; line-height: 1.2; padding: 4px;">After<br>H1-2 & SH</th><th style="background:${bgColors[idx]}; padding: 4px;">Final</th>`;
                 }
             });
-            html += `<th rowspan="2" class="net-pts" style="width:60px;">NET<br>PTS</th></tr>${headRow2}</tr></thead><tbody>`;
+            html += `<th rowspan="2" class="net-pts" style="width:50px;">NET<br>PTS</th></tr>${headRow2}</tr></thead><tbody>`;
 
             chunkResults.forEach((res, indexInChunk) => {
                 let actualRank = i + indexInChunk + 1;
-                let row = `<tr><td>${actualRank}</td><td style="text-align:left"><span class="no-badge">${res.no}</span> ${getFlagHtml(res.nation)} <b>${res.name}</b></td>`;
+                // Add class to restrict name width on PDF
+                let row = `<tr><td>${actualRank}</td><td style="text-align:left; max-width: 160px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"><span class="no-badge">${res.no}</span> ${getFlagHtml(res.nation)} <b>${res.name}</b></td>`;
                 res.displayData.forEach((rd, rIdx) => {
                     if(roundVisible[rIdx]) {
-                        let fBg = rd.hasFl ? 'purple-bg' : ''; let flB = rd.hasFl ? '<span class="fl-badge">(+1 FL)</span>' : ''; let dqT = rd.dq ? '<br><b style="color:red; font-size:11px;">(DQ)</b>' : '';
-                        let hPos = rd.pos.h ? `<span class="pos-badge">P${rd.pos.h}</span> ` : '';
-                        let sPos = rd.pos.s ? `<span class="pos-badge">P${rd.pos.s}</span> ` : '';
+                        let fBg = rd.hasFl ? 'purple-bg' : ''; let flB = rd.hasFl ? '<span class="fl-badge">(+1 FL)</span>' : ''; let dqT = rd.dq ? '<br><b style="color:red; font-size:10px;">(DQ)</b>' : '';
+                        let hPos = rd.pos.h ? `<span class="pos-badge">P${rd.pos.h}</span><br>` : '';
+                        let sPos = rd.pos.s ? `<span class="pos-badge">P${rd.pos.s}</span><br>` : '';
                         
-                        // แสดงป้าย DNS สีส้มโดดเด่นแทนตำแหน่ง หากโดน DNS
-                        let fPos = rd.dns ? `<span class="pos-badge" style="background:#ff9800; color:#fff; border:1px solid #e65100;">DNS</span> ` : (rd.pos.f ? `<span class="pos-badge">P${rd.pos.f}</span> ` : '');
+                        let fPos = rd.dns ? `<span class="pos-badge" style="background:#ff9800; color:#fff; border:1px solid #e65100;">DNS</span><br>` : (rd.pos.f ? `<span class="pos-badge">P${rd.pos.f}</span><br>` : '');
                         
                         row += `<td>${hPos}<span class="${rd.drop.h ? 'dropped' : ''}">${rd.pts.h}</span></td>
                                 <td>${sPos}<span class="${rd.drop.s ? 'dropped' : ''}">${rd.pts.s}</span></td>
@@ -860,10 +864,11 @@
 
         const element = document.getElementById('pdfArea');
         const opt = {
-            margin:       [0.2, 0.4, 0.4, 0.4], 
+            // ปรับระยะขอบให้กว้างขึ้น เพื่อป้องกันตารางตกขอบขวา
+            margin:       [0.2, 0.2, 0.2, 0.2], 
             filename:     `Official_Standings_2026.pdf`,
             image:        { type: 'jpeg', quality: 0.98 },
-            html2canvas:  { scale: 2, useCORS: true, logging: false }, 
+            html2canvas:  { scale: 2, useCORS: true, logging: false, windowWidth: 1200 }, 
             jsPDF:        { unit: 'in', format: 'a4', orientation: 'landscape' },
             pagebreak:    { mode: ['css', 'legacy'] }
         };
@@ -896,4 +901,3 @@
 </script>
 </body>
 </html>
-
