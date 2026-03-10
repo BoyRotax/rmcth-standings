@@ -61,17 +61,17 @@
             box-shadow: 0 10px 30px rgba(0,0,0,0.05); 
         }
         
-        /* Header */
+        /* Header - 🔥 ขยายขนาดโลโก้ให้สมดุลและชัดเจนขึ้น */
         .official-header { 
             display: flex; justify-content: space-between; align-items: center; 
             padding-bottom: 25px; margin-bottom: 25px; 
             border-bottom: 3px solid var(--rotax-red); 
         }
-        .logo-left img { height: 60px; object-fit: contain; }
+        .logo-left img { height: 75px; object-fit: contain; }
         .logo-center { text-align: center; flex-grow: 1; }
-        .logo-center img { height: 50px; object-fit: contain; margin-bottom: 8px; }
-        .logo-right { display: flex; flex-direction: column; gap: 8px; align-items: flex-end; }
-        .logo-right img { height: 30px; object-fit: contain; }
+        .logo-center img { height: 65px; object-fit: contain; margin-bottom: 8px; }
+        .logo-right { display: flex; flex-direction: column; gap: 10px; align-items: flex-end; }
+        .logo-right img { height: 50px; object-fit: contain; } /* เพิ่มจาก 30px เป็น 50px */
         #mainAppTitle { margin: 0; color: var(--rotax-black); font-size: 18px; letter-spacing: 1.5px; }
 
         /* Tabs */
@@ -175,6 +175,7 @@
         </div>
         <div class="logo-right">
             <img src="image_ea4713.png" alt="Rotax Racing">
+            <img src="image_ea46db.png" alt="MOJO">
         </div>
     </div>
     
@@ -679,12 +680,10 @@
 
         let n = classDrivers.length; let drop = (n >= 5 && n <= 7) ? 1 : (n >= 8 ? 2 : 0);
         
-        // ฟังก์ชันแจกคะแนน + แปลงอันดับ
         const getClassPointsMap = (rIdx, session, pointsTable) => {
             let ptsMap = {}; let posMap = {};
             let racers = classDrivers.map(d => ({ no: d.no, rawPos: d.rounds[rIdx][session], dq: d.rounds[rIdx].dq, dns: d.rounds[rIdx].dns })).filter(x => x.rawPos > 0);
             
-            // กฎ: ถ้าเป็นรอบชิง แล้วโดน DNS หรือ DQ จะไม่ได้อันดับและไม่ได้แต้ม (แต้มเป็น 0)
             if (session === 'f') { 
                 racers = racers.filter(x => !x.dns && !x.dq); 
             }
@@ -706,7 +705,6 @@
             let fPts = [roundData[0].f.ptsMap[d.no]||0, roundData[1].f.ptsMap[d.no]||0, roundData[2].f.ptsMap[d.no]||0];
             
             let dqs = d.rounds.map(r => r.dq);
-            
             let hD = getDropIdx(hPts, [false, false, false], drop); 
             let sD = getDropIdx(sPts, [false, false, false], drop); 
             let fD = getDropIdx(fPts, dqs, drop); 
@@ -724,15 +722,13 @@
                 };
             });
 
-            // 🌟 เตรียมข้อมูลสำหรับ Tie-breaker (Dead Heat) 🌟
-            // 1. ดึงอันดับรอบ Final ทุกสนามที่ลงแข่งมากางเรียงจากดีที่สุด ไปแย่ที่สุด (เช่น [1, 2, 4])
+            // 🌟 แก้ไขระบบ Tie-breaker (ดึงอันดับ Final ไปเปรียบเทียบ)
             let bestFinishes = [
                 roundData[0].f.posMap[d.no],
                 roundData[1].f.posMap[d.no],
                 roundData[2].f.posMap[d.no]
-            ].filter(p => p > 0).sort((x, y) => x - y);
+            ].filter(p => p > 0).sort((x, y) => x - y); // เรียงจากที่ 1, 2, 3...
 
-            // 2. ดึงอันดับรอบ Final ของสนาม "ล่าสุด" ที่ลงแข่ง
             let lastPos = roundData[2].f.posMap[d.no] || roundData[1].f.posMap[d.no] || roundData[0].f.posMap[d.no] || 999;
 
             return { 
@@ -741,22 +737,22 @@
             };
         });
 
-        // 🌟 ลอจิกการเรียงลำดับใหม่ (Full Tie-breaker System) 🌟
+        // 🌟 ลอจิกการเรียงลำดับใหม่ทั้งหมด (Dead Heat Rules)
         results.sort((a, b) => {
-            // 1. เรียงตามคะแนน NET PTS ก่อน
+            // 1. เรียงตามคะแนน
             if (b.net !== a.net) return b.net - a.net; 
             
-            // 2. Dead Heat กฎข้อ a, b, c: เทียบจำนวน P1, P2, P3... ไปเรื่อยๆ
+            // 2. ถ้าคะแนนเท่ากัน เทียบอันดับที่ดีที่สุด (ข้อ a, b, c)
             let len = Math.max(a.bestFinishes.length, b.bestFinishes.length);
             for (let i = 0; i < len; i++) {
-                let posA = a.bestFinishes[i] || 999; // ถ้าไม่มีสถิติ ให้ถือว่าแย่ที่สุด (999)
+                let posA = a.bestFinishes[i] || 999; 
                 let posB = b.bestFinishes[i] || 999;
                 if (posA !== posB) {
-                    return posA - posB; // ใครเลขอันดับน้อยกว่า (ผลงานดีกว่า) ชนะ!
+                    return posA - posB; // ใครน้อยกว่า (เช่น 1 ชนะ 2) ให้คนนั้นขึ้นก่อน
                 }
             }
 
-            // 3. Dead Heat กฎข้อ d: ถ้าเหมือนกันหมด ให้วัดผลงานสนามล่าสุด
+            // 3. ถ้าสถิติเท่ากันเป๊ะ เทียบผลงานรอบชิงสนามสุดท้าย (ข้อ d)
             return a.lastPos - b.lastPos;
         });
 
@@ -903,4 +899,3 @@
 </script>
 </body>
 </html>
-
