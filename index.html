@@ -155,7 +155,8 @@
                 <strong>📊 Dynamic Class Scoring Rules:</strong> <br>
                 <small>1. Points are automatically calculated based on class-specific rankings. (The main number is the <b>Points</b>, the grey badge is the <b>Class Position</b>).<br>
                 2. <span style="color:red; text-decoration:line-through">Strikethrough</span> numbers indicate the dropped worst scores.<br>
-                3. <span style="color:#9c27b0; font-weight:bold;">(+1 FL)</span> indicates bonus points for Fastest Lap in the Final.</small>
+                3. <span style="color:#9c27b0; font-weight:bold;">(+1 FL)</span> indicates bonus points for Fastest Lap in the Final.<br>
+                4. <span style="color:#ff9800; font-weight:bold;">(DNS)</span> Did Not Start will get 0 points. <span style="color:red; font-weight:bold;">(DQ)</span> Disqualification will get 0 points and cannot be dropped.</small>
             </div>
         </div>
     </div>
@@ -188,14 +189,14 @@
                     <tr>
                         <th rowspan="2" style="width: 50px;" class="sticky-th">No.</th>
                         <th rowspan="2" style="text-align:left; min-width:180px;" class="sticky-th">Driver Name</th>
-                        <th colspan="5" style="background:#ffebee">Round 1 (Overall Pos)</th>
-                        <th colspan="5" style="background:#e3f2fd">Round 2 (Overall Pos)</th>
-                        <th colspan="5" style="background:#f1f8e9">Round 3 (Overall Pos)</th>
+                        <th colspan="6" style="background:#ffebee">Round 1 (Overall Pos)</th>
+                        <th colspan="6" style="background:#e3f2fd">Round 2 (Overall Pos)</th>
+                        <th colspan="6" style="background:#f1f8e9">Round 3 (Overall Pos)</th>
                     </tr>
                     <tr>
-                        <th style="background:#ffebee">H</th><th style="background:#ffebee">SH</th><th style="background:#ffebee">F</th><th style="background:#ffebee; min-width:80px;">FL (Final)</th><th style="background:#ffebee">DQ</th>
-                        <th style="background:#e3f2fd">H</th><th style="background:#e3f2fd">SH</th><th style="background:#e3f2fd">F</th><th style="background:#e3f2fd; min-width:80px;">FL (Final)</th><th style="background:#e3f2fd">DQ</th>
-                        <th style="background:#f1f8e9">H</th><th style="background:#f1f8e9">SH</th><th style="background:#f1f8e9">F</th><th style="background:#f1f8e9; min-width:80px;">FL (Final)</th><th style="background:#f1f8e9">DQ</th>
+                        <th style="background:#ffebee">H</th><th style="background:#ffebee">SH</th><th style="background:#ffebee">F</th><th style="background:#ffebee; min-width:80px;">FL (Final)</th><th style="background:#ffebee">DNS (F)</th><th style="background:#ffebee">DQ</th>
+                        <th style="background:#e3f2fd">H</th><th style="background:#e3f2fd">SH</th><th style="background:#e3f2fd">F</th><th style="background:#e3f2fd; min-width:80px;">FL (Final)</th><th style="background:#e3f2fd">DNS (F)</th><th style="background:#e3f2fd">DQ</th>
+                        <th style="background:#f1f8e9">H</th><th style="background:#f1f8e9">SH</th><th style="background:#f1f8e9">F</th><th style="background:#f1f8e9; min-width:80px;">FL (Final)</th><th style="background:#f1f8e9">DNS (F)</th><th style="background:#f1f8e9">DQ</th>
                     </tr>
                 </thead>
                 <tbody id="dataEntryBody"></tbody>
@@ -270,7 +271,7 @@
     // 🔗 API URL (Google Sheets Database)
     // ⚠️ นำ URL ของคุณมาใส่ตรงนี้ครับ ⚠️
     // =========================================
-    const API_URL = "https://script.google.com/macros/s/AKfycbyjFbA_GbxogZa85uRLshuMNaOqZhMSm1MPyg0a3mQ5o3geCMQk8aGkmJEb-HBQ64LU/exec"; // <-- แก้ไขตรงนี้
+    const API_URL = "https://script.googhttps://script.google.com/macros/s/AKfycbz52f331FvvikzfiQ3gieJ12-IjBovVaOl_T-i55WIM-JEQ8fGIZylJ3MgtqQB2yhB9/execle.com/macros/s/AKfycbyqW0n7fDr7LWskQ3tfUyxf8OPIAXVQjZgGNnwwH6_trf4sGLjI9xK-kIOhB9M8Y3AD/exec";
 
     let drivers = [];
     let currentFilteredResults = [];
@@ -357,6 +358,7 @@
                 d.rounds.forEach(r => {
                     if (typeof r.fl === 'boolean') r.fl = r.fl ? [d.dClass] : []; 
                     if (!Array.isArray(r.fl)) r.fl = [];
+                    if (typeof r.dns === 'undefined') r.dns = false; // Initialize DNS value
                 });
             });
 
@@ -377,7 +379,7 @@
         try {
             await fetch(API_URL, {
                 method: 'POST',
-                mode: 'no-cors', // ใส่ no-cors ไว้เพื่อหลบปัญหา error บน console แดงๆ
+                mode: 'no-cors',
                 headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                 body: JSON.stringify(drivers)
             });
@@ -391,7 +393,6 @@
     // =========================================
     const CLASSES = ["Micro MAX", "Micro Rookie", "Mini MAX", "Mini Rookie", "Junior MAX", "Senior MAX", "Senior MAX Masters"];
     
-    // อัปเดต GRID_GROUPS ใหม่: แยก Senior MAX กับ Senior MAX Masters ออกจากกัน 100%
     const GRID_GROUPS = { 
         "Micro MAX": ["Micro MAX", "Micro Rookie"], 
         "Mini MAX": ["Mini MAX", "Mini Rookie"], 
@@ -443,7 +444,7 @@
         let dClass2 = document.getElementById('newClass2').value;
         if(!name || !no) { alert("Please provide Driver No. and Name."); return; }
         if(dClass === dClass2) dClass2 = ""; 
-        drivers.push({ no: no, nation: nation, name: name, dClass: dClass, dClass2: dClass2, rounds: Array(3).fill(null).map(() => ({ h: 0, s: 0, f: 0, fl: [], dq: false })) });
+        drivers.push({ no: no, nation: nation, name: name, dClass: dClass, dClass2: dClass2, rounds: Array(3).fill(null).map(() => ({ h: 0, s: 0, f: 0, fl: [], dq: false, dns: false })) });
         document.getElementById('newNo').value = ''; document.getElementById('newName').value = '';
         renderDriverDB(dClass);
         pushToCloud();
@@ -517,7 +518,7 @@
                 let dClass = row[classIdx], dClass2 = (class2Idx !== -1 && row[class2Idx]) ? row[class2Idx] : "";
                 
                 if (no && name && dClass && !drivers.find(d => d.no === no && d.dClass === dClass)) {
-                    drivers.push({ no: no, nation: nation, name: name, dClass: dClass, dClass2: dClass2, rounds: Array(3).fill(null).map(() => ({ h: 0, s: 0, f: 0, fl: [], dq: false })) });
+                    drivers.push({ no: no, nation: nation, name: name, dClass: dClass, dClass2: dClass2, rounds: Array(3).fill(null).map(() => ({ h: 0, s: 0, f: 0, fl: [], dq: false, dns: false })) });
                     addedCount++;
                 }
             }
@@ -539,9 +540,9 @@
             let noIdx = getIdx(['no']); let nationIdx = getIdx(['nation']); let nameIdx = getIdx(['name']);
             let classIdx = getIdx(['class1', 'class']); let class2Idx = getIdx(['class2', 'sub']);
             
-            let r1h = getIdx(['r1_h']); let r1sh = getIdx(['r1_sh']); let r1f = getIdx(['r1_f']); let r1fl = getIdx(['r1_fl']); let r1dq = getIdx(['r1_dq']);
-            let r2h = getIdx(['r2_h']); let r2sh = getIdx(['r2_sh']); let r2f = getIdx(['r2_f']); let r2fl = getIdx(['r2_fl']); let r2dq = getIdx(['r2_dq']);
-            let r3h = getIdx(['r3_h']); let r3sh = getIdx(['r3_sh']); let r3f = getIdx(['r3_f']); let r3fl = getIdx(['r3_fl']); let r3dq = getIdx(['r3_dq']);
+            let r1h = getIdx(['r1_h']); let r1sh = getIdx(['r1_sh']); let r1f = getIdx(['r1_f']); let r1fl = getIdx(['r1_fl']); let r1dq = getIdx(['r1_dq']); let r1dns = getIdx(['r1_dns']);
+            let r2h = getIdx(['r2_h']); let r2sh = getIdx(['r2_sh']); let r2f = getIdx(['r2_f']); let r2fl = getIdx(['r2_fl']); let r2dq = getIdx(['r2_dq']); let r2dns = getIdx(['r2_dns']);
+            let r3h = getIdx(['r3_h']); let r3sh = getIdx(['r3_sh']); let r3f = getIdx(['r3_f']); let r3fl = getIdx(['r3_fl']); let r3dq = getIdx(['r3_dq']); let r3dns = getIdx(['r3_dns']);
 
             let updatedCount = 0; let addedCount = 0;
 
@@ -556,7 +557,7 @@
                 if (!no || !name || !dClass) continue;
 
                 const getNum = (idx) => (idx !== -1 && row[idx]) ? parseInt(row[idx]) || 0 : 0;
-                const getBool = (idx) => { if (idx === -1 || !row[idx]) return false; return ['true', '1', 'yes', 'y', 'dq'].includes(row[idx].toString().trim().toLowerCase()); };
+                const getBool = (idx) => { if (idx === -1 || !row[idx]) return false; return ['true', '1', 'yes', 'y', 'dq', 'dns'].includes(row[idx].toString().trim().toLowerCase()); };
                 
                 const getFlArray = (idx, c1, c2) => {
                     if (idx === -1 || !row[idx]) return [];
@@ -569,9 +570,9 @@
                     return [...new Set(arr)];
                 };
 
-                let r1 = { h: getNum(r1h), s: getNum(r1sh), f: getNum(r1f), fl: getFlArray(r1fl, dClass, dClass2), dq: getBool(r1dq) };
-                let r2 = { h: getNum(r2h), s: getNum(r2sh), f: getNum(r2f), fl: getFlArray(r2fl, dClass, dClass2), dq: getBool(r2dq) };
-                let r3 = { h: getNum(r3h), s: getNum(r3sh), f: getNum(r3f), fl: getFlArray(r3fl, dClass, dClass2), dq: getBool(r3dq) };
+                let r1 = { h: getNum(r1h), s: getNum(r1sh), f: getNum(r1f), fl: getFlArray(r1fl, dClass, dClass2), dq: getBool(r1dq), dns: getBool(r1dns) };
+                let r2 = { h: getNum(r2h), s: getNum(r2sh), f: getNum(r2f), fl: getFlArray(r2fl, dClass, dClass2), dq: getBool(r2dq), dns: getBool(r2dns) };
+                let r3 = { h: getNum(r3h), s: getNum(r3sh), f: getNum(r3f), fl: getFlArray(r3fl, dClass, dClass2), dq: getBool(r3dq), dns: getBool(r3dns) };
 
                 let existingDriver = drivers.find(d => d.no === no && d.dClass === dClass);
                 if (existingDriver) {
@@ -622,6 +623,12 @@
         localStorage.setItem('rmcat_master_cloud_cache', JSON.stringify(drivers));
         renderDataEntry();
     }
+    
+    function updateTempDNS(originalIdx, rIdx, isChecked) {
+        drivers[originalIdx].rounds[rIdx].dns = isChecked;
+        localStorage.setItem('rmcat_master_cloud_cache', JSON.stringify(drivers));
+        renderDataEntry();
+    }
 
     function createDropdown(originalIdx, rIdx, type, currentVal, gridClass) {
         let group = GRID_GROUPS[gridClass] || [gridClass];
@@ -639,7 +646,7 @@
         let filteredDrivers = drivers.map((d, i) => ({ d, originalIndex: i })).filter(item => group.includes(item.d.dClass) || group.includes(item.d.dClass2));
         filteredDrivers.sort((a, b) => (parseInt(a.d.no) || 0) - (parseInt(b.d.no) || 0));
 
-        if (filteredDrivers.length === 0) { body.innerHTML = `<tr><td colspan="17" style="padding: 30px;">No drivers in this grid.</td></tr>`; return; }
+        if (filteredDrivers.length === 0) { body.innerHTML = `<tr><td colspan="19" style="padding: 30px;">No drivers in this grid.</td></tr>`; return; }
 
         filteredDrivers.forEach(item => {
             let d = item.d; let dIdx = item.originalIndex;
@@ -648,7 +655,6 @@
             let row = `<tr><td><span class="no-badge">${d.no}</span></td><td style="text-align:left; font-weight:bold;">${getFlagHtml(d.nation)} ${d.name} ${classTag}</td>`;
             d.rounds.forEach((r, rIdx) => {
                 let flHtml = `<div class="fl-checkbox-container">`;
-                // โชว์กล่อง FL เฉพาะตอนที่รุ่นนั้นตรงกับ Grid หรือมี Sub Class ตรงกับ Grid
                 if (group.includes(d.dClass)) {
                     flHtml += `<label><input type="checkbox" ${r.fl.includes(d.dClass) ? 'checked' : ''} onchange="toggleFL(${dIdx}, ${rIdx}, '${d.dClass}', this.checked)"> ${d.dClass.replace('Micro ','').replace('Mini ','')}</label>`;
                 }
@@ -659,6 +665,7 @@
                 
                 row += `<td>${createDropdown(dIdx, rIdx, 'h', r.h, gridClass)}</td><td>${createDropdown(dIdx, rIdx, 's', r.s, gridClass)}</td><td>${createDropdown(dIdx, rIdx, 'f', r.f, gridClass)}</td>
                         <td style="vertical-align:middle;">${flHtml}</td>
+                        <td><input type="checkbox" ${r.dns ? 'checked' : ''} onchange="updateTempDNS(${dIdx}, ${rIdx}, this.checked)"></td>
                         <td><input type="checkbox" ${r.dq ? 'checked' : ''} onchange="updateTempDQ(${dIdx}, ${rIdx}, this.checked)"></td>`;
             });
             row += `</tr>`; body.innerHTML += row;
@@ -681,16 +688,16 @@
     }
 
     function downloadDataTemplate() { 
-        let csv = "\uFEFFNo.,Nation,Name,Class1,Class2,R1_H(Overall_Pos),R1_SH(Overall_Pos),R1_F(Overall_Pos),R1_FL(Class_Name),R1_DQ(TRUE/FALSE),R2_H(Overall_Pos),R2_SH(Overall_Pos),R2_F(Overall_Pos),R2_FL(Class_Name),R2_DQ(TRUE/FALSE),R3_H(Overall_Pos),R3_SH(Overall_Pos),R3_F(Overall_Pos),R3_FL(Class_Name),R3_DQ(TRUE/FALSE)\n";
+        let csv = "\uFEFFNo.,Nation,Name,Class1,Class2,R1_H(Overall_Pos),R1_SH(Overall_Pos),R1_F(Overall_Pos),R1_FL(Class_Name),R1_DNS(TRUE/FALSE),R1_DQ(TRUE/FALSE),R2_H(Overall_Pos),R2_SH(Overall_Pos),R2_F(Overall_Pos),R2_FL(Class_Name),R2_DNS(TRUE/FALSE),R2_DQ(TRUE/FALSE),R3_H(Overall_Pos),R3_SH(Overall_Pos),R3_F(Overall_Pos),R3_FL(Class_Name),R3_DNS(TRUE/FALSE),R3_DQ(TRUE/FALSE)\n";
         if (drivers.length > 0) {
             drivers.forEach(d => {
                 let nat = d.nation || 'THA'; let c2 = d.dClass2 || '';
                 let r1fl = d.rounds[0].fl.length > 0 ? d.rounds[0].fl.join(' & ') : '';
                 let r2fl = d.rounds[1].fl.length > 0 ? d.rounds[1].fl.join(' & ') : '';
                 let r3fl = d.rounds[2].fl.length > 0 ? d.rounds[2].fl.join(' & ') : '';
-                csv += `"${d.no}","${nat}","${d.name}","${d.dClass}","${c2}",${d.rounds[0].h},${d.rounds[0].s},${d.rounds[0].f},"${r1fl}",${d.rounds[0].dq ? 'TRUE':'FALSE'},${d.rounds[1].h},${d.rounds[1].s},${d.rounds[1].f},"${r2fl}",${d.rounds[1].dq ? 'TRUE':'FALSE'},${d.rounds[2].h},${d.rounds[2].s},${d.rounds[2].f},"${r3fl}",${d.rounds[2].dq ? 'TRUE':'FALSE'}\n`;
+                csv += `"${d.no}","${nat}","${d.name}","${d.dClass}","${c2}",${d.rounds[0].h},${d.rounds[0].s},${d.rounds[0].f},"${r1fl}",${d.rounds[0].dns ? 'TRUE':'FALSE'},${d.rounds[0].dq ? 'TRUE':'FALSE'},${d.rounds[1].h},${d.rounds[1].s},${d.rounds[1].f},"${r2fl}",${d.rounds[1].dns ? 'TRUE':'FALSE'},${d.rounds[1].dq ? 'TRUE':'FALSE'},${d.rounds[2].h},${d.rounds[2].s},${d.rounds[2].f},"${r3fl}",${d.rounds[2].dns ? 'TRUE':'FALSE'},${d.rounds[2].dq ? 'TRUE':'FALSE'}\n`;
             });
-        } else { csv += `99,THA,John Doe Sample,Micro MAX,Micro Rookie,1,2,1,Micro MAX,FALSE,3,1,2,,FALSE,0,0,0,,FALSE\n`; }
+        } else { csv += `99,THA,John Doe Sample,Micro MAX,Micro Rookie,1,2,1,Micro MAX,FALSE,FALSE,3,1,2,,FALSE,FALSE,0,0,0,,FALSE,FALSE\n`; }
         let blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
         let link = document.createElement("a"); link.href = URL.createObjectURL(blob);
         link.download = "RMCTH_DataEntry_Template.csv";
@@ -700,6 +707,7 @@
     // ====== Standings Engine & Pagination ======
     function getDropIdx(ptsArr, dqArr, count) {
         if (count === 0) return [];
+        // กฎ: ถ้าเป็น DQ จะห้ามเอามาตัดแต้มทิ้ง (may not be discounted)
         let eligible = ptsArr.map((p, i) => ({ p, i, dq: dqArr[i] })).filter(x => !x.dq);
         eligible.sort((a, b) => a.p - b.p);
         return eligible.slice(0, count).map(x => x.i);
@@ -716,7 +724,14 @@
         let n = classDrivers.length; let drop = (n >= 5 && n <= 7) ? 1 : (n >= 8 ? 2 : 0);
         const getClassPointsMap = (rIdx, session, pointsTable) => {
             let ptsMap = {}; let posMap = {};
-            let racers = classDrivers.map(d => ({ no: d.no, rawPos: d.rounds[rIdx][session], dq: d.rounds[rIdx].dq })).filter(x => x.rawPos > 0 && !x.dq);
+            // ถ้าเป็นรอบ Final และคนนั้นโดนติ๊ก DNS จะถูกดีดออกจากระบบให้คะแนนอัตโนมัติ (คะแนนจะเป็น 0)
+            let racers = classDrivers.map(d => ({ no: d.no, rawPos: d.rounds[rIdx][session], dq: d.rounds[rIdx].dq, dns: d.rounds[rIdx].dns }))
+                .filter(x => x.rawPos > 0 && !x.dq);
+            
+            if (session === 'f') {
+                racers = racers.filter(x => !x.dns);
+            }
+            
             racers.sort((a, b) => a.rawPos - b.rawPos);
             racers.forEach((r, idx) => { let classPos = idx + 1; ptsMap[r.no] = pointsTable[classPos] || 0; posMap[r.no] = classPos; });
             return { ptsMap, posMap };
@@ -742,7 +757,7 @@
                 netTotal += (hVal + sVal + fVal + flP);
                 return {
                     pts: { h: hPts[i], s: sPts[i], f: fPts[i] }, pos: { h: roundData[i].h.posMap[d.no], s: roundData[i].s.posMap[d.no], f: roundData[i].f.posMap[d.no] },
-                    drop: { h: hD.includes(i), s: sD.includes(i), f: fD.includes(i) }, hasFl: gotFlInThisClass, dq: r.dq
+                    drop: { h: hD.includes(i), s: sD.includes(i), f: fD.includes(i) }, hasFl: gotFlInThisClass, dq: r.dq, dns: r.dns
                 };
             });
             return { no: d.no, nation: d.nation, name: d.name, dClass: targetClass, displayData, net: netTotal, wins: roundData.filter(rd => rd.f.posMap[d.no] === 1).length, lastPos: roundData[2].f.posMap[d.no] || 99 };
@@ -750,7 +765,7 @@
 
         results.sort((a, b) => (b.net - a.net) || (b.wins - a.wins) || (a.lastPos - b.lastPos));
         let roundVisible = [false, false, false];
-        results.forEach(res => { res.displayData.forEach((rd, idx) => { if (rd.pts.h > 0 || rd.pts.s > 0 || rd.pts.f > 0 || rd.hasFl || rd.dq) roundVisible[idx] = true; }); });
+        results.forEach(res => { res.displayData.forEach((rd, idx) => { if (rd.pts.h > 0 || rd.pts.s > 0 || rd.pts.f > 0 || rd.hasFl || rd.dq || rd.dns) roundVisible[idx] = true; }); });
         if (!roundVisible.includes(true)) roundVisible[0] = true;
 
         let htmlChunks = []; let chunkSize = 15; const bgColors = ['#ffebee', '#e3f2fd', '#f1f8e9'];
@@ -792,7 +807,10 @@
                         let fBg = rd.hasFl ? 'purple-bg' : ''; let flB = rd.hasFl ? '<span class="fl-badge">(+1 FL)</span>' : ''; let dqT = rd.dq ? '<br><b style="color:red; font-size:11px;">(DQ)</b>' : '';
                         let hPos = rd.pos.h ? `<span class="pos-badge">P${rd.pos.h}</span> ` : '';
                         let sPos = rd.pos.s ? `<span class="pos-badge">P${rd.pos.s}</span> ` : '';
-                        let fPos = rd.pos.f ? `<span class="pos-badge">P${rd.pos.f}</span> ` : '';
+                        
+                        // แสดงป้าย DNS สีส้มโดดเด่นแทนตำแหน่ง หากโดน DNS
+                        let fPos = rd.dns ? `<span class="pos-badge" style="background:#ff9800; color:#fff; border:1px solid #e65100;">DNS</span> ` : (rd.pos.f ? `<span class="pos-badge">P${rd.pos.f}</span> ` : '');
+                        
                         row += `<td>${hPos}<span class="${rd.drop.h ? 'dropped' : ''}">${rd.pts.h}</span></td>
                                 <td>${sPos}<span class="${rd.drop.s ? 'dropped' : ''}">${rd.pts.s}</span></td>
                                 <td class="${fBg}">${fPos}<span class="${rd.drop.f ? 'dropped' : ''}">${rd.pts.f}</span>${flB}${dqT}</td>`;
