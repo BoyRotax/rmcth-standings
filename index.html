@@ -81,13 +81,20 @@
         td { font-weight: bold; }
         .sticky-th { position: sticky; top: 0; z-index: 10; }
         
+        /* 4. ปรับช่องไฟให้อ่านสบายตา (Typography Tweaks) */
+        .driver-name {
+            letter-spacing: 0.5px; /* เพิ่มช่องไฟตัวอักษร */
+            margin-left: 6px;      /* ห่างจากโลโก้ธงชาติ */
+            font-size: 13px;
+        }
+
         /* Badges & Highlights */
         .purple-bg { background-color: #f3e5f5 !important; border: 2px solid #9c27b0 !important; color: #4a148c; }
         .fl-badge { color: #9c27b0; font-size: 10px; display: block; margin-top: 2px; font-weight: bold;}
         .dropped { text-decoration: line-through; color: var(--rotax-red) !important; font-weight: 300; }
-        .net-pts { background: #fff9c4; font-size: 1.3em; color: var(--rotax-red); border: 2px solid #fbc02d !important; font-family: 'PPMonument', sans-serif;} /* Net Points ใช้ฟอนต์หนา */
+        .net-pts { background: #fff9c4; font-size: 1.3em; color: var(--rotax-red); border: 2px solid #fbc02d !important; font-family: 'PPMonument', sans-serif;}
         .no-badge { background: #ffeb3b; color: var(--rotax-black); padding: 2px 6px; border-radius: 4px; margin-right: 4px; border: 1px solid #fbc02d; font-size: 12px; font-family: 'PPMonument', sans-serif; }
-        .flag-icon { width: 22px; height: 15px; vertical-align: middle; margin-right: 4px; border: 1px solid #ccc; border-radius: 2px; object-fit: cover; }
+        .flag-icon { width: 22px; height: 15px; vertical-align: middle; border: 1px solid #ccc; border-radius: 2px; object-fit: cover; }
 
         /* Controls */
         .input-text { padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-size: 14px; font-weight: bold;}
@@ -222,7 +229,7 @@
                 <thead>
                     <tr>
                         <th rowspan="2" style="width: 40px;" class="sticky-th">NO.</th>
-                        <th rowspan="2" style="text-align:left; min-width:180px;" class="sticky-th">DRIVER NAME</th>
+                        <th rowspan="2" style="text-align:left; min-width:180px; padding-left:12px;" class="sticky-th">DRIVER NAME</th>
                         <th colspan="6" style="background:#ffebee">ROUND 1 (Overall Pos)</th>
                         <th colspan="6" style="background:#e3f2fd">ROUND 2 (Overall Pos)</th>
                         <th colspan="6" style="background:#f1f8e9">ROUND 3 (Overall Pos)</th>
@@ -284,7 +291,7 @@
         <table id="dbTable" border="1">
             <thead>
                 <tr>
-                    <th style="width: 80px;">NO.</th><th style="width: 100px;">NATION</th><th style="text-align: left;">DRIVER NAME</th>
+                    <th style="width: 80px;">NO.</th><th style="width: 100px;">NATION</th><th style="text-align: left; padding-left:12px;">DRIVER NAME</th>
                     <th style="width: 180px;">MAIN CLASS</th><th style="width: 180px;">SUB CLASS</th><th style="width: 80px;">ACTION</th>
                 </tr>
             </thead>
@@ -295,9 +302,9 @@
 
 <script>
     // =========================================
-    // 🔗 API URL (ใส่ URL ของคุณด้านล่างนี้)
+    // 🔗 API URL (เปลี่ยนเป็น URL ของคุณ)
     // =========================================
-    const API_URL = "https://script.google.com/macros/s/AKfycbxBwZSgj-cROtnjGT_SZK8TCIW1cjbebnm8xdh7YSSuoLLlGq0s1ZL6sN2JAZRrJjbt/exec"; 
+    const API_URL = "https://script.google.com/macros/s/AKfycbz4mFHfF2Ru6gtwLNwTl1MOeLZk0W4j8xA_Y8KvPG7K0tqq8vzqvyHq05oyvfdXtDB7/exec"; 
 
     let drivers = [];
     let currentFilteredResults = [];
@@ -388,9 +395,9 @@
     function getFlagHtml(nationCode) {
         if (!nationCode) return '';
         let code3 = nationCode.trim().toUpperCase();
-        if (code3.length !== 3) return `<b style="font-size:10px;">[${nationCode}]</b> `;
+        if (code3.length !== 3) return `<b style="font-size:10px;">[${nationCode}]</b>`;
         let code2 = iso3To2[code3];
-        if (!code2) return `<b style="font-size:10px;">[${code3}]</b> `;
+        if (!code2) return `<b style="font-size:10px;">[${code3}]</b>`;
         return `<img src="https://flagcdn.com/24x18/${code2}.png" class="flag-icon" alt="${code3}" crossorigin="anonymous">`;
     }
 
@@ -574,7 +581,8 @@
             let d = item.d; let dIdx = item.originalIndex;
             let displayClasses = [d.dClass]; if (d.dClass2) displayClasses.push(d.dClass2);
             let classTag = `<br><small style="color:#1565c0; font-size:10px;">(Dual: ${displayClasses.join(' & ')})</small>`;
-            let row = `<tr><td><span class="no-badge">${d.no}</span></td><td style="text-align:left;">${getFlagHtml(d.nation)} <span>${d.name}</span> ${classTag}</td>`;
+            // ปรับช่องไฟชื่อนักแข่งในหน้า Data Entry
+            let row = `<tr><td><span class="no-badge">${d.no}</span></td><td style="text-align:left; padding-left:12px;">${getFlagHtml(d.nation)} <span class="driver-name">${d.name}</span> ${classTag}</td>`;
             d.rounds.forEach((r, rIdx) => {
                 let flHtml = `<div class="fl-checkbox-container">`;
                 if (group.includes(d.dClass)) { flHtml += `<label><input type="checkbox" ${r.fl.includes(d.dClass) ? 'checked' : ''} onchange="toggleFL(${dIdx}, ${rIdx}, '${d.dClass}', this.checked)"> ${d.dClass.replace('Micro ','').replace('Mini ','')}</label>`; }
@@ -670,7 +678,7 @@
             let chunkResults = results.slice(i, i + chunkSize);
             let html = `<div class="class-table-container">`;
             
-            // PDF Header: โลโก้, ชื่อรุ่น (PPMonument)
+            // PDF Header
             html += `<div class="print-header">
                         <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--rotax-red); padding-bottom: 10px; margin-bottom: 15px;">
                             <img src="image_ea471c.png" style="height: 45px;">
@@ -685,10 +693,9 @@
                         </div>
                      </div>`;
                      
-            // Web Title (Hide on PDF)
             html += `<h3 class="screen-title class-title">${getCustomTitle(targetClass)} <span style="font-size:12px; color:#555; font-family: 'Flama', sans-serif; text-transform:none;">(Drivers: ${n} | Drops per phase: ${drop})</span></h3>`;
             
-            html += `<table width="100%" border="1" style="border-collapse: collapse; text-align: center; font-size:12px; table-layout: auto;"><thead><tr><th rowspan="2" style="width:30px;">RANK</th><th rowspan="2" style="text-align:left;">DRIVER (NO. & NAME)</th>`;
+            html += `<table width="100%" border="1" style="border-collapse: collapse; text-align: center; font-size:12px; table-layout: auto;"><thead><tr><th rowspan="2" style="width:30px;">RANK</th><th rowspan="2" style="text-align:left; padding-left:12px;">DRIVER (NO. & NAME)</th>`;
             let headRow2 = `<tr>`;
             roundVisible.forEach((vis, idx) => {
                 if(vis) {
@@ -700,8 +707,8 @@
 
             chunkResults.forEach((res, indexInChunk) => {
                 let actualRank = i + indexInChunk + 1;
-                // ชื่อนักแข่งใช้ Flama
-                let row = `<tr><td>${actualRank}</td><td style="text-align:left; max-width: 180px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"><span class="no-badge">${res.no}</span> ${getFlagHtml(res.nation)} <span>${res.name}</span></td>`;
+                // เพิ่ม padding-left ให้ช่องชื่อมีพื้นที่หายใจ และใช้ class="driver-name"
+                let row = `<tr><td>${actualRank}</td><td style="text-align:left; max-width: 180px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding-left: 12px;"><span class="no-badge">${res.no}</span> ${getFlagHtml(res.nation)} <span class="driver-name">${res.name}</span></td>`;
                 res.displayData.forEach((rd, rIdx) => {
                     if(roundVisible[rIdx]) {
                         let fBg = rd.hasFl ? 'purple-bg' : ''; let flB = rd.hasFl ? '<span class="fl-badge">(+1 FL)</span>' : ''; let dqT = rd.dq ? '<br><b style="color:var(--rotax-red); font-size:10px;">(DQ)</b>' : '';
@@ -746,7 +753,6 @@
         document.getElementById('mainTabs').style.display = 'none';
         document.getElementById('dashboardControls').style.display = 'none';
         
-        // Hide rules text on PDF
         document.querySelectorAll('.hide-on-pdf').forEach(el => el.style.display = 'none');
         
         document.body.style.background = 'white';
@@ -762,7 +768,7 @@
 
         const element = document.getElementById('pdfArea');
         const opt = {
-            margin:       [0.2, 0.1, 0.2, 0.1], // ลด Margin ซ้าย-ขวา ให้ตารางขยายได้เต็มที่
+            margin:       [0.2, 0.1, 0.2, 0.1], 
             filename:     `Official_Standings_2026.pdf`,
             image:        { type: 'jpeg', quality: 0.98 },
             html2canvas:  { scale: 2, useCORS: true, logging: false, windowWidth: 1100 }, 
@@ -771,7 +777,6 @@
         };
 
         html2pdf().set(opt).from(element).save().then(() => {
-            // Restore UI after PDF export
             document.querySelectorAll('.print-header').forEach(el => el.style.display = 'none');
             document.querySelectorAll('.screen-title').forEach(el => el.style.display = 'block');
             document.querySelectorAll('.hide-on-pdf').forEach(el => el.style.display = 'block');
