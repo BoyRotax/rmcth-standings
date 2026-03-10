@@ -7,86 +7,129 @@
     <script src="https://accounts.google.com/gsi/client" async defer></script>
     
     <style>
-        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: #f0f2f5; padding: 20px; color: #333; margin: 0;}
-        .container { max-width: 1550px; margin: auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+        /* 1. เรียกใช้งาน Custom Fonts (คุณต้องอัปโหลดไฟล์ฟอนต์ 2 ตัวนี้ขึ้น GitHub ด้วย) */
+        @font-face {
+            font-family: 'PPMonument';
+            src: url('PPMonumentExtended-Black.woff2') format('woff2'),
+                 url('PPMonumentExtended-Black.otf') format('opentype');
+            font-weight: 900;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        @font-face {
+            font-family: 'Flama';
+            src: url('Flama-Light.woff2') format('woff2'),
+                 url('Flama-Light.otf') format('opentype');
+            font-weight: 300;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        /* 2. สีองค์กรอ้างอิงจาก Brand Book */
+        :root {
+            --rotax-red: #E43138; /* Rotax Red RGB(229, 49, 56) */
+            --rotax-black: #000000;
+            --rotax-white: #FFFFFF;
+            --bg-gray: #f0f2f5;
+            --border-color: #cfd8dc;
+        }
+
+        /* 3. การตั้งค่า Font ให้กับ Elements ต่างๆ */
+        body { 
+            font-family: 'Flama', 'Segoe UI', Tahoma, sans-serif; /* ใช้ Flama-Light เป็นหลัก */
+            font-weight: 300;
+            background: var(--bg-gray); 
+            padding: 20px; 
+            color: var(--rotax-black); 
+            margin: 0;
+        }
+
+        h1, h2, h3, h4, th, .tab-btn, .btn, .class-title, .net-pts, .print-header h3 {
+            font-family: 'PPMonument', 'Arial Black', sans-serif; /* ใช้ PP Monument Black สำหรับหัวข้อ */
+            font-weight: 900;
+            text-transform: uppercase;
+        }
+
+        .container { max-width: 1550px; margin: auto; background: var(--rotax-white); padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
         
-        /* Official Header Styles - Adjusted Logo Sizes */
-        .official-header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 20px; margin-bottom: 20px; border-bottom: 3px solid #d32f2f; }
-        .logo-left img { height: 65px; object-fit: contain; } /* ปรับขนาด RAAT ลง */
+        /* Official Header Styles */
+        .official-header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 20px; margin-bottom: 20px; border-bottom: 3px solid var(--rotax-red); }
+        .logo-left img { height: 70px; object-fit: contain; }
         .logo-center { text-align: center; flex-grow: 1; }
-        .logo-center img { height: 60px; object-fit: contain; margin-bottom: 5px; } /* ปรับ RMC ลงให้สมดุล */
+        .logo-center img { height: 60px; object-fit: contain; margin-bottom: 5px; }
         .logo-right { display: flex; flex-direction: column; gap: 8px; align-items: flex-end; }
-        .logo-right img { height: 40px; object-fit: contain; } /* ปรับ Rotax/Mojo ขึ้นเล็กน้อย */
-        #mainAppTitle { margin: 0; color: #333; font-size: 20px; text-transform: uppercase; letter-spacing: 1px; }
+        .logo-right img { height: 35px; object-fit: contain; }
+        #mainAppTitle { margin: 0; color: var(--rotax-black); font-size: 20px; letter-spacing: 1px; }
 
         /* Main Tabs */
         .tabs { display: flex; gap: 5px; margin-bottom: 20px; border-bottom: 2px solid #ddd; align-items: center;}
-        .tab-btn { padding: 12px 25px; cursor: pointer; border: none; background: #e0e0e0; font-weight: bold; border-radius: 8px 8px 0 0; transition: 0.3s; font-size: 14px; }
-        .tab-btn.active { background: #d32f2f; color: white; }
-        .tab-content { display: none; padding: 20px; background: #fff; border: 1px solid #ddd; border-top: none; border-radius: 0 0 8px 8px; }
+        .tab-btn { padding: 12px 25px; cursor: pointer; border: none; background: #e0e0e0; border-radius: 8px 8px 0 0; transition: 0.3s; font-size: 13px; letter-spacing: 0.5px;}
+        .tab-btn.active { background: var(--rotax-red); color: var(--rotax-white); }
+        .tab-content { display: none; padding: 20px; background: var(--rotax-white); border: 1px solid #ddd; border-top: none; border-radius: 0 0 8px 8px; }
         .tab-content.active { display: block; }
 
         /* Sub Tabs for DB */
         .sub-tabs { display: flex; gap: 8px; margin-bottom: 15px; flex-wrap: wrap; }
-        .sub-tab-btn { padding: 8px 16px; cursor: pointer; border: 1px solid #b0bec5; background: #f8f9fa; border-radius: 20px; transition: 0.2s; font-size: 13px; color: #455a64; font-weight: 600; }
+        .sub-tab-btn { padding: 8px 16px; cursor: pointer; border: 1px solid #b0bec5; background: #f8f9fa; border-radius: 20px; transition: 0.2s; font-size: 13px; color: #455a64; font-family: 'Flama', sans-serif; font-weight: bold;}
         .sub-tab-btn:hover { background: #e3f2fd; }
-        .sub-tab-btn.active { background: #1565c0; color: white; border-color: #1565c0; }
+        .sub-tab-btn.active { background: var(--rotax-black); color: var(--rotax-white); border-color: var(--rotax-black); }
 
-        /* Table Optimization for PDF */
-        table { width: 100%; border-collapse: collapse; font-size: 12px; margin-bottom: 0px; table-layout: auto; }
-        th, td { border: 1px solid #cfd8dc; padding: 5px 4px; text-align: center; } /* ลด Padding ลงเพื่อลดความกว้าง */
-        th { background:#f8f9fa; line-height: 1.2; }
+        /* Table Optimization */
+        table { width: 100%; border-collapse: collapse; font-size: 13px; margin-bottom: 0px; }
+        th, td { border: 1px solid var(--border-color); padding: 8px 6px; text-align: center; }
+        th { background:#f8f9fa; font-size: 11px; letter-spacing: 0.5px; }
         .sticky-th { position: sticky; top: 0; z-index: 10; }
+        td { font-weight: bold; } /* ทำให้ตัวเลขในตารางอ่านง่ายขึ้น */
         
         /* Dashboard Styles */
-        .purple-bg { background-color: #f3e5f5 !important; border: 2px solid #9c27b0 !important; color: #4a148c; font-weight: bold; }
-        .fl-badge { color: #9c27b0; font-size: 10px; font-weight: bold; display: block; margin-top: 2px; }
-        .dropped { text-decoration: line-through; color: #f44336 !important; font-weight: bold; }
-        .net-pts { background: #fff9c4; font-weight: bold; font-size: 1.3em; color: #b71c1c; border: 2px solid #fbc02d !important; }
-        .no-badge { background: #ffeb3b; color: #000; padding: 2px 6px; border-radius: 4px; font-weight: bold; margin-right: 4px; border: 1px solid #fbc02d; font-size: 12px; }
+        .purple-bg { background-color: #f3e5f5 !important; border: 2px solid #9c27b0 !important; color: #4a148c; }
+        .fl-badge { color: #9c27b0; font-size: 10px; display: block; margin-top: 2px; font-family: 'Flama', sans-serif;}
+        .dropped { text-decoration: line-through; color: var(--rotax-red) !important; font-weight: 300; }
+        .net-pts { background: #fff9c4; font-size: 1.3em; color: var(--rotax-red); border: 2px solid #fbc02d !important; }
+        .no-badge { background: #ffeb3b; color: var(--rotax-black); padding: 2px 6px; border-radius: 4px; margin-right: 4px; border: 1px solid #fbc02d; font-size: 12px; font-family: 'PPMonument', sans-serif; }
         .flag-icon { width: 22px; height: 15px; vertical-align: middle; margin-right: 4px; border: 1px solid #ccc; border-radius: 2px; object-fit: cover; }
 
         /* Form & Inputs */
-        .input-text { padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-size: 14px; text-transform: uppercase; }
-        select { padding: 6px; border-radius: 4px; border: 1px solid #999; font-weight: bold; cursor: pointer; font-size: 12px; }
+        .input-text { padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-size: 14px; font-family: 'Flama', sans-serif; font-weight: bold;}
+        select { padding: 6px; border-radius: 4px; border: 1px solid #999; cursor: pointer; font-size: 12px; font-family: 'Flama', sans-serif; font-weight: bold;}
         .score-select { width: 50px; }
         .class-select { width: 140px; }
         
         /* Buttons */
-        .btn { padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; color: white; margin-right: 10px; transition: 0.2s; }
+        .btn { padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; color: var(--rotax-white); margin-right: 10px; transition: 0.2s; font-size: 12px; letter-spacing: 0.5px;}
         .btn:hover { opacity: 0.8; }
-        .btn-save { background: #2e7d32; }
+        .btn-save { background: var(--rotax-black); }
         .btn-save:disabled { background: #9e9e9e; cursor: not-allowed; }
-        .btn-add { background: #1976d2; }
+        .btn-add { background: var(--rotax-red); }
         .btn-csv { background: #107c41; }
-        .btn-pdf { background: #c62828; }
+        .btn-pdf { background: var(--rotax-red); }
         .btn-import { background: #f57c00; }
         .btn-template { background: #546e7a; margin-right: 10px;}
-        .btn-del { background: #d32f2f; padding: 6px 12px; font-size: 12px; }
+        .btn-del { background: var(--rotax-red); padding: 6px 12px; font-size: 11px; }
         
         .header-controls { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; margin-bottom: 15px; background: #f1f8e9; padding: 15px; border-radius: 8px; border: 1px solid #c5e1a5;}
         .add-driver-box { background: #e3f2fd; padding: 20px; border-radius: 8px; border: 1px solid #bbdefb; margin-bottom: 20px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
         
         /* PDF Layout */
-        .class-table-container { background: #fff; padding-bottom: 10px; page-break-inside: avoid; }
-        .class-title { color: #1565c0; font-size: 18px; border-bottom: 3px solid #1565c0; padding-bottom: 4px; display: inline-block; margin-bottom: 10px; margin-top: 5px;}
+        .class-table-container { background: var(--rotax-white); padding-bottom: 10px; page-break-inside: avoid; }
+        .class-title { color: var(--rotax-red); font-size: 18px; border-bottom: 3px solid var(--rotax-red); padding-bottom: 4px; display: inline-block; margin-bottom: 10px; margin-top: 5px; letter-spacing: 1px;}
         .pdf-page-break { page-break-before: always; break-before: page; }
-        .pos-badge { font-size: 9px; color: #555; background: #eee; padding: 1px 3px; border-radius: 3px; display: inline-block; margin-bottom: 2px;}
-        .fl-checkbox-container { display: inline-flex; flex-direction: column; text-align: left; background: #fff; padding: 4px 6px; border-radius: 4px; border: 1px solid #ddd; }
-        .fl-checkbox-container label { font-size: 10px; cursor: pointer; margin-bottom: 2px; white-space: nowrap; color: #4a148c; font-weight: bold;}
+        .pos-badge { font-size: 10px; color: #555; background: #eee; padding: 1px 4px; border-radius: 3px; display: inline-block; margin-bottom: 3px; font-family: 'Flama', sans-serif;}
+        .fl-checkbox-container { display: inline-flex; flex-direction: column; text-align: left; background: var(--rotax-white); padding: 4px 6px; border-radius: 4px; border: 1px solid #ddd; }
+        .fl-checkbox-container label { font-size: 11px; cursor: pointer; margin-bottom: 2px; white-space: nowrap; color: #4a148c; font-family: 'Flama', sans-serif; font-weight: bold;}
         .print-header { display: none; text-align: center; margin-bottom: 15px; }
 
         .auth-section { margin-left: auto; display: flex; align-items: center; gap: 15px; }
-        .user-badge { background: #e3f2fd; color: #1565c0; padding: 8px 15px; border-radius: 20px; font-weight: bold; border: 1px solid #90caf9; font-size: 13px; }
+        .user-badge { background: #e3f2fd; color: #1565c0; padding: 8px 15px; border-radius: 20px; font-weight: bold; border: 1px solid #90caf9; font-size: 13px; font-family: 'Flama', sans-serif;}
 
         @media screen and (max-width: 768px) {
             .official-header { flex-direction: column; gap: 15px; text-align: center; }
             .logo-right { align-items: center; flex-direction: row; justify-content: center; }
         }
 
-        /* Loading Spinner */
         .loader-box { text-align: center; padding: 50px; }
-        .spinner { border: 4px solid #f3f3f3; border-top: 4px solid #d32f2f; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 0 auto 15px auto; }
+        .spinner { border: 4px solid #f3f3f3; border-top: 4px solid var(--rotax-red); border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 0 auto 15px auto; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
@@ -108,21 +151,21 @@
     </div>
     
     <div class="tabs" id="mainTabs">
-        <button class="tab-btn active" id="tab-dash" onclick="switchTab('dashboard')">📊 Standings</button>
-        <button class="tab-btn admin-only" id="tab-data" onclick="switchTab('data-entry')" style="display:none;">📝 Data Entry</button>
-        <button class="tab-btn admin-only" id="tab-db" onclick="switchTab('driver-db')" style="display:none;">📇 Driver DB</button>
+        <button class="tab-btn active" id="tab-dash" onclick="switchTab('dashboard')">📊 STANDINGS</button>
+        <button class="tab-btn admin-only" id="tab-data" onclick="switchTab('data-entry')" style="display:none;">📝 DATA ENTRY</button>
+        <button class="tab-btn admin-only" id="tab-db" onclick="switchTab('driver-db')" style="display:none;">📇 DRIVER DB</button>
 
         <div class="auth-section">
             <div id="googleBtnWrapper"></div>
             <div id="userInfo" class="user-badge" style="display:none;"></div>
-            <button id="logoutBtn" class="btn" style="display:none; background:#555; padding: 8px 15px; font-size: 12px; margin: 0;" onclick="handleSignOut()">Logout</button>
+            <button id="logoutBtn" class="btn" style="display:none; background:#555; padding: 8px 15px; font-size: 11px; margin: 0;" onclick="handleSignOut()">LOGOUT</button>
         </div>
     </div>
     
     <div id="dashboard" class="tab-content active">
         <div class="header-controls" id="dashboardControls">
             <div>
-                <label for="classFilter" style="font-weight: bold; font-size: 1.1em; color: #33691e;">🏆 Select Class: </label>
+                <label for="classFilter" style="font-weight: bold; font-size: 1.1em; color: var(--rotax-red); font-family: 'PPMonument', sans-serif;">🏆 SELECT CLASS: </label>
                 <select id="classFilter" onchange="renderDashboard()" style="padding: 8px; font-size: 1em;">
                     <option value="ALL">All Classes (Separated Tables)</option>
                     <option value="Micro MAX">Micro MAX</option>
@@ -135,29 +178,29 @@
                 </select>
             </div>
             <div>
-                <button class="btn btn-csv" onclick="exportCSV()">📥 Export Excel (CSV)</button>
-                <button class="btn btn-pdf" onclick="exportPDF()">📄 Export PDF</button>
+                <button class="btn btn-csv" onclick="exportCSV()">📥 EXCEL (CSV)</button>
+                <button class="btn btn-pdf" onclick="exportPDF()">📄 EXPORT PDF</button>
             </div>
         </div>
 
         <div id="pdfArea" style="background: white; padding: 0;">
-            <div id="pdfTimestampArea" style="display: none; text-align: right; font-size: 11px; color: #666; margin-bottom: 5px;">
+            <div id="pdfTimestampArea" style="display: none; text-align: right; font-size: 11px; color: #666; margin-bottom: 5px; font-family: 'Flama', sans-serif;">
                 <span id="pdfTimestamp"></span>
             </div>
 
             <div id="standingsWrapper">
                 <div class="loader-box">
                     <div class="spinner"></div>
-                    <h3 style="color:#1565c0; margin:0;">🔄 Loading Data from Cloud...</h3>
+                    <h3 style="color:var(--rotax-red); margin:0;">🔄 Loading Data from Cloud...</h3>
                 </div>
             </div>
             
-            <div class="rule-info" id="pdfRuleInfo">
-                <strong>📊 Dynamic Class Scoring Rules:</strong> <br>
+            <div class="rule-info" id="pdfRuleInfo" style="margin-top: 20px; border-left: 4px solid var(--rotax-red); padding-left: 10px; background: #fff; font-family: 'Flama', sans-serif;">
+                <strong style="font-family: 'PPMonument', sans-serif;">📊 DYNAMIC CLASS SCORING RULES:</strong> <br>
                 <small>1. Points are automatically calculated based on class-specific rankings. (The main number is the <b>Points</b>, the grey badge is the <b>Class Position</b>).<br>
-                2. <span style="color:red; text-decoration:line-through">Strikethrough</span> numbers indicate the dropped worst scores.<br>
+                2. <span style="color:var(--rotax-red); text-decoration:line-through">Strikethrough</span> numbers indicate the dropped worst scores.<br>
                 3. <span style="color:#9c27b0; font-weight:bold;">(+1 FL)</span> indicates bonus points for Fastest Lap in the Final.<br>
-                4. <span style="color:#ff9800; font-weight:bold;">(DNS)</span> Did Not Start will get 0 points. <span style="color:red; font-weight:bold;">(DQ)</span> Disqualification will get 0 points and cannot be dropped.</small>
+                4. <span style="color:#ff9800; font-weight:bold;">(DNS)</span> Did Not Start will get 0 points. <span style="color:var(--rotax-red); font-weight:bold;">(DQ)</span> Disqualification will get 0 points and cannot be dropped.</small>
             </div>
         </div>
     </div>
@@ -168,7 +211,7 @@
                 <h4 style="color: #e65100; margin: 0 0 10px 0;">⚠️ IMPORTANT: Please enter the "Overall Position" at the finish line.</h4>
             </div>
             <div>
-                <label for="dataClassFilter" style="font-weight: bold; font-size: 1.1em; color: #e65100;">Select Grid: </label>
+                <label for="dataClassFilter" style="font-weight: bold; font-size: 1.1em; color: #e65100; font-family: 'PPMonument', sans-serif;">SELECT GRID: </label>
                 <select id="dataClassFilter" onchange="renderDataEntry()" style="padding: 8px; font-size: 1em;">
                     <option value="Micro MAX">Micro MAX (inc. Rookie)</option>
                     <option value="Mini MAX">Mini MAX (inc. Rookie)</option>
@@ -178,26 +221,26 @@
                 </select>
             </div>
             <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px;">
-                <button class="btn btn-template" onclick="downloadDataTemplate()">📄 Download Template</button>
+                <button class="btn btn-template" onclick="downloadDataTemplate()">📄 DOWNLOAD TEMPLATE</button>
                 <input type="file" id="csvDataInput" accept=".csv" style="display: none;" onchange="handleDataEntryImport(event)">
-                <button class="btn btn-import" onclick="document.getElementById('csvDataInput').click()">📤 Import Data (CSV)</button>
-                <button class="btn btn-save" id="saveCalcBtn" onclick="saveAndGoToDashboard()">💾 Save & Calculate</button>
+                <button class="btn btn-import" onclick="document.getElementById('csvDataInput').click()">📤 IMPORT DATA</button>
+                <button class="btn btn-save" id="saveCalcBtn" onclick="saveAndGoToDashboard()">💾 SAVE & CALCULATE</button>
             </div>
         </div>
         <div style="overflow-x: auto;">
             <table id="inputTable" border="1">
                 <thead>
                     <tr>
-                        <th rowspan="2" style="width: 50px;" class="sticky-th">No.</th>
-                        <th rowspan="2" style="text-align:left; min-width:180px;" class="sticky-th">Driver Name</th>
-                        <th colspan="6" style="background:#ffebee">Round 1 (Overall Pos)</th>
-                        <th colspan="6" style="background:#e3f2fd">Round 2 (Overall Pos)</th>
-                        <th colspan="6" style="background:#f1f8e9">Round 3 (Overall Pos)</th>
+                        <th rowspan="2" style="width: 40px;" class="sticky-th">NO.</th>
+                        <th rowspan="2" style="text-align:left; min-width:180px;" class="sticky-th">DRIVER NAME</th>
+                        <th colspan="6" style="background:#ffebee">ROUND 1 (Overall Pos)</th>
+                        <th colspan="6" style="background:#e3f2fd">ROUND 2 (Overall Pos)</th>
+                        <th colspan="6" style="background:#f1f8e9">ROUND 3 (Overall Pos)</th>
                     </tr>
                     <tr>
-                        <th style="background:#ffebee; font-size:11px;">After<br>H 1-2</th><th style="background:#ffebee; font-size:11px;">After<br>H1-2 & SH</th><th style="background:#ffebee; font-size:11px;">Final</th><th style="background:#ffebee; min-width:80px; font-size:11px;">FL (Final)</th><th style="background:#ffebee; font-size:11px;">DNS (F)</th><th style="background:#ffebee; font-size:11px;">DQ</th>
-                        <th style="background:#e3f2fd; font-size:11px;">After<br>H 1-2</th><th style="background:#e3f2fd; font-size:11px;">After<br>H1-2 & SH</th><th style="background:#e3f2fd; font-size:11px;">Final</th><th style="background:#e3f2fd; min-width:80px; font-size:11px;">FL (Final)</th><th style="background:#e3f2fd; font-size:11px;">DNS (F)</th><th style="background:#e3f2fd; font-size:11px;">DQ</th>
-                        <th style="background:#f1f8e9; font-size:11px;">After<br>H 1-2</th><th style="background:#f1f8e9; font-size:11px;">After<br>H1-2 & SH</th><th style="background:#f1f8e9; font-size:11px;">Final</th><th style="background:#f1f8e9; min-width:80px; font-size:11px;">FL (Final)</th><th style="background:#f1f8e9; font-size:11px;">DNS (F)</th><th style="background:#f1f8e9; font-size:11px;">DQ</th>
+                        <th style="background:#ffebee;">After<br>H1-2</th><th style="background:#ffebee;">After<br>H1-2 & SH</th><th style="background:#ffebee;">Final</th><th style="background:#ffebee; min-width:70px;">FL (Final)</th><th style="background:#ffebee;">DNS (F)</th><th style="background:#ffebee;">DQ</th>
+                        <th style="background:#e3f2fd;">After<br>H1-2</th><th style="background:#e3f2fd;">After<br>H1-2 & SH</th><th style="background:#e3f2fd;">Final</th><th style="background:#e3f2fd; min-width:70px;">FL (Final)</th><th style="background:#e3f2fd;">DNS (F)</th><th style="background:#e3f2fd;">DQ</th>
+                        <th style="background:#f1f8e9;">After<br>H1-2</th><th style="background:#f1f8e9;">After<br>H1-2 & SH</th><th style="background:#f1f8e9;">Final</th><th style="background:#f1f8e9; min-width:70px;">FL (Final)</th><th style="background:#f1f8e9;">DNS (F)</th><th style="background:#f1f8e9;">DQ</th>
                     </tr>
                 </thead>
                 <tbody id="dataEntryBody"></tbody>
@@ -207,7 +250,7 @@
 
     <div id="driver-db" class="tab-content">
         <div class="add-driver-box">
-            <strong style="color: #1565c0;">Register New Driver: </strong>
+            <strong style="color: var(--rotax-red); font-family: 'PPMonument', sans-serif;">REGISTER NEW DRIVER: </strong>
             <input type="number" id="newNo" class="input-text" placeholder="No." style="width: 80px;" oninput="autoDetectClass()">
             <input type="text" id="newNation" class="input-text" placeholder="Nation (e.g. THA)" style="width: 140px;" maxlength="3" title="ISO 3166-1 alpha-3">
             <input type="text" id="newName" class="input-text" placeholder="Driver Name" style="width: 180px; text-transform:none;"> 
@@ -233,10 +276,10 @@
                     <option value="Senior MAX Masters">Senior MAX Masters</option>
                 </select>
             </div>
-            <button class="btn btn-add" onclick="addNewDriver()">+ Add Driver</button>
+            <button class="btn btn-add" onclick="addNewDriver()">+ ADD DRIVER</button>
             <div style="border-left: 2px solid #90caf9; margin-left: 10px; padding-left: 15px; display: inline-flex; flex-direction: column;">
                 <input type="file" id="csvFileInput" accept=".csv" style="display: none;" onchange="handleCSVImport(event)">
-                <button class="btn btn-import" onclick="document.getElementById('csvFileInput').click()">📤 Import Drivers (CSV)</button>
+                <button class="btn btn-import" onclick="document.getElementById('csvFileInput').click()">📤 IMPORT (CSV)</button>
             </div>
         </div>
         
@@ -254,12 +297,12 @@
         <table id="dbTable" border="1">
             <thead>
                 <tr>
-                    <th style="width: 80px;" class="sticky-th">No.</th>
-                    <th style="width: 100px;" class="sticky-th">Nation</th>
-                    <th style="text-align: left;" class="sticky-th">Driver Name</th>
-                    <th style="width: 180px;" class="sticky-th">Main Class</th>
-                    <th style="width: 180px;" class="sticky-th">Sub Class</th>
-                    <th style="width: 80px;" class="sticky-th">Action</th>
+                    <th style="width: 80px;" class="sticky-th">NO.</th>
+                    <th style="width: 100px;" class="sticky-th">NATION</th>
+                    <th style="text-align: left;" class="sticky-th">DRIVER NAME</th>
+                    <th style="width: 180px;" class="sticky-th">MAIN CLASS</th>
+                    <th style="width: 180px;" class="sticky-th">SUB CLASS</th>
+                    <th style="width: 80px;" class="sticky-th">ACTION</th>
                 </tr>
             </thead>
             <tbody id="driverDbBody"></tbody>
@@ -272,7 +315,7 @@
     // 🔗 API URL (Google Sheets Database)
     // ⚠️ นำ URL ของคุณมาใส่ตรงนี้ครับ ⚠️
     // =========================================
-    const API_URL = "https://script.google.com/macros/s/AKfycbzpgduN5h7afu1eeolF2nNjnca-eeTF-cpMYH_zLRF7EL15txMwjsIJLZqHOxwj6RCm/exec"; // <-- แก้ไขตรงนี้
+    const API_URL = "https://script.google.com/macros/s/AKfycbwP3kS5DiZQZ3arr8X6FaogMxwSXeVNPzvls7moSI2CCmpCtx8wW3uOSZ8y3t7mcGK8/exectps://script.google.com/macros/s/YOUR_API_URL_HERE/exec"; 
 
     let drivers = [];
     let currentFilteredResults = [];
@@ -338,7 +381,7 @@
     }
 
     // =========================================
-    // 2. ระบบดึง/บันทึกข้อมูลจาก Cloud (Google Sheets)
+    // 2. ระบบดึง/บันทึกข้อมูลจาก Cloud
     // =========================================
     window.onload = function () { 
         initializeGoogleAuth(); 
@@ -376,7 +419,6 @@
 
     async function pushToCloud() {
         localStorage.setItem('rmcat_master_cloud_cache', JSON.stringify(drivers));
-        
         try {
             await fetch(API_URL, {
                 method: 'POST',
@@ -652,8 +694,8 @@
         filteredDrivers.forEach(item => {
             let d = item.d; let dIdx = item.originalIndex;
             let displayClasses = [d.dClass]; if (d.dClass2) displayClasses.push(d.dClass2);
-            let classTag = `<br><small style="color:#1976d2; font-size:10px;">(Dual: ${displayClasses.join(' & ')})</small>`;
-            let row = `<tr><td><span class="no-badge">${d.no}</span></td><td style="text-align:left; font-weight:bold;">${getFlagHtml(d.nation)} ${d.name} ${classTag}</td>`;
+            let classTag = `<br><small style="color:#1565c0; font-size:10px; font-family: 'Flama', sans-serif;">(Dual: ${displayClasses.join(' & ')})</small>`;
+            let row = `<tr><td><span class="no-badge">${d.no}</span></td><td style="text-align:left;">${getFlagHtml(d.nation)} <span style="font-family: 'PPMonument', sans-serif;">${d.name}</span> ${classTag}</td>`;
             d.rounds.forEach((r, rIdx) => {
                 let flHtml = `<div class="fl-checkbox-container">`;
                 if (group.includes(d.dClass)) {
@@ -675,7 +717,7 @@
 
     async function saveAndGoToDashboard() { 
         const btn = document.getElementById('saveCalcBtn');
-        btn.innerHTML = "⏳ Saving to Cloud...";
+        btn.innerHTML = "⏳ SAVING TO CLOUD...";
         btn.disabled = true;
 
         try {
@@ -683,7 +725,7 @@
         } finally {
             document.getElementById('classFilter').value = "ALL"; 
             switchTab('dashboard');
-            btn.innerHTML = "💾 Save & Calculate";
+            btn.innerHTML = "💾 SAVE & CALCULATE";
             btn.disabled = false;
         }
     }
@@ -708,14 +750,13 @@
     // ====== Standings Engine & Pagination ======
     function getDropIdx(ptsArr, dqArr, count) {
         if (count === 0) return [];
-        // กฎ: ถ้าเป็น DQ จะห้ามเอามาตัดแต้มทิ้ง (may not be discounted)
         let eligible = ptsArr.map((p, i) => ({ p, i, dq: dqArr[i] })).filter(x => !x.dq);
         eligible.sort((a, b) => a.p - b.p);
         return eligible.slice(0, count).map(x => x.i);
     }
 
     function getCustomTitle(cls) {
-        return `${cls} Points Standing: Grand Final Ticket 2026`;
+        return `${cls} POINTS STANDING: GRAND FINAL TICKET 2026`;
     }
 
     function buildClassTableHtmlChunks(targetClass) {
@@ -725,11 +766,9 @@
         let n = classDrivers.length; let drop = (n >= 5 && n <= 7) ? 1 : (n >= 8 ? 2 : 0);
         const getClassPointsMap = (rIdx, session, pointsTable) => {
             let ptsMap = {}; let posMap = {};
-            // กรองคนที่มีตำแหน่งและไม่โดน DQ ออกมาเรียงอันดับ
             let racers = classDrivers.map(d => ({ no: d.no, rawPos: d.rounds[rIdx][session], dq: d.rounds[rIdx].dq, dns: d.rounds[rIdx].dns }))
                 .filter(x => x.rawPos > 0 && !x.dq);
             
-            // ถ้าเป็นรอบชิง และคนนั้นโดน DNS จะไม่มีอันดับให้ และไม่ได้แต้ม
             if (session === 'f') {
                 racers = racers.filter(x => !x.dns);
             }
@@ -775,13 +814,13 @@
             let chunkResults = results.slice(i, i + chunkSize);
             let html = `<div class="class-table-container">`;
             
-            // PDF Header - Adjusted sizes
+            // PDF Header 
             html += `<div class="print-header">
-                        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #d32f2f; padding-bottom: 10px; margin-bottom: 10px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--rotax-red); padding-bottom: 10px; margin-bottom: 10px;">
                             <img src="image_ea471c.png" style="height: 45px;">
                             <div style="text-align: center;">
                                 <img src="image_ea46f7.png" style="height: 45px; margin-bottom: 5px;"><br>
-                                <h3 style="margin: 0; font-size: 16px; color: #333;">${getCustomTitle(targetClass)}</h3>
+                                <h3 style="margin: 0; font-size: 16px; color: var(--rotax-black);">${getCustomTitle(targetClass)}</h3>
                             </div>
                             <div style="display: flex; gap: 15px; align-items: center;">
                                 <img src="image_ea4713.png" style="height: 35px;">
@@ -790,14 +829,14 @@
                         </div>
                      </div>`;
                      
-            html += `<h3 class="screen-title class-title">🏆 ${getCustomTitle(targetClass)} <span style="font-size:14px; color:#555;">(Drivers: ${n} | Drops per phase: ${drop})</span></h3>`;
+            html += `<h3 class="screen-title class-title">🏆 ${getCustomTitle(targetClass)} <span style="font-size:12px; color:#555; font-family: 'Flama', sans-serif; text-transform:none;">(Drivers: ${n} | Drops per phase: ${drop})</span></h3>`;
             
-            // Reduced Driver column width to max 180px and font-size to 12px for better PDF fit
-            html += `<table width="100%" border="1" style="border-collapse: collapse; text-align: center; font-size:12px;"><thead><tr><th rowspan="2" style="width:30px;">Rank</th><th rowspan="2" style="text-align:left; max-width: 160px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Driver (No. & Name)</th>`;
+            // ใช้ table-layout: auto เพื่อแก้ปัญหาการเบี้ยว และลดฟอนต์ลงเล็กน้อยเพื่อไม่ให้ตกขอบใน PDF
+            html += `<table width="100%" border="1" style="border-collapse: collapse; text-align: center; font-size:12px; table-layout: auto;"><thead><tr><th rowspan="2" style="width:30px;">RANK</th><th rowspan="2" style="text-align:left;">DRIVER (NO. & NAME)</th>`;
             let headRow2 = `<tr>`;
             roundVisible.forEach((vis, idx) => {
                 if(vis) {
-                    html += `<th colspan="3" style="background:${bgColors[idx]}">Round ${idx+1} (Pts)</th>`;
+                    html += `<th colspan="3" style="background:${bgColors[idx]}">ROUND ${idx+1} (Pts)</th>`;
                     headRow2 += `<th style="background:${bgColors[idx]}; line-height: 1.2; padding: 4px;">After<br>H 1-2</th><th style="background:${bgColors[idx]}; line-height: 1.2; padding: 4px;">After<br>H1-2 & SH</th><th style="background:${bgColors[idx]}; padding: 4px;">Final</th>`;
                 }
             });
@@ -805,22 +844,20 @@
 
             chunkResults.forEach((res, indexInChunk) => {
                 let actualRank = i + indexInChunk + 1;
-                // Add class to restrict name width on PDF
-                let row = `<tr><td>${actualRank}</td><td style="text-align:left; max-width: 160px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"><span class="no-badge">${res.no}</span> ${getFlagHtml(res.nation)} <b>${res.name}</b></td>`;
+                let row = `<tr><td style="font-family:'PPMonument', sans-serif;">${actualRank}</td><td style="text-align:left;"><span class="no-badge">${res.no}</span> ${getFlagHtml(res.nation)} <b style="font-family:'PPMonument', sans-serif; font-size: 13px;">${res.name}</b></td>`;
                 res.displayData.forEach((rd, rIdx) => {
                     if(roundVisible[rIdx]) {
-                        let fBg = rd.hasFl ? 'purple-bg' : ''; let flB = rd.hasFl ? '<span class="fl-badge">(+1 FL)</span>' : ''; let dqT = rd.dq ? '<br><b style="color:red; font-size:10px;">(DQ)</b>' : '';
+                        let fBg = rd.hasFl ? 'purple-bg' : ''; let flB = rd.hasFl ? '<span class="fl-badge">(+1 FL)</span>' : ''; let dqT = rd.dq ? '<br><b style="color:var(--rotax-red); font-size:10px;">(DQ)</b>' : '';
                         let hPos = rd.pos.h ? `<span class="pos-badge">P${rd.pos.h}</span><br>` : '';
                         let sPos = rd.pos.s ? `<span class="pos-badge">P${rd.pos.s}</span><br>` : '';
-                        
-                        let fPos = rd.dns ? `<span class="pos-badge" style="background:#ff9800; color:#fff; border:1px solid #e65100;">DNS</span><br>` : (rd.pos.f ? `<span class="pos-badge">P${rd.pos.f}</span><br>` : '');
+                        let fPos = rd.dns ? `<span class="pos-badge" style="background:#ff9800; color:var(--rotax-white); border:1px solid #e65100;">DNS</span><br>` : (rd.pos.f ? `<span class="pos-badge">P${rd.pos.f}</span><br>` : '');
                         
                         row += `<td>${hPos}<span class="${rd.drop.h ? 'dropped' : ''}">${rd.pts.h}</span></td>
                                 <td>${sPos}<span class="${rd.drop.s ? 'dropped' : ''}">${rd.pts.s}</span></td>
                                 <td class="${fBg}">${fPos}<span class="${rd.drop.f ? 'dropped' : ''}">${rd.pts.f}</span>${flB}${dqT}</td>`;
                     }
                 });
-                row += `<td class="net-pts">${res.net}</td></tr>`; html += row;
+                row += `<td class="net-pts" style="font-family:'PPMonument', sans-serif;">${res.net}</td></tr>`; html += row;
             });
             html += `</tbody></table></div>`; htmlChunks.push(html);
         }
@@ -841,7 +878,7 @@
         });
 
         wrapper.innerHTML = allChunks.map((chunk, index) => { return (index > 0 ? '<div class="pdf-page-break"></div>' : '') + chunk; }).join('');
-        if (wrapper.innerHTML === '') wrapper.innerHTML = `<div style="padding: 20px; text-align: center; color: #666; background: #fff; border-radius: 8px;">No data available.</div>`;
+        if (wrapper.innerHTML === '') wrapper.innerHTML = `<div style="padding: 20px; text-align: center; color: #666; background: #fff; border-radius: 8px; font-family:'Flama', sans-serif;">No data available.</div>`;
     }
 
     function exportPDF() {
@@ -864,10 +901,10 @@
 
         const element = document.getElementById('pdfArea');
         const opt = {
-            // ปรับระยะขอบให้กว้างขึ้น เพื่อป้องกันตารางตกขอบขวา
-            margin:       [0.2, 0.2, 0.2, 0.2], 
+            margin:       [0.3, 0.3, 0.3, 0.3], // เพิ่ม Margin ซ้าย-ขวา
             filename:     `Official_Standings_2026.pdf`,
             image:        { type: 'jpeg', quality: 0.98 },
+            // บังคับ windowWidth ที่ 1200 เพื่อไม่ให้ตารางหดตามหน้าจอเบราว์เซอร์
             html2canvas:  { scale: 2, useCORS: true, logging: false, windowWidth: 1200 }, 
             jsPDF:        { unit: 'in', format: 'a4', orientation: 'landscape' },
             pagebreak:    { mode: ['css', 'legacy'] }
@@ -901,4 +938,3 @@
 </script>
 </body>
 </html>
-
