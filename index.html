@@ -146,7 +146,6 @@
         .class-title { color: var(--rotax-red); font-size: 18px; padding-bottom: 6px; display: inline-block; margin-bottom: 15px; margin-top: 10px; letter-spacing: 1px;}
         .pdf-page-break { page-break-before: always; break-before: page; }
         
-        /* บังคับไม่ให้ PDF ตัดแถวตารางขาดครึ่ง */
         tr { page-break-inside: avoid; }
         
         .fl-checkbox-container { display: inline-flex; flex-direction: column; text-align: left; background: var(--rotax-white); padding: 4px 6px; }
@@ -488,7 +487,7 @@
         mappedDrivers.sort((a, b) => (parseInt(a.d.no) || 0) - (parseInt(b.d.no) || 0));
 
         mappedDrivers.forEach((item, displayIndex) => {
-            let seq = displayIndex + 1; // ลำดับที่
+            let seq = displayIndex + 1; 
             let d = item.d; let idx = item.originalIndex; let nat = d.nation || 'THA';
             let classOptions1 = CLASSES.map(c => `<option value="${c}" ${d.dClass === c ? 'selected' : ''}>${c}</option>`).join('');
             let classOptions2 = `<option value="">- None -</option>` + CLASSES.map(c => `<option value="${c}" ${d.dClass2 === c ? 'selected' : ''}>${c}</option>`).join('');
@@ -618,7 +617,7 @@
         if (filteredDrivers.length === 0) { body.innerHTML = `<tr><td colspan="21" style="padding: 30px; font-weight: normal; color:#888;">No drivers in this grid.</td></tr>`; return; }
 
         filteredDrivers.forEach((item, displayIndex) => {
-            let seq = displayIndex + 1; // ลำดับที่
+            let seq = displayIndex + 1; 
             let d = item.d; let dIdx = item.originalIndex;
             let displayClasses = [d.dClass]; if (d.dClass2) displayClasses.push(d.dClass2);
             let classTag = `<br><small style="color:#64748b; font-size:11px;">(Dual: ${displayClasses.join(' & ')})</small>`;
@@ -730,9 +729,8 @@
         results.forEach(res => { res.displayData.forEach((rd, idx) => { if (rd.pts.h > 0 || rd.pts.s > 0 || rd.pts.f > 0 || rd.hasFl || rd.dq || rd.dns) roundVisible[idx] = true; }); });
         if (!roundVisible.includes(true)) roundVisible[0] = true;
 
-        // 🔥 เอาการซอยตาราง (Chunk) ออก เพื่อให้มันยาวต่อเนื่องกันเลย
         let htmlChunks = []; 
-        let chunkResults = results; // รวบทั้งหมดเป็นก้อนเดียว
+        let chunkResults = results;
         
         let html = `<div class="class-table-container">`;
         
@@ -806,7 +804,6 @@
             if (data.htmlChunks.length > 0) { allChunks.push(...data.htmlChunks); currentFilteredResults.push(...data.results); }
         });
 
-        // ลบ page-break ออกเพราะเราไม่ได้ซอยตารางแล้ว แต่ให้มีระยะห่างระหว่างรุ่นแทน
         wrapper.innerHTML = allChunks.map((chunk, index) => { return (index > 0 ? '<div style="margin-top: 40px;" class="pdf-page-break"></div>' : '') + chunk; }).join('');
         if (wrapper.innerHTML === '') wrapper.innerHTML = `<div style="padding: 40px; text-align: center; color: #888; background: #fff; border-radius: 12px; font-family:'Flama', sans-serif;">No race data available.</div>`;
     }
