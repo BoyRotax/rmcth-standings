@@ -679,10 +679,13 @@
         if (classDrivers.length === 0) return { htmlChunks: [], results: [] };
 
         let n = classDrivers.length; let drop = (n >= 5 && n <= 7) ? 1 : (n >= 8 ? 2 : 0);
+        
+        // ฟังก์ชันแจกคะแนน + แปลงอันดับ
         const getClassPointsMap = (rIdx, session, pointsTable) => {
             let ptsMap = {}; let posMap = {};
             let racers = classDrivers.map(d => ({ no: d.no, rawPos: d.rounds[rIdx][session], dq: d.rounds[rIdx].dq, dns: d.rounds[rIdx].dns })).filter(x => x.rawPos > 0);
             
+            // กฎ: ถ้าเป็นรอบชิง แล้วโดน DNS หรือ DQ จะไม่ได้อันดับและไม่ได้แต้ม (แต้มเป็น 0)
             if (session === 'f') { 
                 racers = racers.filter(x => !x.dns && !x.dq); 
             }
@@ -721,10 +724,43 @@
                     drop: { h: hD.includes(i), s: sD.includes(i), f: fD.includes(i) }, hasFl: gotFlInThisClass, dq: r.dq, dns: r.dns
                 };
             });
-            return { no: d.no, nation: d.nation, name: d.name, dClass: targetClass, displayData, net: netTotal, wins: roundData.filter(rd => rd.f.posMap[d.no] === 1).length, lastPos: roundData[2].f.posMap[d.no] || 99 };
+
+            // 🌟 เตรียมข้อมูลสำหรับ Tie-breaker (Dead Heat) 🌟
+            // 1. ดึงอันดับรอบ Final ทุกสนามที่ลงแข่งมากางเรียงจากดีที่สุด ไปแย่ที่สุด (เช่น [1, 2, 4])
+            let bestFinishes = [
+                roundData[0].f.posMap[d.no],
+                roundData[1].f.posMap[d.no],
+                roundData[2].f.posMap[d.no]
+            ].filter(p => p > 0).sort((x, y) => x - y);
+
+            // 2. ดึงอันดับรอบ Final ของสนาม "ล่าสุด" ที่ลงแข่ง
+            let lastPos = roundData[2].f.posMap[d.no] || roundData[1].f.posMap[d.no] || roundData[0].f.posMap[d.no] || 999;
+
+            return { 
+                no: d.no, nation: d.nation, name: d.name, dClass: targetClass, displayData, 
+                net: netTotal, bestFinishes: bestFinishes, lastPos: lastPos 
+            };
         });
 
-        results.sort((a, b) => (b.net - a.net) || (b.wins - a.wins) || (a.lastPos - b.lastPos));
+        // 🌟 ลอจิกการเรียงลำดับใหม่ (Full Tie-breaker System) 🌟
+        results.sort((a, b) => {
+            // 1. เรียงตามคะแนน NET PTS ก่อน
+            if (b.net !== a.net) return b.net - a.net; 
+            
+            // 2. Dead Heat กฎข้อ a, b, c: เทียบจำนวน P1, P2, P3... ไปเรื่อยๆ
+            let len = Math.max(a.bestFinishes.length, b.bestFinishes.length);
+            for (let i = 0; i < len; i++) {
+                let posA = a.bestFinishes[i] || 999; // ถ้าไม่มีสถิติ ให้ถือว่าแย่ที่สุด (999)
+                let posB = b.bestFinishes[i] || 999;
+                if (posA !== posB) {
+                    return posA - posB; // ใครเลขอันดับน้อยกว่า (ผลงานดีกว่า) ชนะ!
+                }
+            }
+
+            // 3. Dead Heat กฎข้อ d: ถ้าเหมือนกันหมด ให้วัดผลงานสนามล่าสุด
+            return a.lastPos - b.lastPos;
+        });
+
         let roundVisible = [false, false, false];
         results.forEach(res => { res.displayData.forEach((rd, idx) => { if (rd.pts.h > 0 || rd.pts.s > 0 || rd.pts.f > 0 || rd.hasFl || rd.dq || rd.dns) roundVisible[idx] = true; }); });
         if (!roundVisible.includes(true)) roundVisible[0] = true;
@@ -734,6 +770,7 @@
         
         let html = `<div class="class-table-container">`;
         
+        // PDF Header
         html += `<div class="print-header">
                     <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--rotax-red); padding-bottom: 15px; margin-bottom: 15px;">
                         <img src="image_ea471c.png" style="height: 45px;">
