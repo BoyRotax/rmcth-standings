@@ -7,7 +7,7 @@
     <script src="https://accounts.google.com/gsi/client" async defer></script>
     
     <style>
-        /* 1. เรียกใช้งาน Custom Fonts (คุณต้องอัปโหลดไฟล์ฟอนต์ 2 ตัวนี้ขึ้น GitHub ด้วย) */
+        /* 1. Custom Fonts */
         @font-face {
             font-family: 'PPMonument';
             src: url('PPMonumentExtended-Black.woff2') format('woff2'),
@@ -26,18 +26,18 @@
             font-display: swap;
         }
 
-        /* 2. สีองค์กรอ้างอิงจาก Brand Book */
+        /* 2. Brand Colors */
         :root {
-            --rotax-red: #E43138; /* Rotax Red RGB(229, 49, 56) */
+            --rotax-red: #E43138; 
             --rotax-black: #000000;
             --rotax-white: #FFFFFF;
             --bg-gray: #f0f2f5;
             --border-color: #cfd8dc;
         }
 
-        /* 3. การตั้งค่า Font ให้กับ Elements ต่างๆ */
+        /* 3. Base Styles (ใช้ Flama เป็นหลัก) */
         body { 
-            font-family: 'Flama', 'Segoe UI', Tahoma, sans-serif; /* ใช้ Flama-Light เป็นหลัก */
+            font-family: 'Flama', 'Segoe UI', Tahoma, sans-serif; 
             font-weight: 300;
             background: var(--bg-gray); 
             padding: 20px; 
@@ -45,15 +45,16 @@
             margin: 0;
         }
 
-        h1, h2, h3, h4, th, .tab-btn, .btn, .class-title, .net-pts, .print-header h3 {
-            font-family: 'PPMonument', 'Arial Black', sans-serif; /* ใช้ PP Monument Black สำหรับหัวข้อ */
+        /* ใช้ PPMonument เฉพาะหัวข้อหลักเท่านั้น */
+        h2, .class-title, .print-header h3, .net-pts-header {
+            font-family: 'PPMonument', 'Arial Black', sans-serif; 
             font-weight: 900;
             text-transform: uppercase;
         }
 
         .container { max-width: 1550px; margin: auto; background: var(--rotax-white); padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
         
-        /* Official Header Styles */
+        /* Header */
         .official-header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 20px; margin-bottom: 20px; border-bottom: 3px solid var(--rotax-red); }
         .logo-left img { height: 70px; object-fit: contain; }
         .logo-center { text-align: center; flex-grow: 1; }
@@ -62,45 +63,40 @@
         .logo-right img { height: 35px; object-fit: contain; }
         #mainAppTitle { margin: 0; color: var(--rotax-black); font-size: 20px; letter-spacing: 1px; }
 
-        /* Main Tabs */
+        /* Tabs */
         .tabs { display: flex; gap: 5px; margin-bottom: 20px; border-bottom: 2px solid #ddd; align-items: center;}
-        .tab-btn { padding: 12px 25px; cursor: pointer; border: none; background: #e0e0e0; border-radius: 8px 8px 0 0; transition: 0.3s; font-size: 13px; letter-spacing: 0.5px;}
+        .tab-btn { padding: 12px 25px; cursor: pointer; border: none; background: #e0e0e0; border-radius: 8px 8px 0 0; transition: 0.3s; font-size: 14px; font-weight: bold;}
         .tab-btn.active { background: var(--rotax-red); color: var(--rotax-white); }
         .tab-content { display: none; padding: 20px; background: var(--rotax-white); border: 1px solid #ddd; border-top: none; border-radius: 0 0 8px 8px; }
         .tab-content.active { display: block; }
 
-        /* Sub Tabs for DB */
         .sub-tabs { display: flex; gap: 8px; margin-bottom: 15px; flex-wrap: wrap; }
-        .sub-tab-btn { padding: 8px 16px; cursor: pointer; border: 1px solid #b0bec5; background: #f8f9fa; border-radius: 20px; transition: 0.2s; font-size: 13px; color: #455a64; font-family: 'Flama', sans-serif; font-weight: bold;}
-        .sub-tab-btn:hover { background: #e3f2fd; }
+        .sub-tab-btn { padding: 8px 16px; cursor: pointer; border: 1px solid #b0bec5; background: #f8f9fa; border-radius: 20px; transition: 0.2s; font-size: 13px; color: #455a64; font-weight: bold;}
         .sub-tab-btn.active { background: var(--rotax-black); color: var(--rotax-white); border-color: var(--rotax-black); }
 
         /* Table Optimization */
         table { width: 100%; border-collapse: collapse; font-size: 13px; margin-bottom: 0px; }
         th, td { border: 1px solid var(--border-color); padding: 8px 6px; text-align: center; }
-        th { background:#f8f9fa; font-size: 11px; letter-spacing: 0.5px; }
+        th { background:#f8f9fa; font-size: 12px; font-weight: bold; }
+        td { font-weight: bold; }
         .sticky-th { position: sticky; top: 0; z-index: 10; }
-        td { font-weight: bold; } /* ทำให้ตัวเลขในตารางอ่านง่ายขึ้น */
         
-        /* Dashboard Styles */
+        /* Badges & Highlights */
         .purple-bg { background-color: #f3e5f5 !important; border: 2px solid #9c27b0 !important; color: #4a148c; }
-        .fl-badge { color: #9c27b0; font-size: 10px; display: block; margin-top: 2px; font-family: 'Flama', sans-serif;}
+        .fl-badge { color: #9c27b0; font-size: 10px; display: block; margin-top: 2px; font-weight: bold;}
         .dropped { text-decoration: line-through; color: var(--rotax-red) !important; font-weight: 300; }
-        .net-pts { background: #fff9c4; font-size: 1.3em; color: var(--rotax-red); border: 2px solid #fbc02d !important; }
+        .net-pts { background: #fff9c4; font-size: 1.3em; color: var(--rotax-red); border: 2px solid #fbc02d !important; font-family: 'PPMonument', sans-serif;} /* Net Points ใช้ฟอนต์หนา */
         .no-badge { background: #ffeb3b; color: var(--rotax-black); padding: 2px 6px; border-radius: 4px; margin-right: 4px; border: 1px solid #fbc02d; font-size: 12px; font-family: 'PPMonument', sans-serif; }
         .flag-icon { width: 22px; height: 15px; vertical-align: middle; margin-right: 4px; border: 1px solid #ccc; border-radius: 2px; object-fit: cover; }
 
-        /* Form & Inputs */
-        .input-text { padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-size: 14px; font-family: 'Flama', sans-serif; font-weight: bold;}
-        select { padding: 6px; border-radius: 4px; border: 1px solid #999; cursor: pointer; font-size: 12px; font-family: 'Flama', sans-serif; font-weight: bold;}
+        /* Controls */
+        .input-text { padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-size: 14px; font-weight: bold;}
+        select { padding: 6px; border-radius: 4px; border: 1px solid #999; cursor: pointer; font-size: 13px; font-weight: bold;}
         .score-select { width: 50px; }
         .class-select { width: 140px; }
         
-        /* Buttons */
-        .btn { padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; color: var(--rotax-white); margin-right: 10px; transition: 0.2s; font-size: 12px; letter-spacing: 0.5px;}
-        .btn:hover { opacity: 0.8; }
+        .btn { padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; color: var(--rotax-white); margin-right: 10px; transition: 0.2s; font-size: 13px; font-weight: bold;}
         .btn-save { background: var(--rotax-black); }
-        .btn-save:disabled { background: #9e9e9e; cursor: not-allowed; }
         .btn-add { background: var(--rotax-red); }
         .btn-csv { background: #107c41; }
         .btn-pdf { background: var(--rotax-red); }
@@ -115,22 +111,20 @@
         .class-table-container { background: var(--rotax-white); padding-bottom: 10px; page-break-inside: avoid; }
         .class-title { color: var(--rotax-red); font-size: 18px; border-bottom: 3px solid var(--rotax-red); padding-bottom: 4px; display: inline-block; margin-bottom: 10px; margin-top: 5px; letter-spacing: 1px;}
         .pdf-page-break { page-break-before: always; break-before: page; }
-        .pos-badge { font-size: 10px; color: #555; background: #eee; padding: 1px 4px; border-radius: 3px; display: inline-block; margin-bottom: 3px; font-family: 'Flama', sans-serif;}
+        .pos-badge { font-size: 10px; color: #555; background: #eee; padding: 1px 4px; border-radius: 3px; display: inline-block; margin-bottom: 3px; font-weight: bold;}
         .fl-checkbox-container { display: inline-flex; flex-direction: column; text-align: left; background: var(--rotax-white); padding: 4px 6px; border-radius: 4px; border: 1px solid #ddd; }
-        .fl-checkbox-container label { font-size: 11px; cursor: pointer; margin-bottom: 2px; white-space: nowrap; color: #4a148c; font-family: 'Flama', sans-serif; font-weight: bold;}
+        .fl-checkbox-container label { font-size: 11px; cursor: pointer; margin-bottom: 2px; white-space: nowrap; color: #4a148c; font-weight: bold;}
         .print-header { display: none; text-align: center; margin-bottom: 15px; }
 
+        /* Helpers */
         .auth-section { margin-left: auto; display: flex; align-items: center; gap: 15px; }
-        .user-badge { background: #e3f2fd; color: #1565c0; padding: 8px 15px; border-radius: 20px; font-weight: bold; border: 1px solid #90caf9; font-size: 13px; font-family: 'Flama', sans-serif;}
-
-        @media screen and (max-width: 768px) {
-            .official-header { flex-direction: column; gap: 15px; text-align: center; }
-            .logo-right { align-items: center; flex-direction: row; justify-content: center; }
-        }
-
+        .user-badge { background: #e3f2fd; color: #1565c0; padding: 8px 15px; border-radius: 20px; font-weight: bold; border: 1px solid #90caf9; font-size: 13px; }
         .loader-box { text-align: center; padding: 50px; }
         .spinner { border: 4px solid #f3f3f3; border-top: 4px solid var(--rotax-red); border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 0 auto 15px auto; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* Classes to hide elements only during PDF export */
+        .hide-on-pdf { display: block; }
     </style>
 </head>
 <body>
@@ -138,15 +132,15 @@
 <div class="container" id="mainContainer">
     <div class="official-header" id="mainHeader">
         <div class="logo-left">
-            <img src="image_ea471c.png" alt="RAAT" id="logoRaat">
+            <img src="image_ea471c.png" alt="RAAT">
         </div>
         <div class="logo-center">
-            <img src="image_ea46f7.png" alt="RMC Thailand" id="logoRmc">
+            <img src="image_ea46f7.png" alt="RMC Thailand">
             <h2 id="mainAppTitle">Championship Standings 2026</h2>
         </div>
         <div class="logo-right">
-            <img src="image_ea4713.png" alt="Rotax Racing" id="logoRotax">
-            <img src="image_ea46db.png" alt="MOJO" id="logoMojo">
+            <img src="image_ea4713.png" alt="Rotax Racing">
+            <img src="image_ea46db.png" alt="MOJO">
         </div>
     </div>
     
@@ -167,7 +161,7 @@
             <div>
                 <label for="classFilter" style="font-weight: bold; font-size: 1.1em; color: var(--rotax-red); font-family: 'PPMonument', sans-serif;">🏆 SELECT CLASS: </label>
                 <select id="classFilter" onchange="renderDashboard()" style="padding: 8px; font-size: 1em;">
-                    <option value="ALL">All Classes (Separated Tables)</option>
+                    <option value="ALL">All Classes</option>
                     <option value="Micro MAX">Micro MAX</option>
                     <option value="Micro Rookie">Micro Rookie</option>
                     <option value="Mini MAX">Mini MAX</option>
@@ -184,20 +178,16 @@
         </div>
 
         <div id="pdfArea" style="background: white; padding: 0;">
-            <div id="pdfTimestampArea" style="display: none; text-align: right; font-size: 11px; color: #666; margin-bottom: 5px; font-family: 'Flama', sans-serif;">
-                <span id="pdfTimestamp"></span>
-            </div>
-
             <div id="standingsWrapper">
                 <div class="loader-box">
                     <div class="spinner"></div>
-                    <h3 style="color:var(--rotax-red); margin:0;">🔄 Loading Data from Cloud...</h3>
+                    <h3 style="color:var(--rotax-red); margin:0; font-family:'Flama', sans-serif;">🔄 Loading Data from Cloud...</h3>
                 </div>
             </div>
             
-            <div class="rule-info" id="pdfRuleInfo" style="margin-top: 20px; border-left: 4px solid var(--rotax-red); padding-left: 10px; background: #fff; font-family: 'Flama', sans-serif;">
+            <div class="rule-info hide-on-pdf" id="pdfRuleInfo" style="margin-top: 20px; border-left: 4px solid var(--rotax-red); padding-left: 10px; background: #fff;">
                 <strong style="font-family: 'PPMonument', sans-serif;">📊 DYNAMIC CLASS SCORING RULES:</strong> <br>
-                <small>1. Points are automatically calculated based on class-specific rankings. (The main number is the <b>Points</b>, the grey badge is the <b>Class Position</b>).<br>
+                <small>1. Points are automatically calculated based on class-specific rankings.<br>
                 2. <span style="color:var(--rotax-red); text-decoration:line-through">Strikethrough</span> numbers indicate the dropped worst scores.<br>
                 3. <span style="color:#9c27b0; font-weight:bold;">(+1 FL)</span> indicates bonus points for Fastest Lap in the Final.<br>
                 4. <span style="color:#ff9800; font-weight:bold;">(DNS)</span> Did Not Start will get 0 points. <span style="color:var(--rotax-red); font-weight:bold;">(DQ)</span> Disqualification will get 0 points and cannot be dropped.</small>
@@ -208,7 +198,7 @@
     <div id="data-entry" class="tab-content">
         <div class="header-controls" style="background: #fff3e0; border-color: #ffb74d;">
             <div style="margin-bottom: 5px; width: 100%;">
-                <h4 style="color: #e65100; margin: 0 0 10px 0;">⚠️ IMPORTANT: Please enter the "Overall Position" at the finish line.</h4>
+                <h4 style="color: #e65100; margin: 0 0 10px 0; font-family:'Flama', sans-serif;">⚠️ IMPORTANT: Please enter the "Overall Position" at the finish line.</h4>
             </div>
             <div>
                 <label for="dataClassFilter" style="font-weight: bold; font-size: 1.1em; color: #e65100; font-family: 'PPMonument', sans-serif;">SELECT GRID: </label>
@@ -238,9 +228,9 @@
                         <th colspan="6" style="background:#f1f8e9">ROUND 3 (Overall Pos)</th>
                     </tr>
                     <tr>
-                        <th style="background:#ffebee;">After<br>H1-2</th><th style="background:#ffebee;">After<br>H1-2 & SH</th><th style="background:#ffebee;">Final</th><th style="background:#ffebee; min-width:70px;">FL (Final)</th><th style="background:#ffebee;">DNS (F)</th><th style="background:#ffebee;">DQ</th>
-                        <th style="background:#e3f2fd;">After<br>H1-2</th><th style="background:#e3f2fd;">After<br>H1-2 & SH</th><th style="background:#e3f2fd;">Final</th><th style="background:#e3f2fd; min-width:70px;">FL (Final)</th><th style="background:#e3f2fd;">DNS (F)</th><th style="background:#e3f2fd;">DQ</th>
-                        <th style="background:#f1f8e9;">After<br>H1-2</th><th style="background:#f1f8e9;">After<br>H1-2 & SH</th><th style="background:#f1f8e9;">Final</th><th style="background:#f1f8e9; min-width:70px;">FL (Final)</th><th style="background:#f1f8e9;">DNS (F)</th><th style="background:#f1f8e9;">DQ</th>
+                        <th style="background:#ffebee;">After<br>H 1-2</th><th style="background:#ffebee;">After<br>H1-2 & SH</th><th style="background:#ffebee;">Final</th><th style="background:#ffebee; min-width:70px;">FL (Final)</th><th style="background:#ffebee;">DNS (F)</th><th style="background:#ffebee;">DQ</th>
+                        <th style="background:#e3f2fd;">After<br>H 1-2</th><th style="background:#e3f2fd;">After<br>H1-2 & SH</th><th style="background:#e3f2fd;">Final</th><th style="background:#e3f2fd; min-width:70px;">FL (Final)</th><th style="background:#e3f2fd;">DNS (F)</th><th style="background:#e3f2fd;">DQ</th>
+                        <th style="background:#f1f8e9;">After<br>H 1-2</th><th style="background:#f1f8e9;">After<br>H1-2 & SH</th><th style="background:#f1f8e9;">Final</th><th style="background:#f1f8e9; min-width:70px;">FL (Final)</th><th style="background:#f1f8e9;">DNS (F)</th><th style="background:#f1f8e9;">DQ</th>
                     </tr>
                 </thead>
                 <tbody id="dataEntryBody"></tbody>
@@ -252,9 +242,8 @@
         <div class="add-driver-box">
             <strong style="color: var(--rotax-red); font-family: 'PPMonument', sans-serif;">REGISTER NEW DRIVER: </strong>
             <input type="number" id="newNo" class="input-text" placeholder="No." style="width: 80px;" oninput="autoDetectClass()">
-            <input type="text" id="newNation" class="input-text" placeholder="Nation (e.g. THA)" style="width: 140px;" maxlength="3" title="ISO 3166-1 alpha-3">
-            <input type="text" id="newName" class="input-text" placeholder="Driver Name" style="width: 180px; text-transform:none;"> 
-            
+            <input type="text" id="newNation" class="input-text" placeholder="Nation" style="width: 100px;" maxlength="3">
+            <input type="text" id="newName" class="input-text" placeholder="Driver Name" style="width: 180px;"> 
             <div style="display: flex; flex-direction: column; gap: 4px;">
                 <select id="newClass" class="class-select" style="padding: 6px;">
                     <option value="Micro MAX">Micro MAX</option>
@@ -277,12 +266,11 @@
                 </select>
             </div>
             <button class="btn btn-add" onclick="addNewDriver()">+ ADD DRIVER</button>
-            <div style="border-left: 2px solid #90caf9; margin-left: 10px; padding-left: 15px; display: inline-flex; flex-direction: column;">
+            <div style="border-left: 2px solid #90caf9; margin-left: 10px; padding-left: 15px;">
                 <input type="file" id="csvFileInput" accept=".csv" style="display: none;" onchange="handleCSVImport(event)">
                 <button class="btn btn-import" onclick="document.getElementById('csvFileInput').click()">📤 IMPORT (CSV)</button>
             </div>
         </div>
-        
         <div class="sub-tabs" id="dbSubTabs">
             <button class="sub-tab-btn active" data-class="ALL" onclick="renderDriverDB('ALL')">ALL Classes</button>
             <button class="sub-tab-btn" data-class="Micro MAX" onclick="renderDriverDB('Micro MAX')">Micro MAX</button>
@@ -293,16 +281,11 @@
             <button class="sub-tab-btn" data-class="Senior MAX" onclick="renderDriverDB('Senior MAX')">Senior MAX</button>
             <button class="sub-tab-btn" data-class="Senior MAX Masters" onclick="renderDriverDB('Senior MAX Masters')">Senior MAX Masters</button>
         </div>
-
         <table id="dbTable" border="1">
             <thead>
                 <tr>
-                    <th style="width: 80px;" class="sticky-th">NO.</th>
-                    <th style="width: 100px;" class="sticky-th">NATION</th>
-                    <th style="text-align: left;" class="sticky-th">DRIVER NAME</th>
-                    <th style="width: 180px;" class="sticky-th">MAIN CLASS</th>
-                    <th style="width: 180px;" class="sticky-th">SUB CLASS</th>
-                    <th style="width: 80px;" class="sticky-th">ACTION</th>
+                    <th style="width: 80px;">NO.</th><th style="width: 100px;">NATION</th><th style="text-align: left;">DRIVER NAME</th>
+                    <th style="width: 180px;">MAIN CLASS</th><th style="width: 180px;">SUB CLASS</th><th style="width: 80px;">ACTION</th>
                 </tr>
             </thead>
             <tbody id="driverDbBody"></tbody>
@@ -312,31 +295,24 @@
 
 <script>
     // =========================================
-    // 🔗 API URL (Google Sheets Database)
-    // ⚠️ นำ URL ของคุณมาใส่ตรงนี้ครับ ⚠️
+    // 🔗 API URL (ใส่ URL ของคุณด้านล่างนี้)
     // =========================================
-    const API_URL = "https://script.google.com/macros/s/AKfycbwP3kS5DiZQZ3arr8X6FaogMxwSXeVNPzvls7moSI2CCmpCtx8wW3uOSZ8y3t7mcGK8/exectps://script.google.com/macros/s/YOUR_API_URL_HERE/exec"; 
+    const API_URL = "https://script.google.com/macros/s/AKfycbxBwZSgj-cROtnjGT_SZK8TCIW1cjbebnm8xdh7YSSuoLLlGq0s1ZL6sN2JAZRrJjbt/exec"; 
 
     let drivers = [];
     let currentFilteredResults = [];
     let currentDbTab = 'ALL';
 
     function toTitleCase(str) {
-        return str.toLowerCase().replace(/\b\w/g, function(char) {
-            return char.toUpperCase();
-        });
+        return str.toLowerCase().replace(/\b\w/g, function(char) { return char.toUpperCase(); });
     }
 
-    // =========================================
-    // 1. ระบบ Google Login
-    // =========================================
+    /* Google Login System */
     function parseJwt(token) {
         try {
             var base64Url = token.split('.')[1];
             var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-            var jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
-                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-            }).join(''));
+            var jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) { return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2); }).join(''));
             return JSON.parse(jsonPayload);
         } catch(e) { return null; }
     }
@@ -344,7 +320,6 @@
     function handleCredentialResponse(response) {
         const responsePayload = parseJwt(response.credential);
         const email = responsePayload.email;
-        
         if (email.endsWith('@rotax-asia.com')) {
             document.querySelectorAll('.admin-only').forEach(el => el.style.display = 'block');
             document.getElementById('googleBtnWrapper').style.display = 'none';
@@ -362,41 +337,25 @@
         document.getElementById('googleBtnWrapper').style.display = 'block';
         document.getElementById('userInfo').style.display = 'none';
         document.getElementById('logoutBtn').style.display = 'none';
-        switchTab('dashboard'); 
-        initializeGoogleAuth();
+        switchTab('dashboard'); initializeGoogleAuth();
     }
 
     function initializeGoogleAuth() {
         const YOUR_CLIENT_ID = "1063203362257-jjlg575p5utae166kasu69jfd1loi99o.apps.googleusercontent.com"; 
         if(window.google) {
-            google.accounts.id.initialize({
-                client_id: YOUR_CLIENT_ID,
-                callback: handleCredentialResponse
-            });
-            google.accounts.id.renderButton(
-                document.getElementById("googleBtnWrapper"),
-                { theme: "outline", size: "large", text: "signin_with" }
-            );
+            google.accounts.id.initialize({ client_id: YOUR_CLIENT_ID, callback: handleCredentialResponse });
+            google.accounts.id.renderButton(document.getElementById("googleBtnWrapper"), { theme: "outline", size: "large", text: "signin_with" });
         }
     }
 
-    // =========================================
-    // 2. ระบบดึง/บันทึกข้อมูลจาก Cloud
-    // =========================================
-    window.onload = function () { 
-        initializeGoogleAuth(); 
-        loadDataFromCloud();
-    };
+    /* Data Loading */
+    window.onload = function () { initializeGoogleAuth(); loadDataFromCloud(); };
 
     async function loadDataFromCloud() {
         try {
             const response = await fetch(API_URL);
             const data = await response.json();
-            
-            if(Array.isArray(data)) {
-                drivers = data;
-            }
-
+            if(Array.isArray(data)) drivers = data;
             drivers.forEach(d => {
                 if(d.name) d.name = toTitleCase(d.name);
                 d.rounds.forEach(r => {
@@ -405,49 +364,25 @@
                     if (typeof r.dns === 'undefined') r.dns = false; 
                 });
             });
-
             localStorage.setItem('rmcat_master_cloud_cache', JSON.stringify(drivers));
         } catch(e) {
             console.error("Cloud load failed, using local cache", e);
             drivers = JSON.parse(localStorage.getItem('rmcat_master_cloud_cache')) || [];
         }
-        
-        renderDriverDB('ALL'); 
-        renderDataEntry(); 
-        renderDashboard();
+        renderDriverDB('ALL'); renderDataEntry(); renderDashboard();
     }
 
     async function pushToCloud() {
         localStorage.setItem('rmcat_master_cloud_cache', JSON.stringify(drivers));
-        try {
-            await fetch(API_URL, {
-                method: 'POST',
-                mode: 'no-cors',
-                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                body: JSON.stringify(drivers)
-            });
-        } catch (e) {
-            console.log("Data pushed to Google Sheets.");
-        }
+        try { await fetch(API_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(drivers) }); } catch (e) { }
     }
 
-    // =========================================
-    // 3. ตัวแปรและฟังก์ชันระบบคะแนน
-    // =========================================
+    /* Core System */
     const CLASSES = ["Micro MAX", "Micro Rookie", "Mini MAX", "Mini Rookie", "Junior MAX", "Senior MAX", "Senior MAX Masters"];
-    
-    const GRID_GROUPS = { 
-        "Micro MAX": ["Micro MAX", "Micro Rookie"], 
-        "Mini MAX": ["Mini MAX", "Mini Rookie"], 
-        "Junior MAX": ["Junior MAX"], 
-        "Senior MAX": ["Senior MAX"], 
-        "Senior MAX Masters": ["Senior MAX Masters"] 
-    };
-
+    const GRID_GROUPS = { "Micro MAX": ["Micro MAX", "Micro Rookie"], "Mini MAX": ["Mini MAX", "Mini Rookie"], "Junior MAX": ["Junior MAX"], "Senior MAX": ["Senior MAX"], "Senior MAX Masters": ["Senior MAX Masters"] };
     const PTS_H = { 1:25, 2:22, 3:19, 4:17, 5:15, 6:13, 7:11, 8:9, 9:7, 10:6, 11:5, 12:4, 13:3, 14:2, 15:1 };
     const PTS_S = { 1:25, 2:22, 3:19, 4:17, 5:15, 6:13, 7:11, 8:9, 9:7, 10:6, 11:5, 12:4, 13:3, 14:2, 15:1 };
     const PTS_F = { 1:50, 2:44, 3:38, 4:34, 5:30, 6:26, 7:22, 8:18, 9:14, 10:10, 11:8, 12:6, 13:4, 14:2, 15:1 };
-
     const iso3To2 = { "AFG":"af","ALA":"ax","ALB":"al","DZA":"dz","ASM":"as","AND":"ad","AGO":"ao","AIA":"ai","ATA":"aq","ATG":"ag","ARG":"ar","ARM":"am","ABW":"aw","AUS":"au","AUT":"at","AZE":"az","BHS":"bs","BHR":"bh","BGD":"bd","BRB":"bb","BLR":"by","BEL":"be","BLZ":"bz","BEN":"bj","BMU":"bm","BTN":"bt","BOL":"bo","BES":"bq","BIH":"ba","BWA":"bw","BVT":"bv","BRA":"br","IOT":"io","BRN":"bn","BGR":"bg","BFA":"bf","BDI":"bi","CPV":"cv","KHM":"kh","CMR":"cm","CAN":"ca","CYM":"ky","CAF":"cf","TCD":"td","CHL":"cl","CHN":"cn","CXR":"cx","CCK":"cc","COL":"co","COM":"km","COG":"cg","COD":"cd","COK":"ck","CRI":"cr","CIV":"ci","HRV":"hr","CUB":"cu","CUW":"cw","CYP":"cy","CZE":"cz","DNK":"dk","DJI":"dj","DMA":"dm","DOM":"do","ECU":"ec","EGY":"eg","SLV":"sv","GNQ":"gq","ERI":"er","EST":"ee","SWZ":"sz","ETH":"et","FLK":"fk","FRO":"fo","FJI":"fj","FIN":"fi","FRA":"fr","GUF":"gf","PYF":"pf","ATF":"tf","GAB":"ga","GMB":"gm","GEO":"ge","DEU":"de","GHA":"gh","GIB":"gi","GRC":"gr","GRL":"gl","GRD":"gd","GLP":"gp","GUM":"gu","GTM":"gt","GGY":"gg","GIN":"gn","GNB":"gw","GUY":"gy","HTI":"ht","HMD":"hm","VAT":"va","HND":"hn","HKG":"hk","HUN":"hu","ISL":"is","IND":"in","IDN":"id","IRN":"ir","IRQ":"iq","IRL":"ie","IMN":"im","ISR":"il","ITA":"it","JAM":"jm","JPN":"jp","JEY":"je","JOR":"jo","KAZ":"kz","KEN":"ke","KIR":"ki","PRK":"kp","KOR":"kr","KWT":"kw","KGZ":"kg","LAO":"la","LVA":"lv","LBN":"lb","LSO":"ls","LBR":"lr","LBY":"ly","LIE":"li","LTU":"lt","LUX":"lu","MAC":"mo","MDG":"mg","MWI":"mw","MYS":"my","MDV":"mv","MLI":"ml","MLT":"mt","MHL":"mh","MTQ":"mq","MRT":"mr","MUS":"mu","MYT":"yt","MEX":"mx","FSM":"fm","MDA":"md","MCO":"mc","MNG":"mn","MNE":"me","MSR":"ms","MAR":"ma","MOZ":"mz","MMR":"mm","NAM":"na","NRU":"nr","NPL":"np","NLD":"nl","NCL":"nc","NZL":"nz","NIC":"ni","NER":"ne","NGA":"ng","NIU":"nu","NFK":"nf","MKD":"mk","MNP":"mp","NOR":"no","OMN":"om","PAK":"pk","PLW":"pw","PSE":"ps","PAN":"pa","PNG":"pg","PRY":"py","PER":"pe","PHL":"ph","PCN":"pn","POL":"pl","PRT":"pt","PRI":"pr","QAT":"qa","REU":"re","ROU":"ro","RUS":"ru","RWA":"rw","BLM":"bl","SHN":"sh","KNA":"kn","LCA":"lc","MAF":"mf","SPM":"pm","VCT":"vc","WSM":"ws","SMR":"sm","STP":"st","SAU":"sa","SEN":"sn","SRB":"rs","SYC":"sc","SLE":"sl","SGP":"sg","SXM":"sx","SVK":"sk","SVN":"si","SLB":"sb","SOM":"so","ZAF":"za","SGS":"gs","SSD":"ss","ESP":"es","LKA":"lk","SDN":"sd","SUR":"sr","SJM":"sj","SWE":"se","CHE":"ch","SYR":"sy","TWN":"tw","TJK":"tj","TZA":"tz","THA":"th","TLS":"tl","TGO":"tg","TKL":"tk","TON":"to","TTO":"tt","TUN":"tn","TUR":"tr","TKM":"tm","TCA":"tc","TUV":"tv","UGA":"ug","UKR":"ua","ARE":"ae","GBR":"gb","USA":"us","UMI":"um","URY":"uy","UZB":"uz","VUT":"vu","VEN":"ve","VNM":"vn","VGB":"vg","VIR":"vi","WLF":"wf","ESH":"eh","YEM":"ye","ZMB":"zm","ZWE":"zw" };
 
     function getFlagHtml(nationCode) {
@@ -473,12 +408,9 @@
         document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
         document.getElementById(tabId).classList.add('active');
-        if (tabId === 'dashboard') { renderDashboard(); } 
-        else if (tabId === 'data-entry') { renderDataEntry(); } 
-        else { renderDriverDB(currentDbTab); }
+        if (tabId === 'dashboard') { renderDashboard(); } else if (tabId === 'data-entry') { renderDataEntry(); } else { renderDriverDB(currentDbTab); }
     }
 
-    // ====== DB Controls ======
     function addNewDriver() {
         let no = document.getElementById('newNo').value.trim();
         let name = toTitleCase(document.getElementById('newName').value.trim());
@@ -489,33 +421,23 @@
         if(dClass === dClass2) dClass2 = ""; 
         drivers.push({ no: no, nation: nation, name: name, dClass: dClass, dClass2: dClass2, rounds: Array(3).fill(null).map(() => ({ h: 0, s: 0, f: 0, fl: [], dq: false, dns: false })) });
         document.getElementById('newNo').value = ''; document.getElementById('newName').value = '';
-        renderDriverDB(dClass);
-        pushToCloud();
+        renderDriverDB(dClass); pushToCloud();
     }
     
-    function removeDriver(idx) { 
-        if (confirm("Are you sure you want to delete this driver?")) { 
-            drivers.splice(idx, 1); 
-            renderDriverDB(currentDbTab); 
-            pushToCloud(); 
-        } 
-    }
+    function removeDriver(idx) { if (confirm("Are you sure you want to delete this driver?")) { drivers.splice(idx, 1); renderDriverDB(currentDbTab); pushToCloud(); } }
     
     function updateDriverField(idx, field, value) {
         if (field === 'name') value = toTitleCase(value);
         drivers[idx][field] = value;
         if(field === 'dClass' && drivers[idx].dClass2 === value) drivers[idx].dClass2 = "";
         if(field === 'dClass2' && drivers[idx].dClass === value) drivers[idx].dClass2 = "";
-        if(['dClass', 'dClass2', 'nation', 'name'].includes(field)) renderDriverDB(currentDbTab); 
-        pushToCloud();
+        if(['dClass', 'dClass2', 'nation', 'name'].includes(field)) renderDriverDB(currentDbTab); pushToCloud();
     }
     
     function renderDriverDB(filterClass = 'ALL') {
         currentDbTab = filterClass;
         const body = document.getElementById('driverDbBody'); body.innerHTML = '';
-        document.querySelectorAll('.sub-tab-btn').forEach(btn => {
-            btn.classList.remove('active'); if (btn.getAttribute('data-class') === filterClass) btn.classList.add('active');
-        });
+        document.querySelectorAll('.sub-tab-btn').forEach(btn => { btn.classList.remove('active'); if (btn.getAttribute('data-class') === filterClass) btn.classList.add('active'); });
         let mappedDrivers = drivers.map((d, i) => ({ d, originalIndex: i }));
         if (filterClass !== 'ALL') mappedDrivers = mappedDrivers.filter(item => item.d.dClass === filterClass || item.d.dClass2 === filterClass);
         mappedDrivers.sort((a, b) => (parseInt(a.d.no) || 0) - (parseInt(b.d.no) || 0));
@@ -555,22 +477,17 @@
             let addedCount = 0;
             for (let i = 1; i < lines.length; i++) {
                 let row = parseCsvLine(lines[i]); if (row.length < 4) continue;
-                let no = row[noIdx];
-                let name = toTitleCase(row[nameIdx]);
-                let nation = (nationIdx !== -1 && row[nationIdx]) ? row[nationIdx].toUpperCase().substring(0,3) : 'THA';
+                let no = row[noIdx]; let name = toTitleCase(row[nameIdx]); let nation = (nationIdx !== -1 && row[nationIdx]) ? row[nationIdx].toUpperCase().substring(0,3) : 'THA';
                 let dClass = row[classIdx], dClass2 = (class2Idx !== -1 && row[class2Idx]) ? row[class2Idx] : "";
-                
                 if (no && name && dClass && !drivers.find(d => d.no === no && d.dClass === dClass)) {
                     drivers.push({ no: no, nation: nation, name: name, dClass: dClass, dClass2: dClass2, rounds: Array(3).fill(null).map(() => ({ h: 0, s: 0, f: 0, fl: [], dq: false, dns: false })) });
                     addedCount++;
                 }
             }
-            renderDriverDB('ALL'); pushToCloud();
-            alert(`Import successful! Added ${addedCount} drivers.`); event.target.value = '';
+            renderDriverDB('ALL'); pushToCloud(); alert(`Import successful! Added ${addedCount} drivers.`); event.target.value = '';
         }; reader.readAsText(file);
     }
 
-    // ====== Data Entry ======
     function handleDataEntryImport(event) {
         const file = event.target.files[0]; if (!file) return;
         const reader = new FileReader();
@@ -588,24 +505,18 @@
             let r3h = getIdx(['r3_h']); let r3sh = getIdx(['r3_sh']); let r3f = getIdx(['r3_f']); let r3fl = getIdx(['r3_fl']); let r3dq = getIdx(['r3_dq']); let r3dns = getIdx(['r3_dns']);
 
             let updatedCount = 0; let addedCount = 0;
-
             for (let i = 1; i < lines.length; i++) {
                 let row = parseCsvLine(lines[i]); if (row.length < 4) continue;
-                
-                let no = row[noIdx];
-                let name = toTitleCase(row[nameIdx]);
-                let dClass = row[classIdx];
+                let no = row[noIdx]; let name = toTitleCase(row[nameIdx]); let dClass = row[classIdx];
                 let dClass2 = (class2Idx !== -1 && row[class2Idx]) ? row[class2Idx] : "";
                 let nation = (nationIdx !== -1 && row[nationIdx]) ? row[nationIdx].toUpperCase().substring(0,3) : 'THA';
                 if (!no || !name || !dClass) continue;
 
                 const getNum = (idx) => (idx !== -1 && row[idx]) ? parseInt(row[idx]) || 0 : 0;
                 const getBool = (idx) => { if (idx === -1 || !row[idx]) return false; return ['true', '1', 'yes', 'y', 'dq', 'dns'].includes(row[idx].toString().trim().toLowerCase()); };
-                
                 const getFlArray = (idx, c1, c2) => {
                     if (idx === -1 || !row[idx]) return [];
-                    let val = row[idx].toString().trim().toLowerCase();
-                    let arr = [];
+                    let val = row[idx].toString().trim().toLowerCase(); let arr = [];
                     if (['true', '1', 'yes', 'y'].includes(val)) arr.push(c1);
                     if (val.includes(c1.toLowerCase())) arr.push(c1);
                     if (c2 && val.includes(c2.toLowerCase())) arr.push(c2);
@@ -618,66 +529,34 @@
                 let r3 = { h: getNum(r3h), s: getNum(r3sh), f: getNum(r3f), fl: getFlArray(r3fl, dClass, dClass2), dq: getBool(r3dq), dns: getBool(r3dns) };
 
                 let existingDriver = drivers.find(d => d.no === no && d.dClass === dClass);
-                if (existingDriver) {
-                    existingDriver.name = name; existingDriver.nation = nation; existingDriver.dClass2 = dClass2; existingDriver.rounds = [r1, r2, r3];
-                    updatedCount++;
-                } else {
-                    drivers.push({ no: no, nation: nation, name: name, dClass: dClass, dClass2: dClass2, rounds: [r1, r2, r3] });
-                    addedCount++;
-                }
+                if (existingDriver) { existingDriver.name = name; existingDriver.nation = nation; existingDriver.dClass2 = dClass2; existingDriver.rounds = [r1, r2, r3]; updatedCount++; } 
+                else { drivers.push({ no: no, nation: nation, name: name, dClass: dClass, dClass2: dClass2, rounds: [r1, r2, r3] }); addedCount++; }
             }
-
             CLASSES.forEach(c => {
                 for(let rIdx=0; rIdx<3; rIdx++) {
                     let classDrivers = drivers.filter(d => d.rounds[rIdx].fl.includes(c));
-                    if (classDrivers.length > 1) {
-                        for(let j=1; j<classDrivers.length; j++) {
-                            let flArr = classDrivers[j].rounds[rIdx].fl; let idx = flArr.indexOf(c); if(idx > -1) flArr.splice(idx, 1);
-                        }
-                    }
+                    if (classDrivers.length > 1) { for(let j=1; j<classDrivers.length; j++) { let flArr = classDrivers[j].rounds[rIdx].fl; let idx = flArr.indexOf(c); if(idx > -1) flArr.splice(idx, 1); } }
                 }
             });
-
-            renderDataEntry(); renderDriverDB('ALL'); pushToCloud();
-            alert(`Data imported successfully!\nUpdated: ${updatedCount} drivers\nAdded: ${addedCount} drivers`);
-            event.target.value = '';
+            renderDataEntry(); renderDriverDB('ALL'); pushToCloud(); alert(`Data imported successfully!\nUpdated: ${updatedCount} drivers\nAdded: ${addedCount} drivers`); event.target.value = '';
         }; reader.readAsText(file);
     }
 
     function toggleFL(dIdx, rIdx, targetClass, isChecked) {
-        if (isChecked) {
-            drivers.forEach(drv => {
-                let flArray = drv.rounds[rIdx].fl; let cIdx = flArray.indexOf(targetClass); if (cIdx > -1) flArray.splice(cIdx, 1);
-            });
-        }
+        if (isChecked) { drivers.forEach(drv => { let flArray = drv.rounds[rIdx].fl; let cIdx = flArray.indexOf(targetClass); if (cIdx > -1) flArray.splice(cIdx, 1); }); }
         let flArray = drivers[dIdx].rounds[rIdx].fl; let cIdx = flArray.indexOf(targetClass);
         if (isChecked && cIdx === -1) flArray.push(targetClass); else if (!isChecked && cIdx > -1) flArray.splice(cIdx, 1);
         localStorage.setItem('rmcat_master_cloud_cache', JSON.stringify(drivers)); renderDataEntry();
     }
     
-    function updateTempScore(originalIdx, rIdx, type, val) {
-        drivers[originalIdx].rounds[rIdx][type] = parseInt(val);
-        localStorage.setItem('rmcat_master_cloud_cache', JSON.stringify(drivers));
-        renderDataEntry();
-    }
-
-    function updateTempDQ(originalIdx, rIdx, isChecked) {
-        drivers[originalIdx].rounds[rIdx].dq = isChecked;
-        localStorage.setItem('rmcat_master_cloud_cache', JSON.stringify(drivers));
-        renderDataEntry();
-    }
-    
-    function updateTempDNS(originalIdx, rIdx, isChecked) {
-        drivers[originalIdx].rounds[rIdx].dns = isChecked;
-        localStorage.setItem('rmcat_master_cloud_cache', JSON.stringify(drivers));
-        renderDataEntry();
-    }
+    function updateTempScore(originalIdx, rIdx, type, val) { drivers[originalIdx].rounds[rIdx][type] = parseInt(val); localStorage.setItem('rmcat_master_cloud_cache', JSON.stringify(drivers)); renderDataEntry(); }
+    function updateTempDQ(originalIdx, rIdx, isChecked) { drivers[originalIdx].rounds[rIdx].dq = isChecked; localStorage.setItem('rmcat_master_cloud_cache', JSON.stringify(drivers)); renderDataEntry(); }
+    function updateTempDNS(originalIdx, rIdx, isChecked) { drivers[originalIdx].rounds[rIdx].dns = isChecked; localStorage.setItem('rmcat_master_cloud_cache', JSON.stringify(drivers)); renderDataEntry(); }
 
     function createDropdown(originalIdx, rIdx, type, currentVal, gridClass) {
         let group = GRID_GROUPS[gridClass] || [gridClass];
         let used = drivers.filter(d => group.includes(d.dClass) || group.includes(d.dClass2)).map(d => d.rounds[rIdx][type]).filter(v => v > 0 && v !== currentVal);
-        let html = `<select class="score-select" onchange="updateTempScore(${originalIdx}, ${rIdx}, '${type}', this.value)">`;
-        html += `<option value="0">-</option>`;
+        let html = `<select class="score-select" onchange="updateTempScore(${originalIdx}, ${rIdx}, '${type}', this.value)"> <option value="0">-</option>`;
         for (let i = 1; i <= 32; i++) { if (!used.includes(i)) html += `<option value="${i}" ${currentVal === i ? 'selected' : ''}>${i}</option>`; }
         return html + `</select>`;
     }
@@ -694,18 +573,13 @@
         filteredDrivers.forEach(item => {
             let d = item.d; let dIdx = item.originalIndex;
             let displayClasses = [d.dClass]; if (d.dClass2) displayClasses.push(d.dClass2);
-            let classTag = `<br><small style="color:#1565c0; font-size:10px; font-family: 'Flama', sans-serif;">(Dual: ${displayClasses.join(' & ')})</small>`;
-            let row = `<tr><td><span class="no-badge">${d.no}</span></td><td style="text-align:left;">${getFlagHtml(d.nation)} <span style="font-family: 'PPMonument', sans-serif;">${d.name}</span> ${classTag}</td>`;
+            let classTag = `<br><small style="color:#1565c0; font-size:10px;">(Dual: ${displayClasses.join(' & ')})</small>`;
+            let row = `<tr><td><span class="no-badge">${d.no}</span></td><td style="text-align:left;">${getFlagHtml(d.nation)} <span>${d.name}</span> ${classTag}</td>`;
             d.rounds.forEach((r, rIdx) => {
                 let flHtml = `<div class="fl-checkbox-container">`;
-                if (group.includes(d.dClass)) {
-                    flHtml += `<label><input type="checkbox" ${r.fl.includes(d.dClass) ? 'checked' : ''} onchange="toggleFL(${dIdx}, ${rIdx}, '${d.dClass}', this.checked)"> ${d.dClass.replace('Micro ','').replace('Mini ','')}</label>`;
-                }
-                if (d.dClass2 && group.includes(d.dClass2)) {
-                    flHtml += `<label><input type="checkbox" ${r.fl.includes(d.dClass2) ? 'checked' : ''} onchange="toggleFL(${dIdx}, ${rIdx}, '${d.dClass2}', this.checked)"> ${d.dClass2.replace('Micro ','').replace('Mini ','')}</label>`;
-                }
+                if (group.includes(d.dClass)) { flHtml += `<label><input type="checkbox" ${r.fl.includes(d.dClass) ? 'checked' : ''} onchange="toggleFL(${dIdx}, ${rIdx}, '${d.dClass}', this.checked)"> ${d.dClass.replace('Micro ','').replace('Mini ','')}</label>`; }
+                if (d.dClass2 && group.includes(d.dClass2)) { flHtml += `<label><input type="checkbox" ${r.fl.includes(d.dClass2) ? 'checked' : ''} onchange="toggleFL(${dIdx}, ${rIdx}, '${d.dClass2}', this.checked)"> ${d.dClass2.replace('Micro ','').replace('Mini ','')}</label>`; }
                 flHtml += `</div>`;
-                
                 row += `<td>${createDropdown(dIdx, rIdx, 'h', r.h, gridClass)}</td><td>${createDropdown(dIdx, rIdx, 's', r.s, gridClass)}</td><td>${createDropdown(dIdx, rIdx, 'f', r.f, gridClass)}</td>
                         <td style="vertical-align:middle;">${flHtml}</td>
                         <td><input type="checkbox" ${r.dns ? 'checked' : ''} onchange="updateTempDNS(${dIdx}, ${rIdx}, this.checked)"></td>
@@ -716,18 +590,8 @@
     }
 
     async function saveAndGoToDashboard() { 
-        const btn = document.getElementById('saveCalcBtn');
-        btn.innerHTML = "⏳ SAVING TO CLOUD...";
-        btn.disabled = true;
-
-        try {
-            await pushToCloud();
-        } finally {
-            document.getElementById('classFilter').value = "ALL"; 
-            switchTab('dashboard');
-            btn.innerHTML = "💾 SAVE & CALCULATE";
-            btn.disabled = false;
-        }
+        const btn = document.getElementById('saveCalcBtn'); btn.innerHTML = "⏳ SAVING TO CLOUD..."; btn.disabled = true;
+        try { await pushToCloud(); } finally { document.getElementById('classFilter').value = "ALL"; switchTab('dashboard'); btn.innerHTML = "💾 SAVE & CALCULATE"; btn.disabled = false; }
     }
 
     function downloadDataTemplate() { 
@@ -735,15 +599,12 @@
         if (drivers.length > 0) {
             drivers.forEach(d => {
                 let nat = d.nation || 'THA'; let c2 = d.dClass2 || '';
-                let r1fl = d.rounds[0].fl.length > 0 ? d.rounds[0].fl.join(' & ') : '';
-                let r2fl = d.rounds[1].fl.length > 0 ? d.rounds[1].fl.join(' & ') : '';
-                let r3fl = d.rounds[2].fl.length > 0 ? d.rounds[2].fl.join(' & ') : '';
+                let r1fl = d.rounds[0].fl.length > 0 ? d.rounds[0].fl.join(' & ') : ''; let r2fl = d.rounds[1].fl.length > 0 ? d.rounds[1].fl.join(' & ') : ''; let r3fl = d.rounds[2].fl.length > 0 ? d.rounds[2].fl.join(' & ') : '';
                 csv += `"${d.no}","${nat}","${d.name}","${d.dClass}","${c2}",${d.rounds[0].h},${d.rounds[0].s},${d.rounds[0].f},"${r1fl}",${d.rounds[0].dns ? 'TRUE':'FALSE'},${d.rounds[0].dq ? 'TRUE':'FALSE'},${d.rounds[1].h},${d.rounds[1].s},${d.rounds[1].f},"${r2fl}",${d.rounds[1].dns ? 'TRUE':'FALSE'},${d.rounds[1].dq ? 'TRUE':'FALSE'},${d.rounds[2].h},${d.rounds[2].s},${d.rounds[2].f},"${r3fl}",${d.rounds[2].dns ? 'TRUE':'FALSE'},${d.rounds[2].dq ? 'TRUE':'FALSE'}\n`;
             });
         } else { csv += `99,THA,John Doe Sample,Micro MAX,Micro Rookie,1,2,1,Micro MAX,FALSE,FALSE,3,1,2,,FALSE,FALSE,0,0,0,,FALSE,FALSE\n`; }
         let blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-        let link = document.createElement("a"); link.href = URL.createObjectURL(blob);
-        link.download = "RMCTH_DataEntry_Template.csv";
+        let link = document.createElement("a"); link.href = URL.createObjectURL(blob); link.download = "RMCTH_DataEntry_Template.csv";
         document.body.appendChild(link); link.click(); document.body.removeChild(link);
     }
 
@@ -766,13 +627,8 @@
         let n = classDrivers.length; let drop = (n >= 5 && n <= 7) ? 1 : (n >= 8 ? 2 : 0);
         const getClassPointsMap = (rIdx, session, pointsTable) => {
             let ptsMap = {}; let posMap = {};
-            let racers = classDrivers.map(d => ({ no: d.no, rawPos: d.rounds[rIdx][session], dq: d.rounds[rIdx].dq, dns: d.rounds[rIdx].dns }))
-                .filter(x => x.rawPos > 0 && !x.dq);
-            
-            if (session === 'f') {
-                racers = racers.filter(x => !x.dns);
-            }
-            
+            let racers = classDrivers.map(d => ({ no: d.no, rawPos: d.rounds[rIdx][session], dq: d.rounds[rIdx].dq, dns: d.rounds[rIdx].dns })).filter(x => x.rawPos > 0 && !x.dq);
+            if (session === 'f') { racers = racers.filter(x => !x.dns); }
             racers.sort((a, b) => a.rawPos - b.rawPos);
             racers.forEach((r, idx) => { let classPos = idx + 1; ptsMap[r.no] = pointsTable[classPos] || 0; posMap[r.no] = classPos; });
             return { ptsMap, posMap };
@@ -814,9 +670,9 @@
             let chunkResults = results.slice(i, i + chunkSize);
             let html = `<div class="class-table-container">`;
             
-            // PDF Header 
+            // PDF Header: โลโก้, ชื่อรุ่น (PPMonument)
             html += `<div class="print-header">
-                        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--rotax-red); padding-bottom: 10px; margin-bottom: 10px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--rotax-red); padding-bottom: 10px; margin-bottom: 15px;">
                             <img src="image_ea471c.png" style="height: 45px;">
                             <div style="text-align: center;">
                                 <img src="image_ea46f7.png" style="height: 45px; margin-bottom: 5px;"><br>
@@ -829,9 +685,9 @@
                         </div>
                      </div>`;
                      
-            html += `<h3 class="screen-title class-title">🏆 ${getCustomTitle(targetClass)} <span style="font-size:12px; color:#555; font-family: 'Flama', sans-serif; text-transform:none;">(Drivers: ${n} | Drops per phase: ${drop})</span></h3>`;
+            // Web Title (Hide on PDF)
+            html += `<h3 class="screen-title class-title">${getCustomTitle(targetClass)} <span style="font-size:12px; color:#555; font-family: 'Flama', sans-serif; text-transform:none;">(Drivers: ${n} | Drops per phase: ${drop})</span></h3>`;
             
-            // ใช้ table-layout: auto เพื่อแก้ปัญหาการเบี้ยว และลดฟอนต์ลงเล็กน้อยเพื่อไม่ให้ตกขอบใน PDF
             html += `<table width="100%" border="1" style="border-collapse: collapse; text-align: center; font-size:12px; table-layout: auto;"><thead><tr><th rowspan="2" style="width:30px;">RANK</th><th rowspan="2" style="text-align:left;">DRIVER (NO. & NAME)</th>`;
             let headRow2 = `<tr>`;
             roundVisible.forEach((vis, idx) => {
@@ -840,11 +696,12 @@
                     headRow2 += `<th style="background:${bgColors[idx]}; line-height: 1.2; padding: 4px;">After<br>H 1-2</th><th style="background:${bgColors[idx]}; line-height: 1.2; padding: 4px;">After<br>H1-2 & SH</th><th style="background:${bgColors[idx]}; padding: 4px;">Final</th>`;
                 }
             });
-            html += `<th rowspan="2" class="net-pts" style="width:50px;">NET<br>PTS</th></tr>${headRow2}</tr></thead><tbody>`;
+            html += `<th rowspan="2" class="net-pts-header" style="width:50px;">NET<br>PTS</th></tr>${headRow2}</tr></thead><tbody>`;
 
             chunkResults.forEach((res, indexInChunk) => {
                 let actualRank = i + indexInChunk + 1;
-                let row = `<tr><td style="font-family:'PPMonument', sans-serif;">${actualRank}</td><td style="text-align:left;"><span class="no-badge">${res.no}</span> ${getFlagHtml(res.nation)} <b style="font-family:'PPMonument', sans-serif; font-size: 13px;">${res.name}</b></td>`;
+                // ชื่อนักแข่งใช้ Flama
+                let row = `<tr><td>${actualRank}</td><td style="text-align:left; max-width: 180px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"><span class="no-badge">${res.no}</span> ${getFlagHtml(res.nation)} <span>${res.name}</span></td>`;
                 res.displayData.forEach((rd, rIdx) => {
                     if(roundVisible[rIdx]) {
                         let fBg = rd.hasFl ? 'purple-bg' : ''; let flB = rd.hasFl ? '<span class="fl-badge">(+1 FL)</span>' : ''; let dqT = rd.dq ? '<br><b style="color:var(--rotax-red); font-size:10px;">(DQ)</b>' : '';
@@ -857,7 +714,7 @@
                                 <td class="${fBg}">${fPos}<span class="${rd.drop.f ? 'dropped' : ''}">${rd.pts.f}</span>${flB}${dqT}</td>`;
                     }
                 });
-                row += `<td class="net-pts" style="font-family:'PPMonument', sans-serif;">${res.net}</td></tr>`; html += row;
+                row += `<td class="net-pts">${res.net}</td></tr>`; html += row;
             });
             html += `</tbody></table></div>`; htmlChunks.push(html);
         }
@@ -878,7 +735,7 @@
         });
 
         wrapper.innerHTML = allChunks.map((chunk, index) => { return (index > 0 ? '<div class="pdf-page-break"></div>' : '') + chunk; }).join('');
-        if (wrapper.innerHTML === '') wrapper.innerHTML = `<div style="padding: 20px; text-align: center; color: #666; background: #fff; border-radius: 8px; font-family:'Flama', sans-serif;">No data available.</div>`;
+        if (wrapper.innerHTML === '') wrapper.innerHTML = `<div style="padding: 20px; text-align: center; color: #666; background: #fff; border-radius: 8px;">No data available.</div>`;
     }
 
     function exportPDF() {
@@ -888,6 +745,10 @@
         document.getElementById('mainHeader').style.display = 'none';
         document.getElementById('mainTabs').style.display = 'none';
         document.getElementById('dashboardControls').style.display = 'none';
+        
+        // Hide rules text on PDF
+        document.querySelectorAll('.hide-on-pdf').forEach(el => el.style.display = 'none');
+        
         document.body.style.background = 'white';
         document.querySelector('.container').style.boxShadow = 'none';
         document.querySelector('.container').style.padding = '0';
@@ -901,23 +762,24 @@
 
         const element = document.getElementById('pdfArea');
         const opt = {
-            margin:       [0.3, 0.3, 0.3, 0.3], // เพิ่ม Margin ซ้าย-ขวา
+            margin:       [0.2, 0.1, 0.2, 0.1], // ลด Margin ซ้าย-ขวา ให้ตารางขยายได้เต็มที่
             filename:     `Official_Standings_2026.pdf`,
             image:        { type: 'jpeg', quality: 0.98 },
-            // บังคับ windowWidth ที่ 1200 เพื่อไม่ให้ตารางหดตามหน้าจอเบราว์เซอร์
-            html2canvas:  { scale: 2, useCORS: true, logging: false, windowWidth: 1200 }, 
+            html2canvas:  { scale: 2, useCORS: true, logging: false, windowWidth: 1100 }, 
             jsPDF:        { unit: 'in', format: 'a4', orientation: 'landscape' },
             pagebreak:    { mode: ['css', 'legacy'] }
         };
 
         html2pdf().set(opt).from(element).save().then(() => {
+            // Restore UI after PDF export
             document.querySelectorAll('.print-header').forEach(el => el.style.display = 'none');
             document.querySelectorAll('.screen-title').forEach(el => el.style.display = 'block');
+            document.querySelectorAll('.hide-on-pdf').forEach(el => el.style.display = 'block');
             document.getElementById('pdfTimestampArea').style.display = 'none';
             document.getElementById('mainHeader').style.display = 'flex';
             document.getElementById('mainTabs').style.display = 'flex';
             document.getElementById('dashboardControls').style.display = 'flex';
-            document.body.style.background = '#f0f2f5';
+            document.body.style.background = 'var(--bg-gray)';
             document.querySelector('.container').style.boxShadow = '0 4px 20px rgba(0,0,0,0.1)';
             document.querySelector('.container').style.padding = '30px';
         });
