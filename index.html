@@ -115,8 +115,13 @@
         .dropped { text-decoration: line-through; color: #ef4444 !important; font-weight: 300; opacity: 0.6; }
         
         .net-pts { font-size: 1.4em; color: var(--rotax-red); font-family: 'PPMonument', sans-serif; background: #fffcf0; border-left: 2px solid #fbc02d; }
-        .no-badge { background: var(--rotax-black); color: var(--rotax-white); padding: 3px 8px; border-radius: 4px; margin-right: 6px; font-size: 12px; font-family: 'PPMonument', sans-serif; }
-        .pos-badge { font-size: 10px; color: #666; background: #f1f5f9; padding: 2px 5px; border-radius: 4px; display: inline-block; margin-bottom: 4px; font-weight: bold;}
+        
+        /* 🔥 คืนชีพเบอร์รถสีเหลือง */
+        .no-badge { background: #ffeb3b; color: #000; padding: 3px 8px; border-radius: 4px; margin-right: 6px; border: 1px solid #fbc02d; font-size: 12px; font-family: 'PPMonument', sans-serif; }
+        
+        /* 🔥 ปรับป้าย P1 ให้สีจางลง ไม่แย่งซีน */
+        .pos-badge { font-size: 10px; color: #94a3b8; background: #f8fafc; padding: 2px 5px; border-radius: 4px; display: inline-block; margin-bottom: 4px; font-weight: bold; border: 1px solid #e2e8f0;}
+        
         .flag-icon { width: 22px; height: 15px; vertical-align: middle; border: 1px solid #e5e7eb; border-radius: 2px; object-fit: cover; }
 
         /* Controls */
@@ -329,9 +334,9 @@
 
 <script>
     // =========================================
-    // 🔗 API URL (เอา URL ของคุณมาใส่ที่นี่)
+    // 🔗 API URL 
     // =========================================
-    const API_URL = "hhttps://script.google.com/macros/s/AKfycbxSlzrD_-z9f3OrHZ5Uno_72leSApeAeiW-fuiaqVZIziBvyX6fQDilZYT8enr3O7rh/exec"; 
+    const API_URL = "https://script.google.com/macros/s/AKfycbxSlzrD_-z9f3OrHZ5Uno_72leSApeAeiW-fuiaqVZIziBvyX6fQDilZYT8enr3O7rh/exec"; 
 
     let drivers = [];
     let currentFilteredResults = [];
@@ -534,7 +539,6 @@
             let noIdx = getIdx(['no']); let nationIdx = getIdx(['nation']); let nameIdx = getIdx(['name']);
             let classIdx = getIdx(['class1', 'class']); let class2Idx = getIdx(['class2', 'sub']);
             
-            // CSV columns updated to reflect DQ applies to Final (DQ_F)
             let r1h = getIdx(['r1_h']); let r1sh = getIdx(['r1_sh']); let r1f = getIdx(['r1_f']); let r1fl = getIdx(['r1_fl']); let r1dq = getIdx(['r1_dq']); let r1dns = getIdx(['r1_dns']);
             let r2h = getIdx(['r2_h']); let r2sh = getIdx(['r2_sh']); let r2f = getIdx(['r2_f']); let r2fl = getIdx(['r2_fl']); let r2dq = getIdx(['r2_dq']); let r2dns = getIdx(['r2_dns']);
             let r3h = getIdx(['r3_h']); let r3sh = getIdx(['r3_sh']); let r3f = getIdx(['r3_f']); let r3fl = getIdx(['r3_fl']); let r3dq = getIdx(['r3_dq']); let r3dns = getIdx(['r3_dns']);
@@ -619,7 +623,6 @@
                 if (d.dClass2 && group.includes(d.dClass2)) { flHtml += `<label><input type="checkbox" ${r.fl.includes(d.dClass2) ? 'checked' : ''} onchange="toggleFL(${dIdx}, ${rIdx}, '${d.dClass2}', this.checked)"> ${d.dClass2.replace('Micro ','').replace('Mini ','')}</label>`; }
                 flHtml += `</div>`;
                 
-                // Styling borders inside rounds
                 let bLeft = rIdx > 0 ? `border-left: 1px solid #eaedf2;` : '';
                 
                 row += `<td style="${bLeft}">${createDropdown(dIdx, rIdx, 'h', r.h, gridClass)}</td>
@@ -655,7 +658,6 @@
     // ====== Standings Engine & Pagination ======
     function getDropIdx(ptsArr, dqArr, count) {
         if (count === 0) return [];
-        // กฎ: ถ้าเป็น DQ จะห้ามเอามาตัดแต้มทิ้ง
         let eligible = ptsArr.map((p, i) => ({ p, i, dq: dqArr[i] })).filter(x => !x.dq);
         eligible.sort((a, b) => a.p - b.p);
         return eligible.slice(0, count).map(x => x.i);
@@ -670,10 +672,10 @@
         let n = classDrivers.length; let drop = (n >= 5 && n <= 7) ? 1 : (n >= 8 ? 2 : 0);
         const getClassPointsMap = (rIdx, session, pointsTable) => {
             let ptsMap = {}; let posMap = {};
-            // ดึงคนที่ลงแข่งรอบนั้นๆ
+            // ❌ เอาการกรอง !x.dq ออกจากฟังก์ชันหาคะแนน เพราะเราต้องจัดอันดับให้ H และ SH ตามปกติ
+            // สำหรับรอบ Final, เราดึงคนที่ไม่โดน DNS และไม่โดน DQ ออกมาจัดอันดับ
             let racers = classDrivers.map(d => ({ no: d.no, rawPos: d.rounds[rIdx][session], dq: d.rounds[rIdx].dq, dns: d.rounds[rIdx].dns })).filter(x => x.rawPos > 0);
             
-            // ถ้าเป็นรอบ Final และโดน DNS หรือ DQ จะไม่ถูกนำมาจัดอันดับเพื่อให้คะแนน (ได้ 0 คะแนน)
             if (session === 'f') { 
                 racers = racers.filter(x => !x.dns && !x.dq); 
             }
@@ -693,17 +695,19 @@
             let hPts = [roundData[0].h.ptsMap[d.no]||0, roundData[1].h.ptsMap[d.no]||0, roundData[2].h.ptsMap[d.no]||0];
             let sPts = [roundData[0].s.ptsMap[d.no]||0, roundData[1].s.ptsMap[d.no]||0, roundData[2].s.ptsMap[d.no]||0];
             let fPts = [roundData[0].f.ptsMap[d.no]||0, roundData[1].f.ptsMap[d.no]||0, roundData[2].f.ptsMap[d.no]||0];
+            
+            // กฎใหม่: DQ มีผลแค่รอบ Final เท่านั้น (H, SH เอาไป drop ได้ปกติ)
             let dqs = d.rounds.map(r => r.dq);
             
-            // ✅ ลอจิกใหม่: H และ SH สามารถ Drop ได้เสมอ (ส่ง array ว่างไปหลอกมัน)
             let hD = getDropIdx(hPts, [false, false, false], drop); 
             let sD = getDropIdx(sPts, [false, false, false], drop); 
-            // ✅ แต่ Final ถ้าโดน DQ ห้าม Drop ทิ้ง
             let fD = getDropIdx(fPts, dqs, drop); 
 
             let netTotal = 0;
             let displayData = d.rounds.map((r, i) => {
-                let hVal = hD.includes(i) ? 0 : hPts[i]; let sVal = sD.includes(i) ? 0 : sPts[i]; let fVal = fD.includes(i) ? 0 : fPts[i];
+                let hVal = hD.includes(i) ? 0 : hPts[i]; 
+                let sVal = sD.includes(i) ? 0 : sPts[i]; 
+                let fVal = fD.includes(i) ? 0 : fPts[i];
                 let gotFlInThisClass = r.fl.includes(targetClass); let flP = (gotFlInThisClass && !r.dq && !r.dns) ? 1 : 0;
                 netTotal += (hVal + sVal + fVal + flP);
                 return {
