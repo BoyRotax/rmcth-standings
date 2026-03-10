@@ -108,20 +108,20 @@
         
         /* Typography Tweaks */
         .driver-name { letter-spacing: 0.5px; margin-left: 8px; font-size: 14px; color: var(--rotax-black); }
+        
+        /* 🔥 ขยายไซส์ตัวเลขคะแนนหลัก */
+        .score-val { font-size: 15px; }
 
         /* Badges & Highlights */
         .purple-bg { background-color: #f9f0fb !important; color: #6b21a8; }
         .fl-badge { color: #8b5cf6; font-size: 10px; display: block; margin-top: 3px; font-weight: bold;}
-        .dropped { text-decoration: line-through; color: #ef4444 !important; font-weight: 300; opacity: 0.6; }
+        
+        /* 🔥 ปรับคะแนน Drop ให้เล็กและจางลง */
+        .dropped { text-decoration: line-through; color: #ef4444 !important; font-weight: 300; opacity: 0.6; font-size: 12px; }
         
         .net-pts { font-size: 1.4em; color: var(--rotax-red); font-family: 'PPMonument', sans-serif; background: #fffcf0; border-left: 2px solid #fbc02d; }
-        
-        /* 🔥 คืนชีพเบอร์รถสีเหลือง */
         .no-badge { background: #ffeb3b; color: #000; padding: 3px 8px; border-radius: 4px; margin-right: 6px; border: 1px solid #fbc02d; font-size: 12px; font-family: 'PPMonument', sans-serif; }
-        
-        /* 🔥 ปรับป้าย P1 ให้สีจางลง ไม่แย่งซีน */
         .pos-badge { font-size: 10px; color: #94a3b8; background: #f8fafc; padding: 2px 5px; border-radius: 4px; display: inline-block; margin-bottom: 4px; font-weight: bold; border: 1px solid #e2e8f0;}
-        
         .flag-icon { width: 22px; height: 15px; vertical-align: middle; border: 1px solid #e5e7eb; border-radius: 2px; object-fit: cover; }
 
         /* Controls */
@@ -258,6 +258,7 @@
             <table id="inputTable">
                 <thead>
                     <tr>
+                        <th rowspan="2" style="width: 30px;" class="sticky-th">#</th>
                         <th rowspan="2" style="width: 40px;" class="sticky-th">NO.</th>
                         <th rowspan="2" style="text-align:left; min-width:180px; padding-left:15px;" class="sticky-th">DRIVER NAME</th>
                         <th colspan="6" style="background:#fff5f5; border-left: 1px solid #fee2e2;">ROUND 1 (Pos)</th>
@@ -309,7 +310,7 @@
             </div>
         </div>
         <div class="sub-tabs" id="dbSubTabs">
-            <button class="sub-tab-btn active" data-class="ALL" onclick="renderDriverDB('ALL')">ALL Classes</button>
+            <button class="sub-tab-btn active" data-class="ALL" onclick="renderDriverDB('ALL')">All Classes</button>
             <button class="sub-tab-btn" data-class="Micro MAX" onclick="renderDriverDB('Micro MAX')">Micro MAX</button>
             <button class="sub-tab-btn" data-class="Micro Rookie" onclick="renderDriverDB('Micro Rookie')">Micro Rookie</button>
             <button class="sub-tab-btn" data-class="Mini MAX" onclick="renderDriverDB('Mini MAX')">Mini MAX</button>
@@ -322,8 +323,13 @@
             <table id="dbTable">
                 <thead>
                     <tr>
-                        <th style="width: 80px;">NO.</th><th style="width: 100px;">NATION</th><th style="text-align: left; padding-left:15px;">DRIVER NAME</th>
-                        <th style="width: 180px;">MAIN CLASS</th><th style="width: 180px;">SUB CLASS</th><th style="width: 100px;">ACTION</th>
+                        <th style="width: 30px;">#</th>
+                        <th style="width: 60px;">NO.</th>
+                        <th style="width: 100px;">NATION</th>
+                        <th style="text-align: left; padding-left:15px;">DRIVER NAME</th>
+                        <th style="width: 180px;">MAIN CLASS</th>
+                        <th style="width: 180px;">SUB CLASS</th>
+                        <th style="width: 100px;">ACTION</th>
                     </tr>
                 </thead>
                 <tbody id="driverDbBody"></tbody>
@@ -334,9 +340,9 @@
 
 <script>
     // =========================================
-    // 🔗 API URL 
+    // 🔗 API URL (เอา URL ของคุณมาใส่ที่นี่)
     // =========================================
-    const API_URL = "https://script.google.com/macros/s/AKfycbxSlzrD_-z9f3OrHZ5Uno_72leSApeAeiW-fuiaqVZIziBvyX6fQDilZYT8enr3O7rh/exec"; 
+    const API_URL = "https://script.google.com/macros/s/AKfycbzhOBD5t0sIlyghXYtWz2m46113Xd5TPUYaBqOIiCZXmGGPQZYqe7E_wZ0v0SS2TmFv/exec"; 
 
     let drivers = [];
     let currentFilteredResults = [];
@@ -481,11 +487,13 @@
         if (filterClass !== 'ALL') mappedDrivers = mappedDrivers.filter(item => item.d.dClass === filterClass || item.d.dClass2 === filterClass);
         mappedDrivers.sort((a, b) => (parseInt(a.d.no) || 0) - (parseInt(b.d.no) || 0));
 
-        mappedDrivers.forEach(item => {
+        mappedDrivers.forEach((item, displayIndex) => {
+            let seq = displayIndex + 1; // ลำดับที่
             let d = item.d; let idx = item.originalIndex; let nat = d.nation || 'THA';
             let classOptions1 = CLASSES.map(c => `<option value="${c}" ${d.dClass === c ? 'selected' : ''}>${c}</option>`).join('');
             let classOptions2 = `<option value="">- None -</option>` + CLASSES.map(c => `<option value="${c}" ${d.dClass2 === c ? 'selected' : ''}>${c}</option>`).join('');
             let row = `<tr>
+                <td style="border-right: 1px solid #eaedf2; color: #888; font-weight: bold;">${seq}</td>
                 <td style="border-right: 1px solid #eaedf2;"><input type="number" class="input-text" style="width:100%; text-align:center; padding: 6px;" value="${d.no}" onchange="updateDriverField(${idx}, 'no', this.value)"></td>
                 <td style="border-right: 1px solid #eaedf2;"><div style="display:flex; align-items:center; justify-content:center;">${getFlagHtml(nat)}<input type="text" class="input-text" style="width:40px; text-align:center; padding: 6px;" value="${nat}" onchange="updateDriverField(${idx}, 'nation', this.value.toUpperCase())" maxlength="3"></div></td>
                 <td style="border-right: 1px solid #eaedf2;"><input type="text" class="input-text" style="width:100%; text-transform:none; padding: 6px;" value="${d.name}" onchange="updateDriverField(${idx}, 'name', this.value)"></td>
@@ -607,13 +615,15 @@
         let filteredDrivers = drivers.map((d, i) => ({ d, originalIndex: i })).filter(item => group.includes(item.d.dClass) || group.includes(item.d.dClass2));
         filteredDrivers.sort((a, b) => (parseInt(a.d.no) || 0) - (parseInt(b.d.no) || 0));
 
-        if (filteredDrivers.length === 0) { body.innerHTML = `<tr><td colspan="20" style="padding: 30px; font-weight: normal; color:#888;">No drivers in this grid.</td></tr>`; return; }
+        if (filteredDrivers.length === 0) { body.innerHTML = `<tr><td colspan="21" style="padding: 30px; font-weight: normal; color:#888;">No drivers in this grid.</td></tr>`; return; }
 
-        filteredDrivers.forEach(item => {
+        filteredDrivers.forEach((item, displayIndex) => {
+            let seq = displayIndex + 1; // ลำดับที่
             let d = item.d; let dIdx = item.originalIndex;
             let displayClasses = [d.dClass]; if (d.dClass2) displayClasses.push(d.dClass2);
             let classTag = `<br><small style="color:#64748b; font-size:11px;">(Dual: ${displayClasses.join(' & ')})</small>`;
             let row = `<tr>
+                <td style="border-right: 1px solid #eaedf2; color: #888; font-weight: bold;">${seq}</td>
                 <td style="border-right: 1px solid #eaedf2;"><span class="no-badge">${d.no}</span></td>
                 <td style="text-align:left; padding-left:15px; border-right: 1px solid #eaedf2;">${getFlagHtml(d.nation)} <span class="driver-name">${d.name}</span> ${classTag}</td>`;
             
@@ -672,8 +682,6 @@
         let n = classDrivers.length; let drop = (n >= 5 && n <= 7) ? 1 : (n >= 8 ? 2 : 0);
         const getClassPointsMap = (rIdx, session, pointsTable) => {
             let ptsMap = {}; let posMap = {};
-            // ❌ เอาการกรอง !x.dq ออกจากฟังก์ชันหาคะแนน เพราะเราต้องจัดอันดับให้ H และ SH ตามปกติ
-            // สำหรับรอบ Final, เราดึงคนที่ไม่โดน DNS และไม่โดน DQ ออกมาจัดอันดับ
             let racers = classDrivers.map(d => ({ no: d.no, rawPos: d.rounds[rIdx][session], dq: d.rounds[rIdx].dq, dns: d.rounds[rIdx].dns })).filter(x => x.rawPos > 0);
             
             if (session === 'f') { 
@@ -696,7 +704,6 @@
             let sPts = [roundData[0].s.ptsMap[d.no]||0, roundData[1].s.ptsMap[d.no]||0, roundData[2].s.ptsMap[d.no]||0];
             let fPts = [roundData[0].f.ptsMap[d.no]||0, roundData[1].f.ptsMap[d.no]||0, roundData[2].f.ptsMap[d.no]||0];
             
-            // กฎใหม่: DQ มีผลแค่รอบ Final เท่านั้น (H, SH เอาไป drop ได้ปกติ)
             let dqs = d.rounds.map(r => r.dq);
             
             let hD = getDropIdx(hPts, [false, false, false], drop); 
@@ -774,9 +781,10 @@
                         
                         let bLeft = `border-left: 1px solid var(--border-color);`;
                         
-                        row += `<td style="${bLeft}">${hPos}<span class="${rd.drop.h ? 'dropped' : ''}">${rd.pts.h}</span></td>
-                                <td>${sPos}<span class="${rd.drop.s ? 'dropped' : ''}">${rd.pts.s}</span></td>
-                                <td class="${fBg}">${fPos}<span class="${rd.drop.f ? 'dropped' : ''}">${rd.pts.f}</span>${flB}${dqT}</td>`;
+                        // 🔥 เพิ่ม class="score-val" ให้ตัวเลขคะแนน
+                        row += `<td style="${bLeft}">${hPos}<span class="score-val ${rd.drop.h ? 'dropped' : ''}">${rd.pts.h}</span></td>
+                                <td>${sPos}<span class="score-val ${rd.drop.s ? 'dropped' : ''}">${rd.pts.s}</span></td>
+                                <td class="${fBg}">${fPos}<span class="score-val ${rd.drop.f ? 'dropped' : ''}">${rd.pts.f}</span>${flB}${dqT}</td>`;
                     }
                 });
                 row += `<td class="net-pts">${res.net}</td></tr>`; html += row;
