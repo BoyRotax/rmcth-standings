@@ -108,15 +108,11 @@
         
         /* Typography Tweaks */
         .driver-name { letter-spacing: 0.5px; margin-left: 8px; font-size: 14px; color: var(--rotax-black); }
-        
-        /* 🔥 ขยายไซส์ตัวเลขคะแนนหลัก */
         .score-val { font-size: 15px; }
 
         /* Badges & Highlights */
         .purple-bg { background-color: #f9f0fb !important; color: #6b21a8; }
         .fl-badge { color: #8b5cf6; font-size: 10px; display: block; margin-top: 3px; font-weight: bold;}
-        
-        /* 🔥 ปรับคะแนน Drop ให้เล็กและจางลง */
         .dropped { text-decoration: line-through; color: #ef4444 !important; font-weight: 300; opacity: 0.6; font-size: 12px; }
         
         .net-pts { font-size: 1.4em; color: var(--rotax-red); font-family: 'PPMonument', sans-serif; background: #fffcf0; border-left: 2px solid #fbc02d; }
@@ -146,9 +142,13 @@
         .add-driver-box { background: #f8fafc; padding: 25px; border-radius: 12px; border: 1px solid #e2e8f0; margin-bottom: 25px; display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
         
         /* PDF Layout */
-        .class-table-container { background: var(--rotax-white); padding-bottom: 20px; page-break-inside: avoid; }
+        .class-table-container { background: var(--rotax-white); padding-bottom: 20px; }
         .class-title { color: var(--rotax-red); font-size: 18px; padding-bottom: 6px; display: inline-block; margin-bottom: 15px; margin-top: 10px; letter-spacing: 1px;}
         .pdf-page-break { page-break-before: always; break-before: page; }
+        
+        /* บังคับไม่ให้ PDF ตัดแถวตารางขาดครึ่ง */
+        tr { page-break-inside: avoid; }
+        
         .fl-checkbox-container { display: inline-flex; flex-direction: column; text-align: left; background: var(--rotax-white); padding: 4px 6px; }
         .fl-checkbox-container label { font-size: 11px; cursor: pointer; margin-bottom: 3px; white-space: nowrap; color: #555; font-weight: bold;}
         .print-header { display: none; text-align: center; margin-bottom: 15px; }
@@ -730,67 +730,66 @@
         results.forEach(res => { res.displayData.forEach((rd, idx) => { if (rd.pts.h > 0 || rd.pts.s > 0 || rd.pts.f > 0 || rd.hasFl || rd.dq || rd.dns) roundVisible[idx] = true; }); });
         if (!roundVisible.includes(true)) roundVisible[0] = true;
 
-        let htmlChunks = []; let chunkSize = 15;
-        for (let i = 0; i < results.length; i += chunkSize) {
-            let chunkResults = results.slice(i, i + chunkSize);
-            let html = `<div class="class-table-container">`;
-            
-            // PDF Header
-            html += `<div class="print-header">
-                        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--rotax-red); padding-bottom: 15px; margin-bottom: 15px;">
-                            <img src="image_ea471c.png" style="height: 45px;">
-                            <div style="text-align: center;">
-                                <img src="image_ea46f7.png" style="height: 45px; margin-bottom: 5px;"><br>
-                                <h3 style="margin: 0; font-size: 15px; color: var(--rotax-black); letter-spacing:1px;">${getCustomTitle(targetClass)}</h3>
-                            </div>
-                            <div style="display: flex; gap: 15px; align-items: center;">
-                                <img src="image_ea4713.png" style="height: 35px;">
-                                <img src="image_ea46db.png" style="height: 35px;">
-                            </div>
+        // 🔥 เอาการซอยตาราง (Chunk) ออก เพื่อให้มันยาวต่อเนื่องกันเลย
+        let htmlChunks = []; 
+        let chunkResults = results; // รวบทั้งหมดเป็นก้อนเดียว
+        
+        let html = `<div class="class-table-container">`;
+        
+        html += `<div class="print-header">
+                    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--rotax-red); padding-bottom: 15px; margin-bottom: 15px;">
+                        <img src="image_ea471c.png" style="height: 45px;">
+                        <div style="text-align: center;">
+                            <img src="image_ea46f7.png" style="height: 45px; margin-bottom: 5px;"><br>
+                            <h3 style="margin: 0; font-size: 15px; color: var(--rotax-black); letter-spacing:1px;">${getCustomTitle(targetClass)}</h3>
                         </div>
-                     </div>`;
-                     
-            html += `<h3 class="screen-title class-title">${getCustomTitle(targetClass)} <span style="font-size:12px; color:#888; font-family: 'Flama', sans-serif; text-transform:none;">(Drivers: ${n} | Drops per phase: ${drop})</span></h3>`;
+                        <div style="display: flex; gap: 15px; align-items: center;">
+                            <img src="image_ea4713.png" style="height: 35px;">
+                            <img src="image_ea46db.png" style="height: 35px;">
+                        </div>
+                    </div>
+                 </div>`;
+                 
+        html += `<h3 class="screen-title class-title">${getCustomTitle(targetClass)} <span style="font-size:12px; color:#888; font-family: 'Flama', sans-serif; text-transform:none;">(Drivers: ${n} | Drops per phase: ${drop})</span></h3>`;
+        
+        html += `<table width="100%" style="border-collapse: collapse; text-align: center; font-size:12px; table-layout: auto;"><thead><tr><th rowspan="2" style="width:30px; border-top: 1px solid var(--border-color);">RANK</th><th rowspan="2" style="text-align:left; padding-left:15px; border-top: 1px solid var(--border-color);">DRIVER (NO. & NAME)</th>`;
+        let headRow2 = `<tr>`;
+        roundVisible.forEach((vis, idx) => {
+            if(vis) {
+                html += `<th colspan="3" style="background:#fdfdfd; border-left: 1px solid var(--border-color); border-top: 1px solid var(--border-color);">ROUND ${idx+1} (Pts)</th>`;
+                headRow2 += `<th style="background:#fdfdfd; line-height: 1.2; padding: 6px; border-left: 1px solid var(--border-color);">After<br>H 1-2</th><th style="background:#fdfdfd; line-height: 1.2; padding: 6px;">After<br>H1-2 & SH</th><th style="background:#fdfdfd; padding: 6px;">Final</th>`;
+            }
+        });
+        html += `<th rowspan="2" class="net-pts-header" style="width:50px; background:#fffcf0; color:var(--rotax-black); border-top: 1px solid var(--border-color);">NET<br>PTS</th></tr>${headRow2}</tr></thead><tbody>`;
+
+        chunkResults.forEach((res, indexInChunk) => {
+            let actualRank = indexInChunk + 1;
+            let row = `<tr>
+                <td style="font-family:'PPMonument', sans-serif; color: #555;">${actualRank}</td>
+                <td style="text-align:left; max-width: 180px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding-left: 15px;">
+                    <span class="no-badge">${res.no}</span> ${getFlagHtml(res.nation)} <span class="driver-name">${res.name}</span>
+                </td>`;
             
-            html += `<table width="100%" style="border-collapse: collapse; text-align: center; font-size:12px; table-layout: auto;"><thead><tr><th rowspan="2" style="width:30px; border-top: 1px solid var(--border-color);">RANK</th><th rowspan="2" style="text-align:left; padding-left:15px; border-top: 1px solid var(--border-color);">DRIVER (NO. & NAME)</th>`;
-            let headRow2 = `<tr>`;
-            roundVisible.forEach((vis, idx) => {
-                if(vis) {
-                    html += `<th colspan="3" style="background:#fdfdfd; border-left: 1px solid var(--border-color); border-top: 1px solid var(--border-color);">ROUND ${idx+1} (Pts)</th>`;
-                    headRow2 += `<th style="background:#fdfdfd; line-height: 1.2; padding: 6px; border-left: 1px solid var(--border-color);">After<br>H 1-2</th><th style="background:#fdfdfd; line-height: 1.2; padding: 6px;">After<br>H1-2 & SH</th><th style="background:#fdfdfd; padding: 6px;">Final</th>`;
+            res.displayData.forEach((rd, rIdx) => {
+                if(roundVisible[rIdx]) {
+                    let fBg = rd.hasFl ? 'purple-bg' : ''; let flB = rd.hasFl ? '<span class="fl-badge">(+1 FL)</span>' : ''; 
+                    let dqT = rd.dq ? '<br><b style="color:var(--rotax-red); font-size:10px;">(DQ)</b>' : '';
+                    
+                    let hPos = rd.pos.h ? `<span class="pos-badge">P${rd.pos.h}</span><br>` : '';
+                    let sPos = rd.pos.s ? `<span class="pos-badge">P${rd.pos.s}</span><br>` : '';
+                    let fPos = rd.dns ? `<span class="pos-badge" style="background:#ea580c; color:var(--rotax-white); border:none;">DNS</span><br>` : (rd.pos.f ? `<span class="pos-badge">P${rd.pos.f}</span><br>` : '');
+                    
+                    let bLeft = `border-left: 1px solid var(--border-color);`;
+                    
+                    row += `<td style="${bLeft}">${hPos}<span class="score-val ${rd.drop.h ? 'dropped' : ''}">${rd.pts.h}</span></td>
+                            <td>${sPos}<span class="score-val ${rd.drop.s ? 'dropped' : ''}">${rd.pts.s}</span></td>
+                            <td class="${fBg}">${fPos}<span class="score-val ${rd.drop.f ? 'dropped' : ''}">${rd.pts.f}</span>${flB}${dqT}</td>`;
                 }
             });
-            html += `<th rowspan="2" class="net-pts-header" style="width:50px; background:#fffcf0; color:var(--rotax-black); border-top: 1px solid var(--border-color);">NET<br>PTS</th></tr>${headRow2}</tr></thead><tbody>`;
-
-            chunkResults.forEach((res, indexInChunk) => {
-                let actualRank = i + indexInChunk + 1;
-                let row = `<tr>
-                    <td style="font-family:'PPMonument', sans-serif; color: #555;">${actualRank}</td>
-                    <td style="text-align:left; max-width: 180px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding-left: 15px;">
-                        <span class="no-badge">${res.no}</span> ${getFlagHtml(res.nation)} <span class="driver-name">${res.name}</span>
-                    </td>`;
-                
-                res.displayData.forEach((rd, rIdx) => {
-                    if(roundVisible[rIdx]) {
-                        let fBg = rd.hasFl ? 'purple-bg' : ''; let flB = rd.hasFl ? '<span class="fl-badge">(+1 FL)</span>' : ''; 
-                        let dqT = rd.dq ? '<br><b style="color:var(--rotax-red); font-size:10px;">(DQ)</b>' : '';
-                        
-                        let hPos = rd.pos.h ? `<span class="pos-badge">P${rd.pos.h}</span><br>` : '';
-                        let sPos = rd.pos.s ? `<span class="pos-badge">P${rd.pos.s}</span><br>` : '';
-                        let fPos = rd.dns ? `<span class="pos-badge" style="background:#ea580c; color:var(--rotax-white);">DNS</span><br>` : (rd.pos.f ? `<span class="pos-badge">P${rd.pos.f}</span><br>` : '');
-                        
-                        let bLeft = `border-left: 1px solid var(--border-color);`;
-                        
-                        // 🔥 เพิ่ม class="score-val" ให้ตัวเลขคะแนน
-                        row += `<td style="${bLeft}">${hPos}<span class="score-val ${rd.drop.h ? 'dropped' : ''}">${rd.pts.h}</span></td>
-                                <td>${sPos}<span class="score-val ${rd.drop.s ? 'dropped' : ''}">${rd.pts.s}</span></td>
-                                <td class="${fBg}">${fPos}<span class="score-val ${rd.drop.f ? 'dropped' : ''}">${rd.pts.f}</span>${flB}${dqT}</td>`;
-                    }
-                });
-                row += `<td class="net-pts">${res.net}</td></tr>`; html += row;
-            });
-            html += `</tbody></table></div>`; htmlChunks.push(html);
-        }
+            row += `<td class="net-pts">${res.net}</td></tr>`; html += row;
+        });
+        html += `</tbody></table></div>`; htmlChunks.push(html);
+        
         return { htmlChunks, results };
     }
 
@@ -807,7 +806,8 @@
             if (data.htmlChunks.length > 0) { allChunks.push(...data.htmlChunks); currentFilteredResults.push(...data.results); }
         });
 
-        wrapper.innerHTML = allChunks.map((chunk, index) => { return (index > 0 ? '<div class="pdf-page-break"></div>' : '') + chunk; }).join('');
+        // ลบ page-break ออกเพราะเราไม่ได้ซอยตารางแล้ว แต่ให้มีระยะห่างระหว่างรุ่นแทน
+        wrapper.innerHTML = allChunks.map((chunk, index) => { return (index > 0 ? '<div style="margin-top: 40px;" class="pdf-page-break"></div>' : '') + chunk; }).join('');
         if (wrapper.innerHTML === '') wrapper.innerHTML = `<div style="padding: 40px; text-align: center; color: #888; background: #fff; border-radius: 12px; font-family:'Flama', sans-serif;">No race data available.</div>`;
     }
 
