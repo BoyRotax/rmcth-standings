@@ -10,6 +10,7 @@
         body { font-family: 'Segoe UI', Tahoma, sans-serif; background: #f0f2f5; padding: 20px; color: #333; margin: 0;}
         .container { max-width: 1550px; margin: auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
         
+        /* Official Header Styles */
         .official-header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 20px; margin-bottom: 20px; border-bottom: 3px solid #d32f2f; }
         .logo-left img { height: 80px; object-fit: contain; }
         .logo-center { text-align: center; flex-grow: 1; }
@@ -18,12 +19,14 @@
         .logo-right img { height: 35px; object-fit: contain; }
         #mainAppTitle { margin: 0; color: #333; font-size: 20px; text-transform: uppercase; letter-spacing: 1px; }
 
+        /* Main Tabs */
         .tabs { display: flex; gap: 5px; margin-bottom: 20px; border-bottom: 2px solid #ddd; align-items: center;}
         .tab-btn { padding: 12px 25px; cursor: pointer; border: none; background: #e0e0e0; font-weight: bold; border-radius: 8px 8px 0 0; transition: 0.3s; font-size: 14px; }
         .tab-btn.active { background: #d32f2f; color: white; }
         .tab-content { display: none; padding: 20px; background: #fff; border: 1px solid #ddd; border-top: none; border-radius: 0 0 8px 8px; }
         .tab-content.active { display: block; }
 
+        /* Sub Tabs for DB */
         .sub-tabs { display: flex; gap: 8px; margin-bottom: 15px; flex-wrap: wrap; }
         .sub-tab-btn { padding: 8px 16px; cursor: pointer; border: 1px solid #b0bec5; background: #f8f9fa; border-radius: 20px; transition: 0.2s; font-size: 13px; color: #455a64; font-weight: 600; }
         .sub-tab-btn:hover { background: #e3f2fd; }
@@ -34,6 +37,7 @@
         th { background:#f8f9fa; }
         .sticky-th { position: sticky; top: 0; z-index: 10; }
         
+        /* Dashboard Styles */
         .purple-bg { background-color: #f3e5f5 !important; border: 2px solid #9c27b0 !important; color: #4a148c; font-weight: bold; }
         .fl-badge { color: #9c27b0; font-size: 11px; font-weight: bold; display: block; margin-top: 2px; }
         .dropped { text-decoration: line-through; color: #f44336 !important; font-weight: bold; }
@@ -41,11 +45,13 @@
         .no-badge { background: #ffeb3b; color: #000; padding: 2px 8px; border-radius: 4px; font-weight: bold; margin-right: 6px; border: 1px solid #fbc02d; font-size: 14px; }
         .flag-icon { width: 24px; height: 16px; vertical-align: middle; margin-right: 6px; border: 1px solid #ccc; border-radius: 2px; object-fit: cover; }
 
+        /* Form & Inputs */
         .input-text { padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-size: 14px; text-transform: uppercase; }
         select { padding: 6px; border-radius: 4px; border: 1px solid #999; font-weight: bold; cursor: pointer; font-size: 13px; }
         .score-select { width: 55px; }
         .class-select { width: 140px; }
         
+        /* Buttons */
         .btn { padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; color: white; margin-right: 10px; transition: 0.2s; }
         .btn:hover { opacity: 0.8; }
         .btn-save { background: #2e7d32; }
@@ -60,6 +66,7 @@
         .header-controls { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; margin-bottom: 15px; background: #f1f8e9; padding: 15px; border-radius: 8px; border: 1px solid #c5e1a5;}
         .add-driver-box { background: #e3f2fd; padding: 20px; border-radius: 8px; border: 1px solid #bbdefb; margin-bottom: 20px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
         
+        /* PDF Layout */
         .class-table-container { background: #fff; padding-bottom: 10px; page-break-inside: avoid; }
         .class-title { color: #1565c0; font-size: 18px; border-bottom: 3px solid #1565c0; padding-bottom: 4px; display: inline-block; margin-bottom: 10px; margin-top: 5px;}
         .pdf-page-break { page-break-before: always; break-before: page; }
@@ -71,6 +78,12 @@
         .auth-section { margin-left: auto; display: flex; align-items: center; gap: 15px; }
         .user-badge { background: #e3f2fd; color: #1565c0; padding: 8px 15px; border-radius: 20px; font-weight: bold; border: 1px solid #90caf9; font-size: 13px; }
 
+        @media screen and (max-width: 768px) {
+            .official-header { flex-direction: column; gap: 15px; text-align: center; }
+            .logo-right { align-items: center; flex-direction: row; justify-content: center; }
+        }
+
+        /* Loading Spinner */
         .loader-box { text-align: center; padding: 50px; }
         .spinner { border: 4px solid #f3f3f3; border-top: 4px solid #d32f2f; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 0 auto 15px auto; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
@@ -158,7 +171,8 @@
                     <option value="Micro MAX">Micro MAX (inc. Rookie)</option>
                     <option value="Mini MAX">Mini MAX (inc. Rookie)</option>
                     <option value="Junior MAX">Junior MAX</option>
-                    <option value="Senior MAX">Senior MAX (inc. Masters)</option>
+                    <option value="Senior MAX">Senior MAX</option>
+                    <option value="Senior MAX Masters">Senior MAX Masters</option>
                 </select>
             </div>
             <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px;">
@@ -254,9 +268,9 @@
 <script>
     // =========================================
     // 🔗 API URL (Google Sheets Database)
-    // ⚠️ นำ URL "New Deployment" ของคุณมาใส่ตรงนี้เท่านั้น ⚠️
+    // ⚠️ นำ URL ของคุณมาใส่ตรงนี้ครับ ⚠️
     // =========================================
-    const API_URL = "https://script.google.com/macros/s/AKfycbywuiYNEhN-6GQ9RC8m26oBOkqzvcsRVr3RlSQIWBZYDFkznIa3NyUgV9TsPvImU1zU/exec"; // <-- แก้ไข URL ตรงนี้ครับ
+    const API_URL = "https://script.google.com/macros/s/AKfycbyjFbA_GbxogZa85uRLshuMNaOqZhMSm1MPyg0a3mQ5o3geCMQk8aGkmJEb-HBQ64LU/exec"; // <-- แก้ไขตรงนี้
 
     let drivers = [];
     let currentFilteredResults = [];
@@ -361,13 +375,14 @@
         localStorage.setItem('rmcat_master_cloud_cache', JSON.stringify(drivers));
         
         try {
-            // ส่งข้อมูลแบบปกติไปเลย ไม่ต้องใช้ no-cors แล้วไปดักจับ error เอา (แก้บัคการเชื่อมต่อ)
             await fetch(API_URL, {
                 method: 'POST',
+                mode: 'no-cors', // ใส่ no-cors ไว้เพื่อหลบปัญหา error บน console แดงๆ
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                 body: JSON.stringify(drivers)
             });
         } catch (e) {
-            console.log("CORS redirect blocked in browser, but Data reached Google Sheets successfully.");
+            console.log("Data pushed to Google Sheets.");
         }
     }
 
@@ -375,7 +390,16 @@
     // 3. ตัวแปรและฟังก์ชันระบบคะแนน
     // =========================================
     const CLASSES = ["Micro MAX", "Micro Rookie", "Mini MAX", "Mini Rookie", "Junior MAX", "Senior MAX", "Senior MAX Masters"];
-    const GRID_GROUPS = { "Micro MAX": ["Micro MAX", "Micro Rookie"], "Mini MAX": ["Mini MAX", "Mini Rookie"], "Junior MAX": ["Junior MAX"], "Senior MAX": ["Senior MAX", "Senior MAX Masters"] };
+    
+    // อัปเดต GRID_GROUPS ใหม่: แยก Senior MAX กับ Senior MAX Masters ออกจากกัน 100%
+    const GRID_GROUPS = { 
+        "Micro MAX": ["Micro MAX", "Micro Rookie"], 
+        "Mini MAX": ["Mini MAX", "Mini Rookie"], 
+        "Junior MAX": ["Junior MAX"], 
+        "Senior MAX": ["Senior MAX"], 
+        "Senior MAX Masters": ["Senior MAX Masters"] 
+    };
+
     const PTS_H = { 1:25, 2:22, 3:19, 4:17, 5:15, 6:13, 7:11, 8:9, 9:7, 10:6, 11:5, 12:4, 13:3, 14:2, 15:1 };
     const PTS_S = { 1:25, 2:22, 3:19, 4:17, 5:15, 6:13, 7:11, 8:9, 9:7, 10:6, 11:5, 12:4, 13:3, 14:2, 15:1 };
     const PTS_F = { 1:50, 2:44, 3:38, 4:34, 5:30, 6:26, 7:22, 8:18, 9:14, 10:10, 11:8, 12:6, 13:4, 14:2, 15:1 };
@@ -624,9 +648,15 @@
             let row = `<tr><td><span class="no-badge">${d.no}</span></td><td style="text-align:left; font-weight:bold;">${getFlagHtml(d.nation)} ${d.name} ${classTag}</td>`;
             d.rounds.forEach((r, rIdx) => {
                 let flHtml = `<div class="fl-checkbox-container">`;
-                flHtml += `<label><input type="checkbox" ${r.fl.includes(d.dClass) ? 'checked' : ''} onchange="toggleFL(${dIdx}, ${rIdx}, '${d.dClass}', this.checked)"> ${d.dClass.replace('Micro ','').replace('Mini ','')}</label>`;
-                if (d.dClass2) flHtml += `<label><input type="checkbox" ${r.fl.includes(d.dClass2) ? 'checked' : ''} onchange="toggleFL(${dIdx}, ${rIdx}, '${d.dClass2}', this.checked)"> ${d.dClass2.replace('Micro ','').replace('Mini ','')}</label>`;
+                // โชว์กล่อง FL เฉพาะตอนที่รุ่นนั้นตรงกับ Grid หรือมี Sub Class ตรงกับ Grid
+                if (group.includes(d.dClass)) {
+                    flHtml += `<label><input type="checkbox" ${r.fl.includes(d.dClass) ? 'checked' : ''} onchange="toggleFL(${dIdx}, ${rIdx}, '${d.dClass}', this.checked)"> ${d.dClass.replace('Micro ','').replace('Mini ','')}</label>`;
+                }
+                if (d.dClass2 && group.includes(d.dClass2)) {
+                    flHtml += `<label><input type="checkbox" ${r.fl.includes(d.dClass2) ? 'checked' : ''} onchange="toggleFL(${dIdx}, ${rIdx}, '${d.dClass2}', this.checked)"> ${d.dClass2.replace('Micro ','').replace('Mini ','')}</label>`;
+                }
                 flHtml += `</div>`;
+                
                 row += `<td>${createDropdown(dIdx, rIdx, 'h', r.h, gridClass)}</td><td>${createDropdown(dIdx, rIdx, 's', r.s, gridClass)}</td><td>${createDropdown(dIdx, rIdx, 'f', r.f, gridClass)}</td>
                         <td style="vertical-align:middle;">${flHtml}</td>
                         <td><input type="checkbox" ${r.dq ? 'checked' : ''} onchange="updateTempDQ(${dIdx}, ${rIdx}, this.checked)"></td>`;
