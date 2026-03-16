@@ -306,6 +306,7 @@
             <div style="border-left: 2px solid #cbd5e1; margin-left: 5px; padding-left: 15px;">
                 <input type="file" id="csvFileInput" accept=".csv" style="display: none;" onchange="handleCSVImport(event)">
                 <button class="btn btn-import" onclick="document.getElementById('csvFileInput').click()">📤 IMPORT CSV</button>
+                <button class="btn btn-csv" style="background: #1e293b;" onclick="exportDriverDB()">📥 EXPORT DB (CSV)</button>
             </div>
         </div>
         <div class="sub-tabs" id="dbSubTabs">
@@ -883,7 +884,45 @@
             document.querySelector('.container').style.padding = '40px';
         });
     }
+// ฟังก์ชันสำหรับ Export รายชื่อนักแข่งทั้งหมดในฐานข้อมูล
+function exportDriverDB() {
+    if (drivers.length === 0) {
+        alert("No driver data to export.");
+        return;
+    }
 
+    // สร้าง Header ของไฟล์ Excel (CSV)
+    // \uFEFF คือการใส่ BOM เพื่อให้ Excel เปิดแล้วอ่านภาษาไทยได้ถูกต้อง
+    let csv = "\uFEFFNo.,Nation,Driver Name,Main Class,Sub Class\n";
+
+    // วนลูปดึงข้อมูลจากตัวแปร drivers ทั้งหมด
+    drivers.forEach(d => {
+        let no = d.no || "";
+        let nation = d.nation || "";
+        let name = d.name || "";
+        let mainClass = d.dClass || "";
+        let subClass = d.dClass2 || "";
+
+        // ใส่เครื่องหมายคำพูดครอบไว้ป้องกันเครื่องหมายคอมม่า (,) ในชื่อนักแข่งทำให้คอลัมน์เพี้ยน
+        csv += `"${no}","${nation}","${name}","${mainClass}","${subClass}"\n`;
+    });
+
+    // สร้างไฟล์และสั่งดาวน์โหลด
+    let blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    let link = document.createElement("a");
+    let url = URL.createObjectURL(blob);
+    
+    let now = new Date();
+    let dateStr = now.toLocaleDateString('en-GB').replace(/\//g, '-');
+    
+    link.setAttribute("href", url);
+    link.setAttribute("download", `RMCTH_Driver_Database_${dateStr}.csv`);
+    link.style.visibility = 'hidden';
+    
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
     function exportCSV() {
         if (currentFilteredResults.length === 0) return;
         let csv = "\uFEFFClass,Rank,No.,Nation,Driver Name,R1_H(Pts),R1_S(Pts),R1_F(Pts),R2_H(Pts),R2_S(Pts),R2_F(Pts),R3_H(Pts),R3_S(Pts),R3_F(Pts),NET_POINTS\n";
