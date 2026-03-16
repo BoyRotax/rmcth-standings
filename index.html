@@ -61,7 +61,7 @@
             box-shadow: 0 10px 30px rgba(0,0,0,0.05); 
         }
         
-        /* Header - 🔥 ขยายขนาดโลโก้ให้สมดุลและชัดเจนขึ้น */
+        /* Header */
         .official-header { 
             display: flex; justify-content: space-between; align-items: center; 
             padding-bottom: 25px; margin-bottom: 25px; 
@@ -71,7 +71,7 @@
         .logo-center { text-align: center; flex-grow: 1; }
         .logo-center img { height: 65px; object-fit: contain; margin-bottom: 8px; }
         .logo-right { display: flex; flex-direction: column; gap: 10px; align-items: flex-end; }
-        .logo-right img { height: 50px; object-fit: contain; } /* เพิ่มจาก 30px เป็น 50px */
+        .logo-right img { height: 50px; object-fit: contain; } 
         #mainAppTitle { margin: 0; color: var(--rotax-black); font-size: 18px; letter-spacing: 1.5px; }
 
         /* Tabs */
@@ -303,12 +303,14 @@
                 </select>
             </div>
             <button class="btn btn-add" onclick="addNewDriver()">+ ADD DRIVER</button>
-            <div style="border-left: 2px solid #cbd5e1; margin-left: 5px; padding-left: 15px;">
+            
+            <div style="border-left: 2px solid #cbd5e1; margin-left: 5px; padding-left: 15px; display: flex; gap: 10px; align-items: center;">
                 <input type="file" id="csvFileInput" accept=".csv" style="display: none;" onchange="handleCSVImport(event)">
-                <button class="btn btn-import" onclick="document.getElementById('csvFileInput').click()">📤 IMPORT CSV</button>
-                <button class="btn btn-csv" style="background: #1e293b;" onclick="exportDriverDB()">📥 EXPORT DB (CSV)</button>
+                <button class="btn btn-import" style="margin:0;" onclick="document.getElementById('csvFileInput').click()">📤 IMPORT CSV</button>
+                <button class="btn btn-csv" style="background: #1e293b; margin:0;" onclick="exportDriverDB()">📥 EXPORT DB</button>
             </div>
         </div>
+        
         <div class="sub-tabs" id="dbSubTabs">
             <button class="sub-tab-btn active" data-class="ALL" onclick="renderDriverDB('ALL')">All Classes</button>
             <button class="sub-tab-btn" data-class="Micro MAX" onclick="renderDriverDB('Micro MAX')">Micro MAX</button>
@@ -340,7 +342,7 @@
 
 <script>
     // =========================================
-    // 🔗 API URL (เอา URL ของคุณมาใส่ที่นี่)
+    // 🔗 API URL
     // =========================================
     const API_URL = "https://script.google.com/macros/s/AKfycbzhOBD5t0sIlyghXYtWz2m46113Xd5TPUYaBqOIiCZXmGGPQZYqe7E_wZ0v0SS2TmFv/exec"; 
 
@@ -723,12 +725,11 @@
                 };
             });
 
-            // 🌟 แก้ไขระบบ Tie-breaker (ดึงอันดับ Final ไปเปรียบเทียบ)
             let bestFinishes = [
                 roundData[0].f.posMap[d.no],
                 roundData[1].f.posMap[d.no],
                 roundData[2].f.posMap[d.no]
-            ].filter(p => p > 0).sort((x, y) => x - y); // เรียงจากที่ 1, 2, 3...
+            ].filter(p => p > 0).sort((x, y) => x - y);
 
             let lastPos = roundData[2].f.posMap[d.no] || roundData[1].f.posMap[d.no] || roundData[0].f.posMap[d.no] || 999;
 
@@ -738,22 +739,18 @@
             };
         });
 
-        // 🌟 ลอจิกการเรียงลำดับใหม่ทั้งหมด (Dead Heat Rules)
         results.sort((a, b) => {
-            // 1. เรียงตามคะแนน
             if (b.net !== a.net) return b.net - a.net; 
             
-            // 2. ถ้าคะแนนเท่ากัน เทียบอันดับที่ดีที่สุด (ข้อ a, b, c)
             let len = Math.max(a.bestFinishes.length, b.bestFinishes.length);
             for (let i = 0; i < len; i++) {
                 let posA = a.bestFinishes[i] || 999; 
                 let posB = b.bestFinishes[i] || 999;
                 if (posA !== posB) {
-                    return posA - posB; // ใครน้อยกว่า (เช่น 1 ชนะ 2) ให้คนนั้นขึ้นก่อน
+                    return posA - posB; 
                 }
             }
 
-            // 3. ถ้าสถิติเท่ากันเป๊ะ เทียบผลงานรอบชิงสนามสุดท้าย (ข้อ d)
             return a.lastPos - b.lastPos;
         });
 
@@ -858,8 +855,11 @@
         document.querySelectorAll('.screen-title').forEach(el => el.style.display = 'none');
 
         let now = new Date();
-        document.getElementById('pdfTimestamp').innerText = `Published: ${now.toLocaleDateString('en-GB')} ${now.toLocaleTimeString('en-GB')}`;
-        document.getElementById('pdfTimestampArea').style.display = 'block';
+        const pdfTimestampArea = document.getElementById('pdfTimestampArea');
+        if(pdfTimestampArea) {
+            document.getElementById('pdfTimestamp').innerText = `Published: ${now.toLocaleDateString('en-GB')} ${now.toLocaleTimeString('en-GB')}`;
+            pdfTimestampArea.style.display = 'block';
+        }
 
         const element = document.getElementById('pdfArea');
         const opt = {
@@ -875,7 +875,7 @@
             document.querySelectorAll('.print-header').forEach(el => el.style.display = 'none');
             document.querySelectorAll('.screen-title').forEach(el => el.style.display = 'block');
             document.querySelectorAll('.hide-on-pdf').forEach(el => el.style.display = 'block');
-            document.getElementById('pdfTimestampArea').style.display = 'none';
+            if(pdfTimestampArea) pdfTimestampArea.style.display = 'none';
             document.getElementById('mainHeader').style.display = 'flex';
             document.getElementById('mainTabs').style.display = 'flex';
             document.getElementById('dashboardControls').style.display = 'flex';
@@ -884,45 +884,47 @@
             document.querySelector('.container').style.padding = '40px';
         });
     }
-// ฟังก์ชันสำหรับ Export รายชื่อนักแข่งทั้งหมดในฐานข้อมูล
-function exportDriverDB() {
-    if (drivers.length === 0) {
-        alert("No driver data to export.");
-        return;
+
+    // ฟังก์ชันสำหรับ Export รายชื่อนักแข่งทั้งหมดในฐานข้อมูล
+    function exportDriverDB() {
+        if (drivers.length === 0) {
+            alert("No driver data to export.");
+            return;
+        }
+
+        // สร้าง Header ของไฟล์ Excel (CSV)
+        // \uFEFF คือการใส่ BOM เพื่อให้ Excel เปิดแล้วอ่านภาษาไทยได้ถูกต้อง
+        let csv = "\uFEFFNo.,Nation,Driver Name,Main Class,Sub Class\n";
+
+        // วนลูปดึงข้อมูลจากตัวแปร drivers ทั้งหมด
+        drivers.forEach(d => {
+            let no = d.no || "";
+            let nation = d.nation || "";
+            let name = d.name || "";
+            let mainClass = d.dClass || "";
+            let subClass = d.dClass2 || "";
+
+            // ใส่เครื่องหมายคำพูดครอบไว้ป้องกันเครื่องหมายคอมม่า (,) ในชื่อนักแข่งทำให้คอลัมน์เพี้ยน
+            csv += `"${no}","${nation}","${name}","${mainClass}","${subClass}"\n`;
+        });
+
+        // สร้างไฟล์และสั่งดาวน์โหลด
+        let blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+        let link = document.createElement("a");
+        let url = URL.createObjectURL(blob);
+        
+        let now = new Date();
+        let dateStr = now.toLocaleDateString('en-GB').replace(/\//g, '-');
+        
+        link.setAttribute("href", url);
+        link.setAttribute("download", `RMCTH_Driver_Database_${dateStr}.csv`);
+        link.style.visibility = 'hidden';
+        
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
     }
 
-    // สร้าง Header ของไฟล์ Excel (CSV)
-    // \uFEFF คือการใส่ BOM เพื่อให้ Excel เปิดแล้วอ่านภาษาไทยได้ถูกต้อง
-    let csv = "\uFEFFNo.,Nation,Driver Name,Main Class,Sub Class\n";
-
-    // วนลูปดึงข้อมูลจากตัวแปร drivers ทั้งหมด
-    drivers.forEach(d => {
-        let no = d.no || "";
-        let nation = d.nation || "";
-        let name = d.name || "";
-        let mainClass = d.dClass || "";
-        let subClass = d.dClass2 || "";
-
-        // ใส่เครื่องหมายคำพูดครอบไว้ป้องกันเครื่องหมายคอมม่า (,) ในชื่อนักแข่งทำให้คอลัมน์เพี้ยน
-        csv += `"${no}","${nation}","${name}","${mainClass}","${subClass}"\n`;
-    });
-
-    // สร้างไฟล์และสั่งดาวน์โหลด
-    let blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-    let link = document.createElement("a");
-    let url = URL.createObjectURL(blob);
-    
-    let now = new Date();
-    let dateStr = now.toLocaleDateString('en-GB').replace(/\//g, '-');
-    
-    link.setAttribute("href", url);
-    link.setAttribute("download", `RMCTH_Driver_Database_${dateStr}.csv`);
-    link.style.visibility = 'hidden';
-    
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-}
     function exportCSV() {
         if (currentFilteredResults.length === 0) return;
         let csv = "\uFEFFClass,Rank,No.,Nation,Driver Name,R1_H(Pts),R1_S(Pts),R1_F(Pts),R2_H(Pts),R2_S(Pts),R2_F(Pts),R3_H(Pts),R3_S(Pts),R3_F(Pts),NET_POINTS\n";
